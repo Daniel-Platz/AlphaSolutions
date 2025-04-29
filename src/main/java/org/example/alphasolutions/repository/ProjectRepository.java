@@ -17,13 +17,13 @@ public class ProjectRepository {
     }
 
     public List<Project> findAllProjects() {
-        String sql = "SELECT * FROM projects";
+        String sql = "SELECT * FROM Project";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class));
     }
 
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
-        String sql = "SELECT projects.* FROM projects " +
-                "JOIN project_employees ON projects.project_id = project_employees.project_id " +
+        String sql = "SELECT Project.* FROM Project " +
+                "JOIN project_employees ON Project.project_id = project_employees.project_id " +
                 "WHERE project_employees.employee_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
     }

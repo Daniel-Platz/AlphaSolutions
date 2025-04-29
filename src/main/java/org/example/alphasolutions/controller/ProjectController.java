@@ -35,7 +35,7 @@ public class ProjectController {
             projects = projectService.findProjectsByEmployeeId(employeeId);
         }
 
-        model.addAttribute("projets", projects);
+        model.addAttribute("projects", projects);
         model.addAttribute("role",role);
 
         return "projects";
