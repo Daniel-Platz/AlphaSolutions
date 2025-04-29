@@ -19,7 +19,7 @@ public class EmployeeRepository {
 
     @Transactional
     public Employee findByEmailAndPassword (String email, String password) {
-        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM employee WHERE email = ? AND password = ?";
         return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Employee.class), email, password);
     }
 
