@@ -18,6 +18,11 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/login";
+    }
+
     @GetMapping("/login")
     public String showLoginPage() {
         return "login";
