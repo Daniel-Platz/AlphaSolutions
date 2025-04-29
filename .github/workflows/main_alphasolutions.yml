@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - AplhaSolutions
+name: Build and deploy JAR app to Azure Web App - AlphaSolutions
 
 on:
   push:
@@ -52,15 +52,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BB40111541994E5BA7566C13F74B1AD1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F272FB98D94B41BB92C8EB372E0BFC37 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_35EA40AFD2984C35A180558BD2C7A941 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7147B870889A47959A0E5E53275A1A6D }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_37CEEB1C549A48478606AEFC46507D5D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5C8146B4C5AE4C039DA89D23782D325C }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'AplhaSolutions'
+          app-name: 'AlphaSolutions'
           slot-name: 'Production'
           package: '*.jar'
           
