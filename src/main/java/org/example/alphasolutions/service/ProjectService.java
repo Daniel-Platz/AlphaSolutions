@@ -15,14 +15,11 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
-    public List<Project> findAllProjects(){
-        return ProjectRepository.findAllProjects();
+    public List<Project> findAllProjects() {
+        return projectRepository.findAllProjects();
     }
 
-    public List<Project> findProjectByEmployeeId(int employeeId){
-        return projectRepository.findProjectByEmployeeId(employeeId);
+    public List<Project> findProjectsByEmployeeId(Integer employeeId) {
+        return projectRepository.findProjectsByEmployeeId(employeeId);
     }
-
-
-
 }
