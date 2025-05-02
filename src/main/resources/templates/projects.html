@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Projects</title>
+</head>
+<body>
+<header>
+    <div class="logo">ALPHA SOLUTIONS</div>
+    <div class="user-info" th:if="${session.employee != null}">
+        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+        <span th:text="'(' + ${session.role} + ')'"></span>
+        <a href="/logout">Logout</a>
+    </div>
+</header>
+
+<main>
+    <h1>Projects</h1>
+
+    <!-- Add Project Button (only for ADMIN and PROJECT_MANAGER) -->
+    <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+        <a href="/projects/create" class="button">Add New Project</a>
+    </div>
+
+    <!-- Projects List -->
+    <div class="projects-list">
+        <table>
+            <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="project : ${projects}">
+                <td th:text="${project.projectName}"></td>
+                <td th:text="${project.projectStartDate != null ? #dates.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
+                <td th:text="${project.projectEndDate != null ? #dates.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
+                <td>
+                    <a th:href="@{/projects/{id}(id=${project.projectId})}" class="button">View</a>
+
+                    <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
+                    <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                                <a th:href="@{/projects/{id}/edit(id=${project.projectId})}" class="button">Edit</a>
+                                <a th:href="@{/projects/{id}/delete(id=${project.projectId})}" class="button"
+                                   onclick="return confirm('Are you sure you want to delete this project?')">Delete</a>
+                            </span>
+                </td>
+            </tr>
+            <tr th:if="${projects.empty}">
+                <td colspan="4">No projects found</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>
