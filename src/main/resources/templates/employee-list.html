@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Medarbejderoversigt</title>
+</head>
+<body>
+<div th:if="${session.role == 'ADMIN'}">
+<h1>Medarbejdere i systemet</h1>
+  <a href="/projects" class="button">Tilbage til projektoversigten</a>
+  <a href="/admin/employees/add" class="button">Tilbage til projektoversigten</a>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Fornavn</th>
+    <th>Efternavn</th>
+    <th>Email</th>
+    <th>Position</th>
+    <th>Handling</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="employee : ${employees}">
+    <td th:text="${employee.employeeId}"></td>
+    <td th:text="${employee.firstname}"></td>
+    <td th:text="${employee.lastname}"></td>
+    <td th:text="${employee.email}"></td>
+    <td th:text="${employee.role}"></td>
+    <td>
+      <form th:action="@{/admin/employees/delete}" method="post" th:object="${employee}" onsubmit="return confirm('Er du sikker på, at du vil slette [[${employee.firstname}]] [[${employee.lastname}]] fra systemet?');">
+        <input type="hidden" th:name="employeeId" th:value="${employee.employeeId}" />
+        <button type="submit">🗑️</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<a href="/projects" class="button">Tilbage til projektoversigten</a>
+</div>
+</body>
+</html>
