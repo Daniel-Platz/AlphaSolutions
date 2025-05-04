@@ -8,13 +8,15 @@ public class Employee {
     private String lastname;
     private String email;
     private Role role;
+    private String password;
 
-    public Employee(int employeeId, String firstname, String lastname, String email, Role employeerole) {
+    public Employee(int employeeId, String firstname, String lastname, String email, Role employeerole, String password) {
         this.employeeId = employeeId;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.role = employeerole;
+        this.password = password;
     }
 
     public Employee() {
@@ -63,6 +65,13 @@ public class Employee {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     //Methods
     //TODO

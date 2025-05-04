@@ -11,6 +11,9 @@
         <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
         <span th:text="'(' + ${session.role} + ')'"></span>
         <a href="/logout">Logout</a>
+        <div th:if="${role == 'ADMIN'}">
+            <a href="/admin/employees" class="button">Manage Employees</a>
+        </div>
     </div>
 </header>
 

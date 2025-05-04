@@ -27,4 +27,8 @@ public class EmployeeService {
         }
     }
 
+    public void addEmployee(Employee employee) {
+        employeeRepository.saveEmployee(employee);
+    }
+
 }

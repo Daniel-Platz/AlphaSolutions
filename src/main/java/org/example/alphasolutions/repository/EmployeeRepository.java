@@ -23,5 +23,15 @@ public class EmployeeRepository {
         return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Employee.class), email, password);
     }
 
+    public void saveEmployee(Employee employee) {
+        String sql = "INSERT INTO employee (firstname, lastname, email, role, password) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql,
+                employee.getFirstname(),
+                employee.getLastname(),
+                employee.getEmail(),
+                employee.getRole().name(),
+                employee.getPassword()
+        );
+    }
 
 }
