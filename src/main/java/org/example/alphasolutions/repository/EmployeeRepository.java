@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 
 public class EmployeeRepository {
@@ -34,4 +36,13 @@ public class EmployeeRepository {
         );
     }
 
+    public List<Employee> showAllEmployees() {
+        String sql = "SELECT * FROM employee";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Employee.class));
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        String sql = "UPDATE employee SET password = ? WHERE email = ?";
+        jdbcTemplate.update(sql, newPassword, email);
+    }
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 
 @Controller
 public class EmployeeController {
@@ -42,6 +44,10 @@ public class EmployeeController {
             session.setAttribute("employee", employeeLoggedIn);
             session.setAttribute("employeeId", employeeLoggedIn.getEmployeeId());
             session.setAttribute("role", employeeLoggedIn.getRole().toString());
+
+            if ("velkommen123".equals(employeeLoggedIn.getPassword())) {
+                session.setAttribute("forcePasswordChange", true);
+            }
 
             return "redirect:/projects";
         } catch (InvalidCredentialsException e) {
@@ -83,4 +89,46 @@ public class EmployeeController {
         return "redirect:/admin/employees";
     }
 
+    @GetMapping("/admin/employees/list")
+    public String showAllEmployees(Model model, HttpSession session) {
+        if (!"ADMIN".equals(session.getAttribute("role"))) {
+            return "redirect:/projects";
+        }
+
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("employees", allEmployees);
+        return "employee-list";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 HttpSession session,
+                                 Model model) {
+        Employee employee = (Employee) session.getAttribute("employee");
+
+        if (employee == null) {
+            return "redirect:/login";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Kodeordene matcher ikke.");
+            model.addAttribute("projects", List.of());  // tom liste for at undgå fejl
+            model.addAttribute("role", session.getAttribute("role"));
+            return "projects";
+        }
+
+        if (!employeeService.isValidPassword(newPassword)) {
+            model.addAttribute("error", "Kodeordet skal indeholde mindst ét stort bogstav og ét tal.");
+            model.addAttribute("projects", List.of());
+            model.addAttribute("role", session.getAttribute("role"));
+            return "projects";
+        }
+
+        employee.setPassword(newPassword);
+        employeeService.updatePassword(employee);
+        session.setAttribute("forcePasswordChange", false);
+
+        return "redirect:/projects";
+    }
 }

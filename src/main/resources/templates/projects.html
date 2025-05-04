@@ -13,11 +13,33 @@
         <a href="/logout">Logout</a>
         <div th:if="${role == 'ADMIN'}">
             <a href="/admin/employees" class="button">Manage Employees</a>
+            <a href="/admin/employees/list" class="button">View All Employees</a>
         </div>
     </div>
 </header>
 
 <main>
+    <div th:if="${session.forcePasswordChange}">
+        <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); z-index: 9999;">
+            <div style="background: white; width: 400px; margin: 10% auto; padding: 20px; border-radius: 10px;">
+                <h2>Skift kodeord</h2>
+                <p>Af sikkerhedshensyn skal du ændre dit kodeord.</p>
+
+                <form method="post" action="/change-password">
+                    <label for="newPassword">Nyt kodeord:</label><br>
+                    <input type="password" name="newPassword" id="newPassword" required><br><br>
+
+                    <label for="confirmPassword">Gentag kodeord:</label><br>
+                    <input type="password" name="confirmPassword" id="confirmPassword" required><br><br>
+
+                    <div th:if="${error}" style="color:red;" th:text="${error}"></div>
+
+                    <button type="submit">Skift kodeord</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <h1>Projects</h1>
 
     <!-- Add Project Button (only for ADMIN and PROJECT_MANAGER) -->
