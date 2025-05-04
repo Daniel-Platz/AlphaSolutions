@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Projects</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
 </head>
 <body>
-<header>
-    <div class="logo">ALPHA SOLUTIONS</div>
-    <div class="user-info" th:if="${session.employee != null}">
-        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-        <span th:text="'(' + ${session.role} + ')'"></span>
-        <a href="/logout">Logout</a>
-        <div th:if="${role == 'ADMIN'}">
-            <a href="/admin/employees" class="button">Manage Employees</a>
-            <a href="/admin/employees/list" class="button">View All Employees</a>
+<header class="header">
+    <a th:href="@{/projects}">
+        <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
+    </a>
+
+    <div class="header-right">
+        <div class="user-info" th:if="${session.employee != null}">
+            <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+            <span th:text="'(' + ${session.role} + ')'"></span>
+            <a href="/logout" class="logout-btn">Logout</a>
         </div>
+        <button class="circle-btn"></button>
     </div>
 </header>
+
 
 <main>
     <div th:if="${session.forcePasswordChange}">
@@ -41,6 +45,11 @@
     </div>
 
     <h1>Projects</h1>
+
+    <div th:if="${role == 'ADMIN'}">
+        <a href="/admin/employees" class="button">Manage Employees</a>
+        <a href="/admin/employees/list" class="button">View All Employees</a>
+    </div>
 
     <!-- Add Project Button (only for ADMIN and PROJECT_MANAGER) -->
     <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">

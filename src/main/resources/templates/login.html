@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Login Page</title>
+  <link rel="stylesheet" th:href="@{/css/header.css}">
 </head>
 <body>
 <header>
-  <div class="logo">ALPHA SOLUTIONS</div>
+  <a th:href="@{/login}">
+    <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
+  </a>
 </header>
 
 <main>
@@ -17,9 +20,10 @@
     <div class="error" th:if="${error}" th:text="${error}"></div>
 
     <form action="/login" method="post">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+      <label for="emailPrefix">Email:</label>
+      <div style="display: inline-flex; align-items: center;">
+        <input type="text" id="emailPrefix" name="emailPrefix" required style="width: 200px;">
+        <span>@alphasolutions.dk</span>
       </div>
 
       <div class="form-group">

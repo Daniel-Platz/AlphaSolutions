@@ -58,11 +58,14 @@ public class EmployeeService {
 
     public boolean isValidPassword(String password) {
         return password != null &&
-                password.matches(".*[A-Z].*") &&  // mindst ét stort bogstav
-                password.matches(".*\\d.*");     // mindst ét tal
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*\\d.*") &&
+                password.matches(".*[!@#$%^&*()_+=\\-{}\\[\\]:;\"'<>,.?/].*");
     }
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.showAllEmployees();
     }
+
+
 }

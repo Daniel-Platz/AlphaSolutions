@@ -3,37 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <title>Medarbejderoversigt</title>
+  <link rel="stylesheet" th:href="@{/css/employee-management.css}">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
 </head>
 <body>
-<div th:if="${session.role == 'ADMIN'}">
-<h1>Administrer medarbejdere</h1>
-<div th:if="${newPassword}">
-  <p style="color: green;">
-    Ny medarbejder oprettet med kodeordet: <strong th:text="${newPassword}"></strong>
-  </p>
-</div>
+<header class="header">
+  <a th:href="@{/projects}">
+    <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
+  </a>
 
-
-<form th:action="@{/admin/employees/add}" method="post">
-  <label>Fornavn: <input type="text" name="firstname" required></label><br>
-  <label>Efternavn: <input type="text" name="lastname" required></label><br>
-  <label>Email:
-    <div style="display: inline-flex; align-items: center;">
-      <input type="text" name="email" required style="width: 50px;">
-      <span>@alphasolutions.dk</span>
+  <div class="header-right">
+    <div class="user-info" th:if="${session.employee != null}">
+      <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+      <span th:text="'(' + ${session.role} + ')'"></span>
+      <a href="/logout" class="logout-btn">Logout</a>
     </div>
-  </label><br>
-  <label>Position:
-    <select name="role" required>
-      <option value="EMPLOYEE">Medarbejder</option>
-      <option value="PROJECT_MANAGER">Projekt Manager</option>
-      <option value="ADMIN">Admin</option>
-    </select>
-  </label><br>
-  <button type="submit">Tilføj til medarbejder til systemet</button>
-</form>
+    <button class="circle-btn"></button>
+  </div>
+</header>
 
-<a href="/projects">Back to Projects</a>
+
+<div th:if="${session.role == 'ADMIN'}">
+
+  <h1>Administrer medarbejdere</h1>
+  <div th:if="${newPassword}">
+    <p class="success-message">
+      Ny medarbejder oprettet med kodeordet: <strong th:text="${newPassword}"></strong>
+    </p>
+  </div>
+
+  <!-- Skjult checkbox til modal -->
+  <input type="checkbox" id="modalToggle" style="display:none;">
+
+  <!-- Åbn modal -->
+  <label for="modalToggle" class="open-button">Tilføj medarbejder</label>
+
+  <!-- Modal -->
+  <div class="modal">
+    <div class="modal-content">
+      <!-- Luk modal -->
+      <label for="modalToggle" class="close-button">&times;</label>
+      <h2>Tilføj medarbejder</h2>
+      <form th:action="@{/admin/employees/add}" method="post">
+        <label>Fornavn: <input type="text" name="firstname" required></label><br>
+        <label>Efternavn: <input type="text" name="lastname" required></label><br>
+        <label>Email:
+          <br><div class="email-input">
+            <input type="text" name="email" required>
+            <span>@alphasolutions.dk</span>
+          </div>
+        </label><br>
+        <label>Position:
+          <select name="role" required>
+            <option value="EMPLOYEE">Medarbejder</option>
+            <option value="PROJECT_MANAGER">Projekt Manager</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </label><br><br>
+        <button type="submit">Tilføj til systemet</button>
+      </form>
+    </div>
+  </div><br>
+
+  <a href="/projects">Back to Projects</a>
 </div>
 </body>
 </html>

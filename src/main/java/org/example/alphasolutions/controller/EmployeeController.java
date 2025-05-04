@@ -34,11 +34,12 @@ public class EmployeeController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email,
+    public String login(@RequestParam("emailPrefix") String emailPrefix,
                         @RequestParam String password,
                         Model model,
                         HttpSession session) {
         try {
+            String email = emailPrefix + "@alphasolutions.dk";
             Employee employeeLoggedIn = employeeService.findByEmailAndPassword(email, password);
 
             session.setAttribute("employee", employeeLoggedIn);
