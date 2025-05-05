@@ -1,10 +1,12 @@
 package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.enums.Role;
+import org.example.alphasolutions.exception.InvalidCredentialsException;
 import org.example.alphasolutions.model.Employee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -22,14 +24,23 @@ class EmployeeRepositoryTest {
     @Test
     public void testFindByEmailAndPasswordSuccess() {
         String email = "admin@alphasolutions.com";
-        String password ="123456";
+        String password = "123456";
 
-        Employee employee = employeeRepository.findByEmailAndPassword(email,password);
+        Employee employee = employeeRepository.findByEmailAndPassword(email, password);
 
         assertEquals(email, employee.getEmail());
         assertEquals("John", employee.getFirstname());
         assertEquals("Admin", employee.getLastname());
         assertEquals(Role.ADMIN, employee.getRole());
+    }
+
+    @Test
+    public void testFindByEmailAndPasswordWrongPassword() {
+        String email = "admin@alphasolutions.com";
+        String password = "wrong password";
+
+        assertThrows(EmptyResultDataAccessException.class, () -> employeeRepository.findByEmailAndPassword(email, password));
+
     }
 
 }
