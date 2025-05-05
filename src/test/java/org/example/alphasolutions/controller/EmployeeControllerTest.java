@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -71,6 +72,20 @@ class EmployeeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"))
                 .andExpect(model().attribute("error", "Forkert email eller adgangskode. Hvis du har glemt din adgangskode, kontakt venligst en administrator."));
+    }
+
+    @Test
+    void logoutInvalidatesSessionAndRedirectsToLogin() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", 1);
+        session.setAttribute("role", "EMPLOYEE");
+
+
+        mockMvc.perform(post("/logout")
+                        .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
     }
 
 }
