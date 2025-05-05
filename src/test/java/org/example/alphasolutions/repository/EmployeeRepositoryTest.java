@@ -1,7 +1,6 @@
 package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.enums.Role;
-import org.example.alphasolutions.exception.InvalidCredentialsException;
 import org.example.alphasolutions.model.Employee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +48,4 @@ class EmployeeRepositoryTest {
 
         assertThrows(EmptyResultDataAccessException.class, () -> employeeRepository.findByEmailAndPassword(email, password));
     }
-
 }
