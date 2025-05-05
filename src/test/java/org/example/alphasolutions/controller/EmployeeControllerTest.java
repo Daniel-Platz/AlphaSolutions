@@ -34,21 +34,21 @@ class EmployeeControllerTest {
     }
 
     @Test
-    public void homeRedirectsToLogin() throws Exception {
+    void homeRedirectsToLogin() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
 
     @Test
-    public void showLoginPageReturnsLoginView() throws Exception {
+    void showLoginPageReturnsLoginView() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"));
     }
 
     @Test
-    public void loginSuccessRedirectsToProjects() throws Exception {
+    void loginSuccessRedirectsToProjects() throws Exception {
         when(employeeService.findByEmailAndPassword("test@mail.com", "password")).thenReturn(employee);
 
         mockMvc.perform(post("/login")
@@ -62,7 +62,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    public void loginFailureReturnsLoginViewWithError() throws Exception {
+    void loginFailureReturnsLoginViewWithError() throws Exception {
         when(employeeService.findByEmailAndPassword("test@mail.com", "wrongpassword"))
                 .thenThrow(new InvalidCredentialsException());
 
@@ -87,5 +87,4 @@ class EmployeeControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
-
 }
