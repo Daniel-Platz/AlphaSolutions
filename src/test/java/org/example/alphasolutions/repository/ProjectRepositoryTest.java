@@ -48,4 +48,17 @@ class ProjectRepositoryTest {
 
     }
 
+    @Test
+    public void testFindProjectsByEmployeeId() {
+
+        Integer employeeId = 2; // Employee 2 (Sara Manager) is assigned to projects 1 and 3
+
+
+        List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
+
+
+        assertNotNull(projects, "Projects list should not be null");
+        assertEquals(2, projects.size(), "Employee 2 should be assigned to 2 projects");
+
+    }
 }
