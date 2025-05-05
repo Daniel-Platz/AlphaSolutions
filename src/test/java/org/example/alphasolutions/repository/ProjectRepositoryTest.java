@@ -1,5 +1,6 @@
 package org.example.alphasolutions.repository;
 
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.Project;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,11 @@ class ProjectRepositoryTest {
         assertFalse(projects.isEmpty());
 
         Project firstProject = projects.getFirst();
-        assertEquals(1,firstProject.getProjectId());
-        assertEquals("ERP System", firstProject.getProjectName());
+        assertEquals(1, firstProject.getProjectId(), "First project should have ID 1");
+        assertEquals("ERP System", firstProject.getProjectName(), "First project should be ERP System");
+        assertEquals("Enterprise Resource Planning System Development", firstProject.getProjectDescription(), "Description should match");
+        assertEquals(ProjectStatus.ACTIVE, firstProject.getProjectStatus(), "Status should be ACTIVE");
+        assertEquals(2000, firstProject.getProjectEstimatedHours(), "Estimated hours should be 2000");
 
     }
 
