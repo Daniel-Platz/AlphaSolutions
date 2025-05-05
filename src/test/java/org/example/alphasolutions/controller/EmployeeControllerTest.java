@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,21 +34,21 @@ class EmployeeControllerTest {
     }
 
     @Test
-    public void homeRedirectsToLogin() throws Exception {
+    void homeRedirectsToLogin() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
 
     @Test
-    public void showLoginPageReturnsLoginView() throws Exception {
+    void showLoginPageReturnsLoginView() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"));
     }
 
     @Test
-    public void loginSuccessRedirectsToProjects() throws Exception {
+    void loginSuccessRedirectsToProjects() throws Exception {
         when(employeeService.findByEmailAndPassword("test@mail.com", "password")).thenReturn(employee);
 
         mockMvc.perform(post("/login")
@@ -61,7 +62,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    public void loginFailureReturnsLoginViewWithError() throws Exception {
+    void loginFailureReturnsLoginViewWithError() throws Exception {
         when(employeeService.findByEmailAndPassword("test@mail.com", "wrongpassword"))
                 .thenThrow(new InvalidCredentialsException());
 
@@ -73,4 +74,17 @@ class EmployeeControllerTest {
                 .andExpect(model().attribute("error", "Forkert email eller adgangskode. Hvis du har glemt din adgangskode, kontakt venligst en administrator."));
     }
 
+    @Test
+    void logoutInvalidatesSessionAndRedirectsToLogin() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", 1);
+        session.setAttribute("role", "EMPLOYEE");
+
+
+        mockMvc.perform(post("/logout")
+                        .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
 }

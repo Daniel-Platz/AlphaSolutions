@@ -46,4 +46,10 @@ public class EmployeeController {
             return "login";
         }
     }
+    //TODO Implement enhance logout method
+    @PostMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/login";
+    }
 }

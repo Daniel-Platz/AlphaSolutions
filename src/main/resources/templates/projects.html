@@ -10,7 +10,9 @@
     <div class="user-info" th:if="${session.employee != null}">
         <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
         <span th:text="'(' + ${session.role} + ')'"></span>
-        <a href="/logout">Logout</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
     </div>
 </header>
 
