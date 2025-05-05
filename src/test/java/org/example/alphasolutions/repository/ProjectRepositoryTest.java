@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +50,7 @@ class ProjectRepositoryTest {
     @Test
     public void testFindProjectsByEmployeeId() {
 
-        Integer employeeId = 2; // Employee 2 (Sara Manager) is assigned to projects 1 and 3
+        int employeeId = 2; // Employee 2 is assigned to projects 1 and 3
 
 
         List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);
@@ -60,5 +59,16 @@ class ProjectRepositoryTest {
         assertNotNull(projects, "Projects list should not be null");
         assertEquals(2, projects.size(), "Employee 2 should be assigned to 2 projects");
 
+    }
+
+    @Test
+    public void testFindProjectsByEmployeeIdWithNoProjects() {
+        int nonExistingEmployeeId = 999;
+
+        List<Project> projects = projectRepository.findProjectsByEmployeeId(nonExistingEmployeeId);
+
+        assertNotNull(projects, "Projects list should not be null");
+        assertEquals(0, projects.size(), "Non-existent employee should have no projects");
+        assertTrue(projects.isEmpty(), "Projects list should be empty");
     }
 }
