@@ -16,6 +16,10 @@ public class EmployeeService {
     }
 
     public Employee findByEmailAndPassword(String email, String password) {
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            throw  new InvalidCredentialsException();
+        }
+
         try {
             return employeeRepository.findByEmailAndPassword(email, password);
         } catch (EmptyResultDataAccessException e) {
