@@ -40,7 +40,14 @@ class EmployeeRepositoryTest {
         String password = "wrong password";
 
         assertThrows(EmptyResultDataAccessException.class, () -> employeeRepository.findByEmailAndPassword(email, password));
+    }
 
+    @Test
+    public void testFindByEmailAndPasswordNonExistingUser() {
+        String email = "nobody@alphasolutions.com";
+        String password = "123456";
+
+        assertThrows(EmptyResultDataAccessException.class, () -> employeeRepository.findByEmailAndPassword(email, password));
     }
 
 }
