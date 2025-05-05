@@ -1,6 +1,7 @@
 package org.example.alphasolutions.controller;
 
 import org.example.alphasolutions.enums.Role;
+import org.example.alphasolutions.exception.InvalidCredentialsException;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +58,19 @@ class EmployeeControllerTest {
                 .andExpect(request().sessionAttribute("employee", employee))
                 .andExpect(request().sessionAttribute("employeeId", 1))
                 .andExpect(request().sessionAttribute("role", "EMPLOYEE"));
+    }
+
+    @Test
+    public void loginFailureReturnsLoginViewWithError() throws Exception {
+        when(employeeService.findByEmailAndPassword("test@mail.com", "wrongpassword"))
+                .thenThrow(new InvalidCredentialsException());
+
+        mockMvc.perform(post("/login")
+                        .param("email", "test@mail.com")
+                        .param("password", "wrongpassword"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attribute("error", "Forkert email eller adgangskode. Hvis du har glemt din adgangskode, kontakt venligst en administrator."));
     }
 
 }
