@@ -27,4 +27,16 @@ public class ProjectRepository {
                 "WHERE project_employee.employee_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
     }
+
+    public void addProjectToDB(Project newProjectToAdd) {
+        String sql = "INSERT INTO project (project_name, project_description, project_start_date, project_end_date, project_estimated_hours, project_status)" +
+                " VALUES (?,?,?,?,?,?)";
+        jdbcTemplate.update(sql,
+                newProjectToAdd.getProjectName(),
+                newProjectToAdd.getProjectDescription(),
+                newProjectToAdd.getProjectStartDate(),
+                newProjectToAdd.getProjectEndDate(),
+                newProjectToAdd.getProjectEstimatedHours(),
+                newProjectToAdd.getProjectStatus());
+    }
 }
