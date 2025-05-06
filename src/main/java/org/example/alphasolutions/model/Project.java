@@ -17,6 +17,7 @@ public class Project {
     private ProjectStatus projectStatus;
     private List<SubProject> subProjects;
     private List<Employee> projectAssignedEmployees;
+    private Employee projectLeader;
 
     public Project(int projectId, String projectName, String projectDescription, LocalDate projectStartDate, LocalDate projectEndDate, int projectEstimatedHours, ProjectStatus projectStatus, List<SubProject> subProjects, List<Employee> projectAssignedEmployees) {
         this.projectId = projectId;
@@ -107,6 +108,16 @@ public class Project {
     public void setProjectAssignedEmployees(List<Employee> projectAssignedEmployees) {
         this.projectAssignedEmployees = projectAssignedEmployees;
     }
+
+    public Employee getProjectLeader() {
+        return projectLeader;
+    }
+
+    public void setProjectLeader(Employee projectLeader) {
+        this.projectLeader = projectLeader;
+    }
+
+
 
 
     //Methods
