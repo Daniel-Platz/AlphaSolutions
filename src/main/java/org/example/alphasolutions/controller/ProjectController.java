@@ -23,29 +23,29 @@ public class ProjectController {
 
     @GetMapping("/projects")
     public String showProjects(Model model, HttpSession session) {
-        if (session.getAttribute("employee")==null) {
+        if (session.getAttribute("employee") == null) {
             return "redirect:/login";
         }
 
         String role = (String) session.getAttribute("role");
-        Integer employeeId=(Integer) session.getAttribute("employeeId");
+        Integer employeeId = (Integer) session.getAttribute("employeeId");
 
         List<Project> projects;
 
-        if (role.equals("ADMIN")|| role.equals("PROJECT_MANAGER")) {
-            projects=projectService.findAllProjects();
+        if (role.equals("ADMIN") || role.equals("PROJECT_MANAGER")) {
+            projects = projectService.findAllProjects();
         } else {
             projects = projectService.findProjectsByEmployeeId(employeeId);
         }
 
         model.addAttribute("projects", projects);
-        model.addAttribute("role",role);
+        model.addAttribute("role", role);
 
         return "projects";
     }
 
     @GetMapping("/projects/addProject")
-    public String addProjectToDatabase(Model model){
+    public String addProjectToDatabase(Model model) {
         Project newProject = new Project();
 
         model.addAttribute("newProject", newProject);
@@ -53,8 +53,8 @@ public class ProjectController {
     }
 
     @PostMapping("/projects/saveProject")
-    public String saveProjectToDatabase(@ModelAttribute Project newProject,
-                                        @RequestParam(value = "projectName") String projectName){
-
+    public String saveProjectToDatabase(@ModelAttribute("newProject") Project newProject) {
+        projectService.addProjectToDB(newProject);
+        return "redirect:/projects";
     }
 }
