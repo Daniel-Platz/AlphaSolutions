@@ -6,12 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootTest
@@ -70,5 +73,32 @@ class ProjectRepositoryTest {
         assertNotNull(projects, "Projects list should not be null");
         assertEquals(0, projects.size(), "Non-existent employee should have no projects");
         assertTrue(projects.isEmpty(), "Projects list should be empty");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testAddProjectToDB(){
+        Project projectToAdd = new Project();
+        projectToAdd.setProjectName("Danske Bank ATMs");
+        projectToAdd.setProjectDescription("Create a new software for Danske Banks ATMs");
+        projectToAdd.setProjectStartDate(LocalDate.now());
+        projectToAdd.setProjectEndDate(LocalDate.of(2026, 10,1));
+        projectToAdd.setProjectEstimatedHours(200);
+        projectToAdd.setProjectStatus(ProjectStatus.ACTIVE);
+
+        projectRepository.addProjectToDB(projectToAdd);
+
+
+        List<Project> projects = projectRepository.findAllProjects();
+
+        Project newestAddedProject = projects.getLast();
+        assertEquals(4, newestAddedProject.getProjectId(), "First project should have id of 1");
+        assertEquals(projectToAdd.getProjectName(), newestAddedProject.getProjectName(), "Name of both objects should be the same");
+        assertEquals(projectToAdd.getProjectDescription(), newestAddedProject.getProjectDescription(), "Description of both objects should be the same");
+        assertEquals(projectToAdd.getProjectStartDate(), newestAddedProject.getProjectStartDate(), "Start date for both objects should be the same");
+        assertEquals(projectToAdd.getProjectEndDate(), newestAddedProject.getProjectEndDate(), "End date for both objects should be the same");
+        assertEquals(projectToAdd.getProjectEstimatedHours(), newestAddedProject.getProjectEstimatedHours(), "Estimated hours for both objects should be equal");
+        assertEquals(projectToAdd.getProjectStatus(), newestAddedProject.getProjectStatus(), "Status for both objects should be the same");
     }
 }

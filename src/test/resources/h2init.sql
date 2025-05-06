@@ -108,11 +108,11 @@ VALUES (1, 1),
        (6, 1),
        (6, 5);
 
-INSERT INTO Project (project_id, project_name, project_description, project_start_date, project_end_date,
+INSERT INTO Project (project_name, project_description, project_start_date, project_end_date,
                      project_estimated_hours, project_status)
-VALUES (1, 'ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE'),
-       (2, 'Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING'),
-       (3, 'Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED');
+VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE'),
+       ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING'),
+       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED');
 
 INSERT INTO Project_Employee (employee_id, project_id)
 VALUES (1, 1),

@@ -2,6 +2,7 @@ package org.example.alphasolutions.model;
 
 import org.example.alphasolutions.enums.ProjectStatus;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,14 +11,16 @@ public class Project {
     private int projectId;
     private String projectName;
     private String projectDescription;
-    private Date projectStartDate;
-    private Date projectEndDate;
+    private LocalDate projectStartDate;
+    private LocalDate projectEndDate;
     private int projectEstimatedHours;
     private ProjectStatus projectStatus;
     private List<SubProject> subProjects;
     private List<Employee> projectAssignedEmployees;
+    private Integer projectManagerId;
+    private Employee projectManager;
 
-    public Project(int projectId, String projectName, String projectDescription, Date projectStartDate, Date projectEndDate, int projectEstimatedHours, ProjectStatus projectStatus, List<SubProject> subProjects, List<Employee> projectAssignedEmployees) {
+    public Project(int projectId, String projectName, String projectDescription, LocalDate projectStartDate, LocalDate projectEndDate, int projectEstimatedHours, ProjectStatus projectStatus, List<SubProject> subProjects, List<Employee> projectAssignedEmployees) {
         this.projectId = projectId;
         this.projectName = projectName;
         this.projectDescription = projectDescription;
@@ -59,19 +62,19 @@ public class Project {
         this.projectDescription = projectDescription;
     }
 
-    public Date getProjectStartDate() {
+    public LocalDate getProjectStartDate() {
         return projectStartDate;
     }
 
-    public void setProjectStartDate(Date projectStartDate) {
+    public void setProjectStartDate(LocalDate projectStartDate) {
         this.projectStartDate = projectStartDate;
     }
 
-    public Date getProjectEndDate() {
+    public LocalDate getProjectEndDate() {
         return projectEndDate;
     }
 
-    public void setProjectEndDate(Date projectEndDate) {
+    public void setProjectEndDate(LocalDate projectEndDate) {
         this.projectEndDate = projectEndDate;
     }
 
@@ -106,6 +109,24 @@ public class Project {
     public void setProjectAssignedEmployees(List<Employee> projectAssignedEmployees) {
         this.projectAssignedEmployees = projectAssignedEmployees;
     }
+
+    public Integer getProjectManagerId() {
+        return projectManagerId;
+    }
+
+    public void setProjectManagerId(Integer projectManagerId) {
+        this.projectManagerId = projectManagerId;
+    }
+
+    public void setProjectManager(Employee projectManager) {
+        this.projectManager = projectManager;
+    }
+
+    public Employee getProjectManager(){
+        return projectManager;
+    }
+
+
 
 
     //Methods
