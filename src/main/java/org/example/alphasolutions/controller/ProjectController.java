@@ -1,6 +1,7 @@
 package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.service.ProjectService;
@@ -50,7 +51,7 @@ public class ProjectController {
         Project newProject = new Project();
 
         model.addAttribute("newProject", newProject);
-        model.addAttribute("statuses", TaskStatus.values());
+        model.addAttribute("statuses", ProjectStatus.values());
         return "addProject";
     }
 
