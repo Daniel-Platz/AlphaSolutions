@@ -23,8 +23,8 @@ public class ProjectRepository {
 
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
         String sql = "SELECT Project.* FROM Project " +
-                "JOIN project_employees ON Project.project_id = project_employees.project_id " +
-                "WHERE project_employees.employee_id = ?";
+                "JOIN project_employee ON Project.project_id = project_employee.project_id " +
+                "WHERE project_employee.employee_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
     }
 }
