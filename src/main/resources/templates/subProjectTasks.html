@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Management</title>
+</head>
+<body>
+<header>
+  <div>ALPHA SOLUTIONS</div>
+  <div th:if="${session.employee != null}">
+    <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+    <span th:text="'(' + ${session.role} + ')'"></span>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit">Logout</button>
+    </form>
+  </div>
+</header>
+
+<main>
+  <h1>Tasks for Sub-Project</h1>
+
+  <!-- Add Task Button (only for certain roles) -->
+  <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+    <a th:href="@{/subprojects/{id}/tasks/create(id=${subProjectId})}">Add New Task</a>
+  </div>
+
+  <!-- Tasks List -->
+  <div>
+    <table>
+      <thead>
+      <tr>
+        <th>Task Name</th>
+        <th>Status</th>
+        <th>Deadline</th>
+        <th>Assigned To</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="task : ${tasks}">
+        <td th:text="${task.taskName}"></td>
+        <td th:text="${task.status}"></td>
+        <td th:text="${task.deadline != null ? #temporals.format(task.deadline, 'yyyy-MM-dd') : ''}"></td>
+        <td th:text="${task.assignedEmployee != null ? task.assignedEmployee.firstname + ' ' + task.assignedEmployee.lastname : 'Unassigned'}"></td>
+        <td>
+          <a th:href="@{/tasks/{id}(id=${task.taskId})}">View</a>
+
+          <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
+          <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                                <a th:href="@{/tasks/{id}/edit(id=${task.taskId})}">Edit</a>
+                                <a th:href="@{/tasks/{id}/delete(id=${task.taskId})}"
+                                   onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
+                            </span>
+        </td>
+      </tr>
+      <tr th:if="${tasks.empty}">
+        <td colspan="5">No tasks found</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Back button -->
+  <div>
+    <a th:href="@{/projects}">Back to Projects</a>
+  </div>
+</main>
+</body>
+</html>
