@@ -23,7 +23,7 @@ public class SubProjectController {
         return session.getAttribute("employee") != null;
     }
 
-    @GetMapping
+    @GetMapping("/subprojects/{subProjectId}/tasks")
     public String showTasks (@PathVariable int subProjectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
