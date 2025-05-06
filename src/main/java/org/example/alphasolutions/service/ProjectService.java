@@ -22,4 +22,8 @@ public class ProjectService {
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
         return projectRepository.findProjectsByEmployeeId(employeeId);
     }
+
+    public void addProjectToDB(Project newProjectToAdd){
+        projectRepository.addProjectToDB(newProjectToAdd);
+    }
 }

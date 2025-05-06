@@ -6,6 +6,9 @@ import org.example.alphasolutions.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -39,5 +42,19 @@ public class ProjectController {
         model.addAttribute("role",role);
 
         return "projects";
+    }
+
+    @GetMapping("/projects/addProject")
+    public String addProjectToDatabase(Model model){
+        Project newProject = new Project();
+
+        model.addAttribute("newProject", newProject);
+        return "addProject";
+    }
+
+    @PostMapping("/projects/saveProject")
+    public String saveProjectToDatabase(@ModelAttribute Project newProject,
+                                        @RequestParam(value = "projectName") String projectName){
+
     }
 }
