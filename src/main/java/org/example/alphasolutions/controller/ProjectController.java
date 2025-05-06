@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.service.EmployeeService;
 import org.example.alphasolutions.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +19,11 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final EmployeeService employeeService;
 
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, EmployeeService employeeService) {
         this.projectService = projectService;
+        this.employeeService = employeeService;
     }
 
     @GetMapping("/projects")
@@ -52,12 +55,17 @@ public class ProjectController {
 
         model.addAttribute("newProject", newProject);
         model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("managers", employeeService.gerAllManagers());
         return "addProject";
     }
 
     @PostMapping("/projects/saveProject")
     public String saveProjectToDatabase(@ModelAttribute("newProject") Project newProject) {
-        projectService.addProjectToDB(newProject);
+        int projectId = projectService.addProjectToDB(newProject);
+        int managerId = newProject.getProjectManagerId();
+
+        projectService.assignEmployeeToProject(managerId, projectId);
+
         return "redirect:/projects";
     }
 }

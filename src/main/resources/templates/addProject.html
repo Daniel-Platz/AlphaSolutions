@@ -23,6 +23,16 @@
     <form th:action="@{/projects/saveProject}" th:object="${newProject}" method="post">
         <ul>
             <li>
+                <label for="projectManagerId">Project Manager</label>
+                <select id="projectManagerId" th:field="*{projectManagerId}">
+                    <option value="" disabled selected>Select a manager</option>
+                    <option th:each="manager : ${managers}"
+                            th:value="${manager.employeeId}"
+                            th:text="${manager.firstname + ' ' + manager.lastname}">
+                    </option>
+                </select>
+            </li>
+            <li>
                 <label for="projectName">Name:</label>
                 <input type="text" id="projectName" th:field="*{projectName}" required/>
             </li>

@@ -6,6 +6,8 @@ import org.example.alphasolutions.repository.EmployeeRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 
 public class EmployeeService {
@@ -25,6 +27,10 @@ public class EmployeeService {
         } catch (EmptyResultDataAccessException e) {
             throw new InvalidCredentialsException();
         }
+    }
+
+    public List<Employee> gerAllManagers(){
+        return employeeRepository.getallManagers();
     }
 
 }

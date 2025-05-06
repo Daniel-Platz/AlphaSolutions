@@ -23,7 +23,11 @@ public class ProjectService {
         return projectRepository.findProjectsByEmployeeId(employeeId);
     }
 
-    public void addProjectToDB(Project newProjectToAdd){
-        projectRepository.addProjectToDB(newProjectToAdd);
+    public int addProjectToDB(Project newProjectToAdd){
+        return projectRepository.addProjectToDB(newProjectToAdd);
+    }
+
+    public void assignEmployeeToProject(int employeeId, int projectId){
+        projectRepository.assignEmployeeToProject(employeeId, projectId);
     }
 }
