@@ -37,6 +37,6 @@ public class ProjectRepository {
                 newProjectToAdd.getProjectStartDate(),
                 newProjectToAdd.getProjectEndDate(),
                 newProjectToAdd.getProjectEstimatedHours(),
-                newProjectToAdd.getProjectStatus());
+                newProjectToAdd.getProjectStatus().name());
     }
 }
