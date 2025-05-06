@@ -13,34 +13,47 @@
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-danger">Logout</button>
         </form>
+        <a href="/projects" class="btn btn-danger" style="margin-left: 10px;">Back</a>
     </div>
 </header>
 
 <main>
+    <h1>Add Project</h1>
+
     <form th:action="@{/projects/saveProject}" th:object="${newProject}" method="post">
-        <label for="projectName">Name:</label>
-        <input type="text" id="projectName" th:field="*{projectName}" required />
-
-        <label for="projectDescription">Description:</label>
-        <input type="text" id="projectDescription" th:field="*{projectDescription}" required />
-
-        <label for="projectStartDate">Start Date:</label>
-        <input type="date" id="projectStartDate" th:field="*{projectStartDate}" required />
-
-        <label for="projectEndDate">End Date:</label>
-        <input type="date" id="projectEndDate" th:field="*{projectEndDate}" required />
-
-        <label for="projectEstimatedHours">Estimated Hours:</label>
-        <input type="number" id="projectEstimatedHours" th:field="*{projectEstimatedHours}" required />
-
-        <label for="projectStatus">Status:</label>
-        <select id="projectStatus" th:field="*{projectStatus}">
-            <option th:each="status : ${statuses}"
-                    th:value="${status}"
-                    th:text="${status}"></option>
-        </select>
-
-        <button type="submit">Submit</button>
+        <ul>
+            <li>
+                <label for="projectName">Name:</label>
+                <input type="text" id="projectName" th:field="*{projectName}" required/>
+            </li>
+            <li>
+                <label for="projectDescription">Description:</label>
+                <input type="text" id="projectDescription" th:field="*{projectDescription}" required/>
+            </li>
+            <li>
+                <label for="projectStartDate">Start Date:</label>
+                <input type="date" id="projectStartDate" th:field="*{projectStartDate}" required/>
+            </li>
+            <li>
+                <label for="projectEndDate">End Date:</label>
+                <input type="date" id="projectEndDate" th:field="*{projectEndDate}" required/>
+            </li>
+            <li>
+                <label for="projectEstimatedHours">Estimated Hours:</label>
+                <input type="number" id="projectEstimatedHours" th:field="*{projectEstimatedHours}" required/>
+            </li>
+            <li>
+                <label for="projectStatus">Status:</label>
+                <select id="projectStatus" th:field="*{projectStatus}">
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}"></option>
+                </select>
+            </li>
+            <li>
+                <button type="submit">Submit</button>
+            </li>
+        </ul>
     </form>
 </main>
 </body>
