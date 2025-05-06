@@ -19,7 +19,7 @@ public class ProjectService {
         return projectRepository.findAllProjects();
     }
 
-    public List<Project> findProjectsByEmployeeId(Integer employeeId) {
+    public List<Project> findProjectsByEmployeeId(int employeeId) {
         return projectRepository.findProjectsByEmployeeId(employeeId);
     }
 }
