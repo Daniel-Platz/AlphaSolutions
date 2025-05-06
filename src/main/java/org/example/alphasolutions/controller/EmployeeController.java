@@ -94,16 +94,15 @@ public class EmployeeController {
         return "redirect:/admin/employees";
     }
 
-//    @GetMapping("/admin/employees")
-//    public String showAllEmployees(Model model, HttpSession session) {
-//        if (!"ADMIN".equals(session.getAttribute("role"))) {
-//            return "redirect:/projects";
-//        }
-//
-//        List<Employee> allEmployees = employeeService.getAllEmployees();
-//        model.addAttribute("employees", allEmployees);
-//        return "employee-management";
-//    }
+    @PostMapping("/admin/employees/delete")
+    public String deleteEmployee(@RequestParam int employeeId, HttpSession session) {
+        if (!"ADMIN".equals(session.getAttribute("role"))) {
+            return "redirect:/projects";
+        }
+
+        employeeService.deleteEmployeeById(employeeId);
+        return "redirect:/admin/employees";
+    }
 
     @PostMapping("/change-password")
     public String changePassword(@RequestParam String newPassword,

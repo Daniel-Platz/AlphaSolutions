@@ -37,6 +37,12 @@ public class EmployeeRepository {
         );
     }
 
+    public void deleteEmployeeById(int employeeId) {
+        String sql = "DELETE FROM employee WHERE employee_id = ?";
+        jdbcTemplate.update(sql, employeeId);
+    }
+
+
     public List<Employee> showAllEmployees() {
         String sql = "SELECT * FROM employee";
         return jdbcTemplate.query(sql, new EmployeeRowMapper());

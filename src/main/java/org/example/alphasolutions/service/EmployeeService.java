@@ -36,6 +36,10 @@ public class EmployeeService {
         employeeRepository.saveEmployee(employee);
     }
 
+    public void deleteEmployeeById(int employeeId) {
+        employeeRepository.deleteEmployeeById(employeeId);
+    }
+
     private String capitalize(String name) {
         if (name == null || name.isBlank()) {
             return name;
