@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -123,5 +124,27 @@ class ProjectControllerTest {
                 .andExpect(view().name("projects"))
                 .andExpect(model().attribute("projects", employeeProjects))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
+    }
+
+    @Test
+    void showAddProjectForm_ShouldReturnAddProjectView_WithModelAttributes() throws Exception {
+        mockMvc.perform(get("/projects/addProject"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addProject"))
+                .andExpect(model().attributeExists("newProject"))
+                .andExpect(model().attributeExists("statuses"));
+    }
+
+    @Test
+    void saveProject_ShouldRedirectToProjects() throws Exception {
+        mockMvc.perform(post("/projects/saveProject")
+                .param("projectName", "Test Project")
+                .param("projectDescription", "This is a test project")
+                .param("projectStartDate", "2025-01-01")
+                .param("projectEndDate", "2025-12-31")
+                .param("projectEstimatedHours", "200")
+                .param("projectStatus", "ACTIVE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
     }
 }
