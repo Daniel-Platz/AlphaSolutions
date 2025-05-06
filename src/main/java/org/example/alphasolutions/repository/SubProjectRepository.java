@@ -2,8 +2,11 @@ package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.Task;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class SubProjectRepository {
@@ -13,16 +16,11 @@ public class SubProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void addTask(Task newTask) {
+    public List<Task> findTasksBySubProjectId(int subProjectId) {
+        String sql = "SELECT * FROM TASK WHERE SUB_PROJECT_ID = ?";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Task.class), subProjectId);
     }
 
-    public void removeTask(int taskId) {
-
-    }
-
-    public void getTask(int taskId) {
-
-    }
 
     public void calculateSubProjectTotalHours() {
 
