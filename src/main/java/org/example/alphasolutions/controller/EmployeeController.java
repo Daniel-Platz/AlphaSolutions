@@ -58,10 +58,14 @@ public class EmployeeController {
     }
 
     @GetMapping("/admin/employees")
-    public String showEmployeeManagement(HttpSession session) {
+    public String showEmployeeManagement(Model model, HttpSession session) {
         if (!"ADMIN".equals(session.getAttribute("role"))) {
             return "redirect:/projects";
         }
+
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        model.addAttribute("employees", allEmployees);
+
         return "employee-management";
     }
 
@@ -90,16 +94,16 @@ public class EmployeeController {
         return "redirect:/admin/employees";
     }
 
-    @GetMapping("/admin/employees/list")
-    public String showAllEmployees(Model model, HttpSession session) {
-        if (!"ADMIN".equals(session.getAttribute("role"))) {
-            return "redirect:/projects";
-        }
-
-        List<Employee> allEmployees = employeeService.getAllEmployees();
-        model.addAttribute("employees", allEmployees);
-        return "employee-list";
-    }
+//    @GetMapping("/admin/employees")
+//    public String showAllEmployees(Model model, HttpSession session) {
+//        if (!"ADMIN".equals(session.getAttribute("role"))) {
+//            return "redirect:/projects";
+//        }
+//
+//        List<Employee> allEmployees = employeeService.getAllEmployees();
+//        model.addAttribute("employees", allEmployees);
+//        return "employee-management";
+//    }
 
     @PostMapping("/change-password")
     public String changePassword(@RequestParam String newPassword,

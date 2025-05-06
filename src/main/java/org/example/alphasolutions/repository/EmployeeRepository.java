@@ -1,6 +1,7 @@
 package org.example.alphasolutions.repository;
 
 
+import org.example.alphasolutions.RowMapper.EmployeeRowMapper;
 import org.example.alphasolutions.model.Employee;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,7 +39,7 @@ public class EmployeeRepository {
 
     public List<Employee> showAllEmployees() {
         String sql = "SELECT * FROM employee";
-        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Employee.class));
+        return jdbcTemplate.query(sql, new EmployeeRowMapper());
     }
 
     public void updatePassword(String email, String newPassword) {
