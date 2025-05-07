@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Project</title>
+</head>
+<body>
+<header>
+    <div class="logo">ALPHA SOLUTIONS</div>
+    <div class="user-info" th:if="${session.employee != null}">
+        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+        <span th:text="'(' + ${session.role} + ')'"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+        <a href="/projects" class="btn btn-danger" style="margin-left: 10px;">Back</a>
+    </div>
+</header>
+
+<main>
+    <h1>Edit Project</h1>
+</main>
+</body>
+</html>
