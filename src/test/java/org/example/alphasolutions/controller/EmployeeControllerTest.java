@@ -216,4 +216,116 @@ class EmployeeControllerTest {
                 .andExpect(view().name("projects"))
                 .andExpect(model().attributeExists("error"));
     }
+
+    @Test
+    void updateEmployeeAsAdminWithPasswordUpdatesAndRedirects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "ADMIN");
+
+        mockMvc.perform(post("/admin/employees/update")
+                        .session(session)
+                        .param("employeeId", "1")
+                        .param("firstname", "Updated")
+                        .param("lastname", "User")
+                        .param("password", "NewPassword1!")
+                        .param("role", "EMPLOYEE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/employees"));
+    }
+
+    @Test
+    void updateEmployeeAsAdminWithoutPasswordKeepsOldPassword() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "ADMIN");
+
+        when(employeeService.getAllEmployees()).thenReturn(List.of(employee));
+
+        mockMvc.perform(post("/admin/employees/update")
+                        .session(session)
+                        .param("employeeId", "1")
+                        .param("firstname", "Updated")
+                        .param("lastname", "User")
+                        .param("role", "EMPLOYEE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/employees"));
+    }
+
+    @Test
+    void updateEmployeeAsNonAdminRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "EMPLOYEE");
+
+        mockMvc.perform(post("/admin/employees/update")
+                        .session(session)
+                        .param("employeeId", "1")
+                        .param("firstname", "Updated")
+                        .param("lastname", "User")
+                        .param("role", "EMPLOYEE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void updatePasswordSuccessUpdatesAndShowsSuccessMessage() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+
+        when(employeeService.isValidPassword("NewPassword1!")).thenReturn(true);
+
+        mockMvc.perform(post("/employee-profile/change-password")
+                        .session(session)
+                        .param("currentPassword", "testingPassword")
+                        .param("newPassword", "NewPassword1!")
+                        .param("confirmPassword", "NewPassword1!"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user-profile"))
+                .andExpect(model().attributeExists("success"));
+    }
+
+    @Test
+    void updatePasswordFailsWhenCurrentPasswordIsWrong() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+
+        mockMvc.perform(post("/employee-profile/change-password")
+                        .session(session)
+                        .param("currentPassword", "wrongPassword")
+                        .param("newPassword", "NewPassword1!")
+                        .param("confirmPassword", "NewPassword1!"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user-profile"))
+                .andExpect(model().attribute("error", "Nuværende kodeord er forkert."));
+    }
+
+    @Test
+    void updatePasswordFailsWhenPasswordsDoNotMatch() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+
+        mockMvc.perform(post("/employee-profile/change-password")
+                        .session(session)
+                        .param("currentPassword", "testingPassword")
+                        .param("newPassword", "NewPassword1!")
+                        .param("confirmPassword", "DifferentPassword"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user-profile"))
+                .andExpect(model().attribute("error", "Kodeordene matcher ikke."));
+    }
+
+    @Test
+    void updatePasswordFailsWhenInvalidPattern() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+
+        when(employeeService.isValidPassword("password")).thenReturn(false);
+
+        mockMvc.perform(post("/employee-profile/change-password")
+                        .session(session)
+                        .param("currentPassword", "testingPassword")
+                        .param("newPassword", "password")
+                        .param("confirmPassword", "password"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user-profile"))
+                .andExpect(model().attribute("error", "Kodeordet skal indeholde mindst ét stort bogstav, et tal og et specialtegn."));
+    }
 }
