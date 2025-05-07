@@ -101,6 +101,15 @@ public class ProjectController {
         Project project = projectService.findProjectById(projectId);
 
         model.addAttribute("project", project);
+        return "editProject";
+    }
+
+    @PostMapping("/projects/{projectId}/edit")
+    public String saveEditProject(@PathVariable("projectId") int projectId,
+                                  @ModelAttribute Project project){
+        project.setProjectId(projectId);
+        projectService.updateProject(project);
+
         return "redirect:/projects";
     }
 }
