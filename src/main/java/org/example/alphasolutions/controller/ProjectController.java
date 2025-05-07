@@ -95,4 +95,12 @@ public class ProjectController {
         projectService.deleteProjectFromDB(projectId);
         return "redirect:/projects";
     }
+
+    @GetMapping("/projects/{projectId}/edit")
+    public String editProject(@PathVariable("projectId") int projectId, Model model){
+        Project project = projectService.findProjectById(projectId);
+
+        model.addAttribute("project", project);
+        return "redirect:/projects";
+    }
 }
