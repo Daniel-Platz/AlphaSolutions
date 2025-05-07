@@ -21,9 +21,10 @@ public class SubProjectRepository {
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Task.class), subProjectId);
     }
 
-
-    public void calculateSubProjectTotalHours() {
-
+    public int calculateSubProjectTotalHours(int subProjectId) {
+        String sql = "SELECT SUM(TASK_ESTIMATED_HOURS) FROM TASK WHERE SUB_PROJECT_ID = ?";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, subProjectId);
+        return result != null ? result : 0;
     }
 
     public void calculateSubProjectProgress() {
