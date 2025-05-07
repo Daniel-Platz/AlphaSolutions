@@ -3,8 +3,13 @@ package org.example.alphasolutions.repository;
 import org.example.alphasolutions.model.Project;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -23,8 +28,33 @@ public class ProjectRepository {
 
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
         String sql = "SELECT Project.* FROM Project " +
-                "JOIN Project_Employee ON Project.project_id = Project_Employee.project_id " +
-                "WHERE Project_Employee.employee_id = ?";
+                "JOIN project_employee ON Project.project_id = project_employee.project_id " +
+                "WHERE project_employee.employee_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
+    }
+
+    public int addProjectToDB(Project newProjectToAdd) {
+        String sql = "INSERT INTO project (project_name, project_description, project_start_date, project_end_date, project_estimated_hours, project_status)" +
+                " VALUES (?,?,?,?,?,?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, newProjectToAdd.getProjectName());
+            ps.setString(2, newProjectToAdd.getProjectDescription());
+            ps.setDate(3, Date.valueOf(newProjectToAdd.getProjectStartDate()));
+            ps.setDate(4, Date.valueOf(newProjectToAdd.getProjectEndDate()));
+            ps.setInt(5, newProjectToAdd.getProjectEstimatedHours());
+            ps.setString(6, newProjectToAdd.getProjectStatus().name());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
+    }
+
+    public void assignEmployeeToProject(int employeeId, int projectId){
+        String sql = "INSERT INTO project_employee (employee_id, project_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, employeeId, projectId);
     }
 }

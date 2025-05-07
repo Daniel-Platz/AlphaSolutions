@@ -57,9 +57,10 @@
     </div>
 
     <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-        <a href="/projects/create" class="button">Tilføj nyt projekt</a>
+        <a href="/projects/addProject" class="button">Add New Project</a>
     </div>
 
+    <!-- Projects List -->
     <div class="projects-list">
         <table>
             <thead>
@@ -73,8 +74,8 @@
             <tbody>
             <tr th:each="project : ${projects}">
                 <td th:text="${project.projectName}"></td>
-                <td th:text="${project.projectStartDate != null ? #dates.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
-                <td th:text="${project.projectEndDate != null ? #dates.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
+                <td th:text="${project.projectStartDate != null ? #temporals.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
+                <td th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
                 <td>
                     <a th:href="@{/projects/{id}(id=${project.projectId})}" class="button">View</a>
 
@@ -92,6 +93,5 @@
         </table>
     </div>
 </main>
-
 </body>
 </html>
