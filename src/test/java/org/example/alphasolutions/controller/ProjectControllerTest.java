@@ -1,15 +1,16 @@
 package org.example.alphasolutions.controller;
 
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.service.EmployeeService;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,7 +35,7 @@ class ProjectControllerTest {
     private ProjectService projectService;
 
     @MockitoBean
-    private EmployeeService employeeService;
+    EmployeeService employeeService;
 
     private Project project1;
     private Project project2;
@@ -42,6 +44,8 @@ class ProjectControllerTest {
     private Employee adminEmployee;
     private Employee managerEmployee;
     private Employee regularEmployee;
+    private List<SubProject> subProjects;
+    private List<Employee> assignedEmployees;
 
     @BeforeEach
     void setUp() {
@@ -74,6 +78,14 @@ class ProjectControllerTest {
         regularEmployee.setLastname("Employee");
         regularEmployee.setRole(Role.EMPLOYEE);
 
+        subProjects = List.of(
+                new SubProject()
+        );
+
+        assignedEmployees = List.of(
+                managerEmployee,
+                regularEmployee
+        );
     }
 
     @Test
@@ -129,6 +141,41 @@ class ProjectControllerTest {
                 .andExpect(view().name("projects"))
                 .andExpect(model().attribute("projects", employeeProjects))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
+    }
+
+    @Test
+    void showProjectOverviewWithNonExistentProjectRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(projectService.findProjectById(anyInt())).thenReturn(null);
+
+        mockMvc.perform(get("/projects/999/overview").session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void showProjectOverviewReturnsProjectOverview() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(projectService.findProjectById(1)).thenReturn(project1);
+        when(projectService.findSubProjectsByProjectId(1)).thenReturn(subProjects);
+        when(projectService.findAssignedEmployeesByProjectId(1)).thenReturn(assignedEmployees);
+
+        mockMvc.perform(get("/projects/1/overview").session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projectOverview"))
+                .andExpect(model().attribute("project", project1))
+                .andExpect(model().attribute("subProjects", subProjects))
+                .andExpect(model().attribute("assignedEmployees", assignedEmployees))
+                .andExpect(model().attribute("statuses", ProjectStatus.values()))
+                .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
     }
 
     @Test

@@ -77,7 +77,7 @@
                 <td th:text="${project.projectStartDate != null ? #temporals.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
                 <td th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
                 <td>
-                    <a th:href="@{/projects/{id}(id=${project.projectId})}" class="button">View</a>
+                    <a th:href="@{/projects/{id}/overview(id=${project.projectId})}" class="button">View</a>
 
                     <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
                             <a th:href="@{/projects/{id}/edit(id=${project.projectId})}" class="button">Edit</a>
