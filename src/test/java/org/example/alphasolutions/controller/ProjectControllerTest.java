@@ -3,6 +3,8 @@ package org.example.alphasolutions.controller;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
+import org.example.alphasolutions.service.EmployeeService;
 import org.example.alphasolutions.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,6 +33,9 @@ class ProjectControllerTest {
     @MockitoBean
     private ProjectService projectService;
 
+    @MockitoBean
+    EmployeeService employeeService;
+
     private Project project1;
     private Project project2;
     private List<Project> allProjects;
@@ -37,6 +43,9 @@ class ProjectControllerTest {
     private Employee adminEmployee;
     private Employee managerEmployee;
     private Employee regularEmployee;
+    private List<SubProject> subProjects;
+    private List<Employee> assignedEmployees;
+    private List<Employee> managers;
 
     @BeforeEach
     void setUp() {
@@ -69,6 +78,15 @@ class ProjectControllerTest {
         regularEmployee.setLastname("Employee");
         regularEmployee.setRole(Role.EMPLOYEE);
 
+        subProjects=List.of(
+                new SubProject()
+        );
+
+        assignedEmployees = List.of(
+                managerEmployee,
+                regularEmployee
+        );
+        managers = List.of(managerEmployee);
     }
 
     @Test
@@ -124,6 +142,20 @@ class ProjectControllerTest {
                 .andExpect(view().name("projects"))
                 .andExpect(model().attribute("projects", employeeProjects))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
+    }
+
+    @Test
+    void showProjectOverviewWithNonExistentProjectRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(projectService.findProjectById(anyInt())).thenReturn(null);
+
+        mockMvc.perform(get("/projects/999/overview").session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
     }
 
     @Test
