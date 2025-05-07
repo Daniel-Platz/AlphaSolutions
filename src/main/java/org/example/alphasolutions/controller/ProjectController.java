@@ -70,10 +70,6 @@ public class ProjectController {
         return "projectOverview";
     }
 
-
-
-
-
     @GetMapping("/projects/addProject")
     public String addProjectToDatabase(Model model) {
         Project newProject = new Project();
