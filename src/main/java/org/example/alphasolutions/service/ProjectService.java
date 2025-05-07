@@ -31,4 +31,8 @@ public class ProjectService {
     public void assignEmployeeToProject(int employeeId, int projectId){
         projectRepository.assignEmployeeToProject(employeeId, projectId);
     }
+
+    public void deleteProjectFromDB(int projectId){
+        projectRepository.deleteProjectFromDB(projectId);
+    }
 }
