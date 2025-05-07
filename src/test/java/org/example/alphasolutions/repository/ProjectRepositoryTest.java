@@ -76,6 +76,17 @@ class ProjectRepositoryTest {
     }
 
     @Test
+    public void testFindProjectById() {
+        Project project = projectRepository.findProjectById(1);
+
+        assertEquals(1, project.getProjectId(), "Project ID should be 1");
+        assertEquals("ERP System", project.getProjectName(), "Project name should be ERP System");
+        assertEquals("Enterprise Resource Planning System Development", project.getProjectDescription(), "Description should match");
+        assertEquals(ProjectStatus.ACTIVE, project.getProjectStatus(), "Status should be ACTIVE");
+        assertEquals(2000, project.getProjectEstimatedHours(), "Estimated hours should be 2000");
+    }
+
+    @Test
     @Transactional
     @Rollback
     public void testAddProjectToDB(){
