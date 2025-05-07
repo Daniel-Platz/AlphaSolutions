@@ -37,11 +37,7 @@ public class ProjectRepository {
 
     public Project findProjectById(int projectId) {
         String sql = "SELECT * FROM Project WHERE project_id = ?";
-        try {
             return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Project.class), projectId);
-        } catch (Exception e) {
-            return null; // Return null if project not found
-        }
     }
 
     public List<SubProject> findSubProjectsByProjectId(int projectId) {
