@@ -3,6 +3,7 @@ package org.example.alphasolutions.controller;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.model.Employee;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.service.SubProjectService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +18,10 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SubProjectController.class)
@@ -36,9 +39,11 @@ class SubProjectControllerTest {
     private Employee adminEmployee;
     private Employee managerEmployee;
     private Employee regularEmployee;
+    private SubProject subProject;
 
     @BeforeEach
     void setUp() {
+
         task1 = new Task();
         task1.setTaskId(1);
         task1.setTaskName("Test Task 1");
@@ -78,17 +83,28 @@ class SubProjectControllerTest {
         regularEmployee.setFirstname("Regular");
         regularEmployee.setLastname("Employee");
         regularEmployee.setRole(Role.EMPLOYEE);
+
+        subProject = new SubProject();
+        subProject.setSubProjectId(1);
+        subProject.setSubProjectName("Test SubProject");
+        subProject.setSubProjectDescription("Test Description");
+        subProject.setProjectId(1);
+        subProject.setSubProjectStatus(ProjectStatus.ACTIVE);
     }
 
     @Test
-    void showTasksWithNoSessionRedirectsToLogin() throws Exception {
-        mockMvc.perform(get("/subprojects/1/tasks"))
+    void showSubProjectOverviewWithNoSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
 
     @Test
-    void showTasksAsAdmin() throws Exception {
+    void showSubProjectOverviewAsAdmin() throws Exception {
+        int projectId = 1;
         int subProjectId = 1;
         int totalHours = 180;
 
@@ -100,9 +116,10 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/subprojects/" + subProjectId + "/tasks").session(session))
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId)
+                        .session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjectOverview"))
+                .andExpect(view().name("subProjects"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("totalHours", totalHours))
@@ -110,10 +127,10 @@ class SubProjectControllerTest {
     }
 
     @Test
-    void showTasksAsProjectManager() throws Exception {
+    void showSubProjectOverviewAsProjectManager() throws Exception {
+        int projectId = 1;
         int subProjectId = 1;
         int totalHours = 180;
-
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employee", managerEmployee);
@@ -123,9 +140,10 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/subprojects/" + subProjectId + "/tasks").session(session))
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId)
+                        .session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjectOverview"))
+                .andExpect(view().name("subProjects"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("totalHours", totalHours))
@@ -133,10 +151,10 @@ class SubProjectControllerTest {
     }
 
     @Test
-    void showTasksAsRegularEmployee() throws Exception {
+    void showSubProjectOverviewAsRegularEmployee() throws Exception {
+        int projectId = 1;
         int subProjectId = 1;
         int totalHours = 180;
-
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employee", regularEmployee);
@@ -146,12 +164,52 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/subprojects/" + subProjectId + "/tasks").session(session))
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId)
+                        .session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjectOverview"))
+                .andExpect(view().name("subProjects"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
+    }
+
+    @Test
+    void addNewSubProjectTest() throws Exception {
+        int projectId = 1;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        mockMvc.perform(get("/projects/{projectId}/subprojects/addSubproject", projectId)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addSubProject"))
+                .andExpect(model().attributeExists("newSubProject"))
+                .andExpect(model().attribute("projectId", projectId))
+                .andExpect(model().attributeExists("statuses"));
+    }
+
+    @Test
+    void saveSubProjectTest() throws Exception {
+        int projectId = 1;
+        int newSubProjectId = 1;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(subProjectService.addNewSubProject(any(SubProject.class))).thenReturn(newSubProjectId);
+
+        mockMvc.perform(post("/projects/{projectId}/subprojects/saveSubproject", projectId)
+                        .session(session)
+                        .param("subProjectName", "New SubProject")
+                        .param("subProjectDescription", "New Description")
+                        .param("subProjectStatus", "ACTIVE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects/" + projectId + "/subProjects"));
     }
 }
