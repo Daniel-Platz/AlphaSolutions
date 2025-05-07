@@ -124,6 +124,14 @@ class ProjectRepositoryTest {
     }
 
     @Test
+    public void testFindAssignedEmployeesByProjectIdWithNoEmployees() {
+        List<Employee> employees = projectRepository.findAssignedEmployeesByProjectId(999);
+        assertNotNull(employees, "Employees list should not be null");
+        assertEquals(0, employees.size(), "Non-existent project should have no assigned employees");
+        assertTrue(employees.isEmpty(), "Employees list should be empty");
+    }
+
+    @Test
     @Transactional
     @Rollback
     public void testAddProjectToDB() {
