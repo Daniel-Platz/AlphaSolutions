@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    <meta charset="UTF-8">
+    <title>Project Overview</title>
+</head>
+<body>
+<header>
+  <div class="logo">ALPHA SOLUTIONS</div>
+  <div class="user-info" th:if="${session.employee != null}">
+    <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+    <span th:text="'(' + ${session.role} + ')'"></span>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+  </div>
+</header>
+
+<main>
+  <h1 th:text="${project.projectName}">Project Details</h1>
+
+  <div class="project-details">
+    <div class="detail-item">
+      <span class="label">Project ID:</span>
+      <span th:text="${project.projectId}"></span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Start Date:</span>
+      <span th:text="${project.projectStartDate != null ? project.projectStartDate.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd')) : 'Not set'}"></span>
+    </div>
+    <div class="detail-item">
+      <span class="label">End Date:</span>
+      <span th:text="${project.projectEndDate != null ? project.projectEndDate.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd')) : 'Not set'}"></span>
+    </div>
+    <div class="detail-item">
+      <span class="label">Description:</span>
+      <p th:text="${project.projectDescription}">Project description will be shown here.</p>
+    </div>
+  </div>
+
+  <!-- Project Team Members -->
+  <div class="project-section">
+    <h2>Team Members</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="member : ${projectMembers}">
+        <td th:text="${member.firstname + ' ' + member.lastname}"></td>
+        <td th:text="${member.role}"></td>
+        <td>
+          <!-- Remove Member Button (only for ADMIN and PROJECT_MANAGER) -->
+          <a th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
+             th:href="@{/projects/{projectId}/members/{memberId}/remove(projectId=${project.projectId},memberId=${member.employeeId})}"
+             class="button"
+             onclick="return confirm('Are you sure you want to remove this team member?')">Remove</a>
+        </td>
+      </tr>
+      <tr th:if="${projectMembers.empty}">
+        <td colspan="3">No team members assigned</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Add Team Member Form (only for ADMIN and PROJECT_MANAGER) -->
+    <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-member-section">
+      <h3>Add Team Member</h3>
+      <form th:action="@{/projects/{id}/members/add(id=${project.projectId})}" method="post">
+        <select name="employeeId" required>
+          <option value="">Select an employee</option>
+          <option th:each="employee : ${availableEmployees}"
+                  th:value="${employee.employeeId}"
+                  th:text="${employee.firstname + ' ' + employee.lastname}"></option>
+        </select>
+        <button type="submit" class="button">Add Member</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Project Tasks -->
+  <div class="project-section">
+    <h2>Tasks</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Task Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+        <th>Assigned To</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="task : ${projectTasks}">
+        <td th:text="${task.taskName}"></td>
+        <td th:text="${task.taskStartDate != null ? task.taskStartDate.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd')) : ''}"></td>
+        <td th:text="${task.taskEndDate != null ? task.taskEndDate.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd')) : ''}"></td>
+        <td th:text="${task.taskStatus}"></td>
+        <td th:text="${task.assignedEmployee != null ? task.assignedEmployee.firstname + ' ' + task.assignedEmployee.lastname : 'Unassigned'}"></td>
+        <td>
+          <a th:href="@{/tasks/{id}(id=${task.taskId})}" class="button">View</a>
+
+          <!-- Edit/Delete buttons (only for ADMIN, PROJECT_MANAGER, and task owner) -->
+          <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER' || (session.employee != null && session.employee.employeeId == task.assignedEmployee?.employeeId)}">
+                            <a th:href="@{/tasks/{id}/edit(id=${task.taskId})}" class="button">Edit</a>
+                            <a th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
+                               th:href="@{/tasks/{id}/delete(id=${task.taskId})}"
+                               class="button"
+                               onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
+                        </span>
+        </td>
+      </tr>
+      <tr th:if="${projectTasks.empty}">
+        <td colspan="6">No tasks found</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Add Task Button (only for ADMIN, PROJECT_MANAGER and project members) -->
+    <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER' || isMember}" class="add-task-section">
+      <a th:href="@{/projects/{id}/tasks/create(id=${project.projectId})}" class="button">Add New Task</a>
+    </div>
+  </div>
+
+  <!-- Back to Projects List -->
+  <div class="navigation-buttons">
+    <a th:href="@{/projects}" class="button">Back to Projects</a>
+
+    <!-- Edit/Delete Project buttons (only for ADMIN and PROJECT_MANAGER) -->
+    <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+            <a th:href="@{/projects/{id}/edit(id=${project.projectId})}" class="button">Edit Project</a>
+            <a th:href="@{/projects/{id}/delete(id=${project.projectId})}"
+               class="button"
+               onclick="return confirm('Are you sure you want to delete this project?')">Delete Project</a>
+        </span>
+  </div>
+</main>
+</body>
+</html></title>
+</head>
+<body>
+
+</body>
+</html>
