@@ -86,13 +86,13 @@ VALUES (1, 'Java Development'),
        (5, 'Frontend Development'),
        (6, 'DevOps');
 
-INSERT INTO Employee (employee_id, firstname, lastname, email, password, role)
-VALUES (1, 'John', 'Admin', 'admin@alphasolutions.com', '123456', 'ADMIN'),
-       (2, 'Sara', 'Manager', 'pm@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
-       (3, 'Mike', 'Worker', 'employee@alphasolutions.com', '123456', 'EMPLOYEE'),
-       (4, 'Emma', 'Admin', 'admin2@alphasolutions.com', '123456', 'ADMIN'),
-       (5, 'David', 'Manager', 'pm2@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
-       (6, 'Lisa', 'Developer', 'employee2@alphasolutions.com', '123456', 'EMPLOYEE');
+INSERT INTO Employee (firstname, lastname, email, password, role)
+VALUES ('John', 'Admin', 'admin@alphasolutions.com', '123456', 'ADMIN'),
+       ('Sara', 'Manager', 'pm@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
+       ('Mike', 'Worker', 'employee@alphasolutions.com', '123456', 'EMPLOYEE'),
+       ('Emma', 'Admin', 'admin2@alphasolutions.com', '123456', 'ADMIN'),
+       ('David', 'Manager', 'pm2@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
+       ('Lisa', 'Developer', 'employee2@alphasolutions.com', '123456', 'EMPLOYEE');
 
 INSERT INTO Employee_Skill (employee_id, skill_id)
 VALUES (1, 1),
