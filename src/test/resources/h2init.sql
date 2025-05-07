@@ -86,13 +86,13 @@ VALUES (1, 'Java Development'),
        (5, 'Frontend Development'),
        (6, 'DevOps');
 
-INSERT INTO Employee (employee_id, firstname, lastname, email, password, role)
-VALUES (1, 'John', 'Admin', 'admin@alphasolutions.com', '123456', 'ADMIN'),
-       (2, 'Sara', 'Manager', 'pm@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
-       (3, 'Mike', 'Worker', 'employee@alphasolutions.com', '123456', 'EMPLOYEE'),
-       (4, 'Emma', 'Admin', 'admin2@alphasolutions.com', '123456', 'ADMIN'),
-       (5, 'David', 'Manager', 'pm2@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
-       (6, 'Lisa', 'Developer', 'employee2@alphasolutions.com', '123456', 'EMPLOYEE');
+INSERT INTO Employee (firstname, lastname, email, password, role)
+VALUES ('John', 'Admin', 'admin@alphasolutions.com', '123456', 'ADMIN'),
+       ('Sara', 'Manager', 'pm@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
+       ('Mike', 'Worker', 'employee@alphasolutions.com', '123456', 'EMPLOYEE'),
+       ('Emma', 'Admin', 'admin2@alphasolutions.com', '123456', 'ADMIN'),
+       ('David', 'Manager', 'pm2@alphasolutions.com', '123456', 'PROJECT_MANAGER'),
+       ('Lisa', 'Developer', 'employee2@alphasolutions.com', '123456', 'EMPLOYEE');
 
 INSERT INTO Employee_Skill (employee_id, skill_id)
 VALUES (1, 1),
@@ -108,11 +108,11 @@ VALUES (1, 1),
        (6, 1),
        (6, 5);
 
-INSERT INTO Project (project_id, project_name, project_description, project_start_date, project_end_date,
+INSERT INTO Project (project_name, project_description, project_start_date, project_end_date,
                      project_estimated_hours, project_status)
-VALUES (1, 'ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE'),
-       (2, 'Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING'),
-       (3, 'Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED');
+VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE'),
+       ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING'),
+       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED');
 
 INSERT INTO Project_Employee (employee_id, project_id)
 VALUES (1, 1),

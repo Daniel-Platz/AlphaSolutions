@@ -1,5 +1,6 @@
 package org.example.alphasolutions.service;
 
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,13 @@ public class ProjectService {
 
     public List<Project> findProjectsByEmployeeId(int employeeId) {
         return projectRepository.findProjectsByEmployeeId(employeeId);
+    }
+
+    public int addProjectToDB(Project newProjectToAdd){
+        return projectRepository.addProjectToDB(newProjectToAdd);
+    }
+
+    public void assignEmployeeToProject(int employeeId, int projectId){
+        projectRepository.assignEmployeeToProject(employeeId, projectId);
     }
 }
