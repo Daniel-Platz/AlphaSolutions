@@ -1,5 +1,6 @@
 package org.example.alphasolutions.controller;
 
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
@@ -78,7 +79,7 @@ class ProjectControllerTest {
         regularEmployee.setLastname("Employee");
         regularEmployee.setRole(Role.EMPLOYEE);
 
-        subProjects=List.of(
+        subProjects = List.of(
                 new SubProject()
         );
 
@@ -159,6 +160,27 @@ class ProjectControllerTest {
     }
 
     @Test
+    void showProjectOverviewReturnsProjectOverview() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(projectService.findProjectById(1)).thenReturn(project1);
+        when(projectService.findSubProjectsByProjectId(1)).thenReturn(subProjects);
+        when(projectService.findAssignedEmployeesByProjectId(1)).thenReturn(assignedEmployees);
+
+        mockMvc.perform(get("/projects/1/overview").session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projectOverview"))
+                .andExpect(model().attribute("project", project1))
+                .andExpect(model().attribute("subProjects", subProjects))
+                .andExpect(model().attribute("assignedEmployees", assignedEmployees))
+                .andExpect(model().attribute("statuses", ProjectStatus.values()))
+                .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
+    }
+
+    @Test
     void showAddProjectForm_ShouldReturnAddProjectView_WithModelAttributes() throws Exception {
         mockMvc.perform(get("/projects/addProject"))
                 .andExpect(status().isOk())
@@ -170,12 +192,12 @@ class ProjectControllerTest {
     @Test
     void saveProject_ShouldRedirectToProjects() throws Exception {
         mockMvc.perform(post("/projects/saveProject")
-                .param("projectName", "Test Project")
-                .param("projectDescription", "This is a test project")
-                .param("projectStartDate", "2025-01-01")
-                .param("projectEndDate", "2025-12-31")
-                .param("projectEstimatedHours", "200")
-                .param("projectStatus", "ACTIVE"))
+                        .param("projectName", "Test Project")
+                        .param("projectDescription", "This is a test project")
+                        .param("projectStartDate", "2025-01-01")
+                        .param("projectEndDate", "2025-12-31")
+                        .param("projectEstimatedHours", "200")
+                        .param("projectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
