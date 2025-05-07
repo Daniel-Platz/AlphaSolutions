@@ -33,7 +33,7 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    public void testSaveEmployee() {
+    public void saveEmployee() {
         Employee employee = new Employee();
         employee.setFirstname("Alice");
         employee.setLastname("Wonderland");
@@ -54,7 +54,7 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    public void testDeleteEmployeeById() {
+    public void deleteEmployeeById() {
         employeeRepository.deleteEmployeeById(1);
 
         assertThrows(EmptyResultDataAccessException.class, () -> {
@@ -63,14 +63,14 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    public void testShowAllEmployeesReturnsList() {
+    public void showAllEmployeesReturnsList() {
         List<Employee> all = employeeRepository.showAllEmployees();
         assertNotNull(all);
         assertFalse(all.isEmpty());
     }
 
     @Test
-    public void testUpdatePassword() {
+    public void updatePassword() {
         String email = "admin@alphasolutions.com";
         String newPassword = "newSecurePass!";
 
