@@ -36,7 +36,7 @@ public class SubProjectController {
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
 
-        return "subProjectTasks";
+        return "subProjectOverview";
 
     }
 

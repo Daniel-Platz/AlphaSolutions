@@ -100,9 +100,47 @@ class SubProjectControllerTest {
 
         mockMvc.perform(get("/subprojects/" + subProjectId + "/tasks").session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjectTasks"))
+                .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
+    }
+
+    @Test
+    void showTasksAsProjectManager() throws Exception {
+        int subProjectId = 1;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", managerEmployee);
+        session.setAttribute("employeeId", managerEmployee.getEmployeeId());
+        session.setAttribute("role", managerEmployee.getRole().toString());
+
+        when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
+
+        mockMvc.perform(get("/subprojects/" + subProjectId + "/tasks").session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("subProjectOverview"))
+                .andExpect(model().attribute("tasks", subProjectTasks))
+                .andExpect(model().attribute("subProjectId", subProjectId))
+                .andExpect(model().attribute("role", managerEmployee.getRole().toString()));
+    }
+
+    @Test
+    void showTasksAsRegularEmployee() throws Exception {
+        int subProjectId = 1;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", regularEmployee);
+        session.setAttribute("employeeId", regularEmployee.getEmployeeId());
+        session.setAttribute("role", regularEmployee.getRole().toString());
+
+        when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
+
+        mockMvc.perform(get("/subprojects/" + subProjectId + "/tasks").session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("subProjectOverview"))
+                .andExpect(model().attribute("tasks", subProjectTasks))
+                .andExpect(model().attribute("subProjectId", subProjectId))
+                .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
     }
 }
