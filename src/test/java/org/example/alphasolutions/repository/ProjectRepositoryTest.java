@@ -93,6 +93,10 @@ class ProjectRepositoryTest {
 
         assertEquals(4, subProjects.size(),"Project 1 should have 4 subprojects");
 
+        SubProject firstSubProject = subProjects.getFirst();
+        assertEquals(1, firstSubProject.getSubProjectId(), "First subproject should have ID 1");
+        assertEquals("Database Design", firstSubProject.getSubProjectName(), "First subproject should be Database Design");
+        assertEquals("Database schema design and implementation", firstSubProject.getSubProjectDescription(), "Description should match");
     }
 
     @Test
