@@ -1,6 +1,8 @@
 package org.example.alphasolutions.repository;
 
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -31,6 +33,27 @@ public class ProjectRepository {
                 "JOIN project_employee ON Project.project_id = project_employee.project_id " +
                 "WHERE project_employee.employee_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
+    }
+
+    public Project findProjectById(int projectId) {
+        String sql = "SELECT * FROM Project WHERE project_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Project.class), projectId);
+        } catch (Exception e) {
+            return null; // Return null if project not found
+        }
+    }
+
+    public List<SubProject> findSubProjectsByProjectId(int projectId) {
+        String sql = "SELECT * FROM sub_project WHERE project_id = ?";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(SubProject.class), projectId);
+    }
+
+    public List<Employee> findAssignedEmployeesByProjectId(int projectId) {
+        String sql = "SELECT employee.* FROM employee " +
+                "JOIN project_employee ON employee.employee_id = project_employee.employee_id " +
+                "WHERE project_employee.project_id = ?";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Employee.class), projectId);
     }
 
     public int addProjectToDB(Project newProjectToAdd) {
