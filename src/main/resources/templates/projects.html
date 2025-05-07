@@ -3,23 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Projects</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/projects.css}">
 </head>
 <body>
-<header>
-    <div class="logo">ALPHA SOLUTIONS</div>
-    <div class="user-info" th:if="${session.employee != null}">
-        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-        <span th:text="'(' + ${session.role} + ')'"></span>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-danger">Logout</button>
-        </form>
+
+<header class="header">
+    <a th:href="@{/projects}">
+        <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
+    </a>
+
+    <div class="header-right">
+        <div class="user-info" th:if="${session.employee != null}">
+            <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+            <span th:text="'(' + ${session.role} + ')'"></span>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+        <button class="circle-btn"></button>
     </div>
 </header>
 
 <main>
+    <!-- Password change modal -->
+    <div th:if="${session.forcePasswordChange}" class="password-overlay">
+        <div class="password-popup">
+            <h2>Skift kodeord</h2>
+            <p><strong>Din velkomstkode er ikke længere gyldig, skift venligst dit kodeord</strong></p>
+            <p>Adgangskoden skal indeholde:</p>
+            <ul>
+                <li>Et stort bogstav</li>
+                <li>Minimum et tal</li>
+                <li>Minimum et specialtegn</li>
+            </ul>
+
+            <form method="post" action="/change-password">
+                <label for="newPassword">Nyt kodeord:</label><br>
+                <input type="password" name="newPassword" id="newPassword" required><br><br>
+
+                <label for="confirmPassword">Gentag kodeord:</label><br>
+                <input type="password" name="confirmPassword" id="confirmPassword" required><br><br>
+
+                <div th:if="${error}" class="error" th:text="${error}"></div>
+
+                <button type="submit" class="button">Skift kodeord</button>
+            </form>
+        </div>
+    </div>
+
     <h1>Projects</h1>
 
-    <!-- Add Project Button (only for ADMIN and PROJECT_MANAGER) -->
+    <div th:if="${role == 'ADMIN'}">
+        <a href="/admin/employees" class="button">Medarbejderadministration</a>
+    </div>
+
     <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
         <a href="/projects/addProject" class="button">Add New Project</a>
     </div>
@@ -29,10 +65,10 @@
         <table>
             <thead>
             <tr>
-                <th>Project Name</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Actions</th>
+                <th>Projekt Navn</th>
+                <th>Start Dato</th>
+                <th>Slut Date</th>
+                <th>Handlinger</th>
             </tr>
             </thead>
             <tbody>
@@ -43,16 +79,15 @@
                 <td>
                     <a th:href="@{/projects/{id}/overview(id=${project.projectId})}" class="button">View</a>
 
-                    <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
                     <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                                <a th:href="@{/projects/{id}/edit(id=${project.projectId})}" class="button">Edit</a>
-                                <a th:href="@{/projects/{id}/delete(id=${project.projectId})}" class="button"
-                                   onclick="return confirm('Are you sure you want to delete this project?')">Delete</a>
-                            </span>
+                            <a th:href="@{/projects/{id}/edit(id=${project.projectId})}" class="button">Edit</a>
+                            <a th:href="@{/projects/{id}/delete(id=${project.projectId})}" class="button"
+                               onclick="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')">Delete</a>
+                        </span>
                 </td>
             </tr>
             <tr th:if="${projects.empty}">
-                <td colspan="4">No projects found</td>
+                <td colspan="4">Ingen projekter endnu</td>
             </tr>
             </tbody>
         </table>

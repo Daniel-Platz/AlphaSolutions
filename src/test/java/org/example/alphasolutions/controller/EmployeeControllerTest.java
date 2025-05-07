@@ -12,6 +12,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -30,7 +32,7 @@ class EmployeeControllerTest {
 
     @BeforeEach
     void setUp() {
-        employee = new Employee(1, "testFirstname", "testLastname", "test@mail.com", Role.EMPLOYEE);
+        employee = new Employee(1, "testFirstname", "testLastname", "test@mail.com", Role.EMPLOYEE, "testingPassword");
     }
 
     @Test
@@ -49,10 +51,10 @@ class EmployeeControllerTest {
 
     @Test
     void loginSuccessRedirectsToProjects() throws Exception {
-        when(employeeService.findByEmailAndPassword("test@mail.com", "password")).thenReturn(employee);
+        when(employeeService.findByEmailAndPassword("test@alphasolutions.dk", "password")).thenReturn(employee);
 
         mockMvc.perform(post("/login")
-                        .param("email", "test@mail.com")
+                        .param("emailPrefix", "test") // ✅ fixed
                         .param("password", "password"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"))
@@ -63,11 +65,11 @@ class EmployeeControllerTest {
 
     @Test
     void loginFailureReturnsLoginViewWithError() throws Exception {
-        when(employeeService.findByEmailAndPassword("test@mail.com", "wrongpassword"))
+        when(employeeService.findByEmailAndPassword("test@alphasolutions.dk", "wrongpassword"))
                 .thenThrow(new InvalidCredentialsException());
 
         mockMvc.perform(post("/login")
-                        .param("email", "test@mail.com")
+                        .param("emailPrefix", "test") // ✅ fixed
                         .param("password", "wrongpassword"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"))
@@ -86,5 +88,132 @@ class EmployeeControllerTest {
                         .session(session))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
+    }
+
+    @Test
+    void showEmployeeManagementAsAdminReturnsEmployeeManagementView() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "ADMIN");
+
+        List<Employee> employees = List.of(employee);
+        when(employeeService.getAllEmployees()).thenReturn(employees);
+
+        mockMvc.perform(get("/admin/employees").session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("employee-management"))
+                .andExpect(model().attribute("employees", employees));
+    }
+
+    @Test
+    void showEmployeeManagementAsNonAdminRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "EMPLOYEE");
+
+        mockMvc.perform(get("/admin/employees").session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void addEmployeeAsAdminAddsEmployeeAndRedirects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "ADMIN");
+
+        mockMvc.perform(post("/admin/employees/add")
+                        .session(session)
+                        .param("firstname", "Jane")
+                        .param("lastname", "Doe")
+                        .param("email", "jane.doe@mail.com")
+                        .param("role", "EMPLOYEE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/employees"))
+                .andExpect(flash().attribute("newPassword", "velkommen123"));
+    }
+
+    @Test
+    void addEmployeeAsNonAdminRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "EMPLOYEE");
+
+        mockMvc.perform(post("/admin/employees/add")
+                        .session(session)
+                        .param("firstname", "Jane")
+                        .param("lastname", "Doe")
+                        .param("email", "jane.doe@mail.com")
+                        .param("role", "EMPLOYEE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void deleteEmployeeAsAdminDeletesAndRedirects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "ADMIN");
+
+        mockMvc.perform(post("/admin/employees/delete")
+                        .session(session)
+                        .param("employeeId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/employees"));
+    }
+
+    @Test
+    void deleteEmployeeAsNonAdminRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("role", "EMPLOYEE");
+
+        mockMvc.perform(post("/admin/employees/delete")
+                        .session(session)
+                        .param("employeeId", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void changePasswordSuccessRedirectsToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+        session.setAttribute("role", "EMPLOYEE");
+
+        when(employeeService.isValidPassword("NewPassword1")).thenReturn(true);
+
+        mockMvc.perform(post("/change-password")
+                        .session(session)
+                        .param("newPassword", "NewPassword1")
+                        .param("confirmPassword", "NewPassword1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void changePasswordMismatchReturnsProjectsWithError() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+        session.setAttribute("role", "EMPLOYEE");
+
+        mockMvc.perform(post("/change-password")
+                        .session(session)
+                        .param("newPassword", "abc")
+                        .param("confirmPassword", "def"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projects"))
+                .andExpect(model().attributeExists("error"));
+    }
+
+    @Test
+    void changePasswordInvalidPatternReturnsProjectsWithError() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", employee);
+        session.setAttribute("role", "EMPLOYEE");
+
+        when(employeeService.isValidPassword("abc")).thenReturn(false);
+
+        mockMvc.perform(post("/change-password")
+                        .session(session)
+                        .param("newPassword", "abc")
+                        .param("confirmPassword", "abc"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projects"))
+                .andExpect(model().attributeExists("error"));
     }
 }

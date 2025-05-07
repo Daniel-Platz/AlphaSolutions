@@ -4,8 +4,8 @@ import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
-import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.service.EmployeeService;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -192,12 +192,12 @@ class ProjectControllerTest {
     @Test
     void saveProject_ShouldRedirectToProjects() throws Exception {
         mockMvc.perform(post("/projects/saveProject")
-                        .param("projectName", "Test Project")
-                        .param("projectDescription", "This is a test project")
-                        .param("projectStartDate", "2025-01-01")
-                        .param("projectEndDate", "2025-12-31")
-                        .param("projectEstimatedHours", "200")
-                        .param("projectStatus", "ACTIVE"))
+                .param("projectName", "Test Project")
+                .param("projectDescription", "This is a test project")
+                .param("projectStartDate", "2025-01-01")
+                .param("projectEndDate", "2025-12-31")
+                .param("projectEstimatedHours", "200")
+                .param("projectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
