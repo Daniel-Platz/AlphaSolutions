@@ -46,7 +46,6 @@ class ProjectControllerTest {
     private Employee regularEmployee;
     private List<SubProject> subProjects;
     private List<Employee> assignedEmployees;
-    private List<Employee> managers;
 
     @BeforeEach
     void setUp() {
@@ -87,7 +86,6 @@ class ProjectControllerTest {
                 managerEmployee,
                 regularEmployee
         );
-        managers = List.of(managerEmployee);
     }
 
     @Test
