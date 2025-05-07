@@ -1,13 +1,13 @@
 package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.alphasolutions.enums.ProjectStatus;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.service.SubProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class SubProjectController {
     }
 
     @GetMapping("/subprojects/{subProjectId}/tasks")
-    public String showTasks (@PathVariable int subProjectId, Model model, HttpSession session) {
+    public String showSubProjectOverview(@PathVariable int subProjectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
@@ -41,7 +41,27 @@ public class SubProjectController {
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
 
-        return "subProjectOverview";
+        return "subProjects";
     }
 
+    @GetMapping ("/subprojects/addSubproject")
+    public String addNewSubProject(@PathVariable int projectId, Model model) {
+        SubProject newSubProject = new SubProject();
+
+        newSubProject.setProjectId(projectId);
+
+        model.addAttribute("newSubProject", newSubProject);
+        model.addAttribute("projectId", projectId);
+        model.addAttribute("statuses", ProjectStatus.values());
+        return "addSubProject";
+    }
+
+    @PostMapping("/subprojects/saveSubproject")
+    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject) {
+        newSubProject.setProjectId(projectId);
+
+        int subProjectId = subProjectService.addNewSubProject(newSubProject);
+
+        return "redirect:/projects/" + projectId + "/subProjects";
+    }
 }
