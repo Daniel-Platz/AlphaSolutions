@@ -20,6 +20,15 @@
 <main>
   <h1>Tasks for Sub-Project</h1>
 
+  <!-- Subproject Summary Information -->
+  <div class="subproject-summary">
+    <div class="summary-item">
+      <strong>Total Estimated Hours:</strong>
+      <span th:text="${totalHours}">0</span> hours
+    </div>
+    <!-- You can add more summary items here if you implement progress and deadline -->
+  </div>
+
   <!-- Add Task Button (only for certain roles) -->
   <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
     <a th:href="@{/subprojects/{id}/tasks/create(id=${subProjectId})}">Add New Task</a>
@@ -33,6 +42,7 @@
         <th>Task Name</th>
         <th>Status</th>
         <th>Deadline</th>
+        <th>Estimated Hours</th>
         <th>Assigned To</th>
         <th>Actions</th>
       </tr>
@@ -42,6 +52,7 @@
         <td th:text="${task.taskName}"></td>
         <td th:text="${task.taskStatus}"></td>
         <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
+        <td th:text="${task.taskEstimatedHours}"></td>
         <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
         <td>
           <a th:href="@{/tasks/{id}(id=${task.taskId})}">View</a>
@@ -55,7 +66,7 @@
         </td>
       </tr>
       <tr th:if="${tasks.empty}">
-        <td colspan="5">No tasks found</td>
+        <td colspan="6">No tasks found</td>
       </tr>
       </tbody>
     </table>
