@@ -2,6 +2,7 @@ package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -84,6 +85,14 @@ class ProjectRepositoryTest {
         assertEquals("Enterprise Resource Planning System Development", project.getProjectDescription(), "Description should match");
         assertEquals(ProjectStatus.ACTIVE, project.getProjectStatus(), "Status should be ACTIVE");
         assertEquals(2000, project.getProjectEstimatedHours(), "Estimated hours should be 2000");
+    }
+
+    @Test
+    public void testFindSubProjectsByProjectId() {
+        List<SubProject> subProjects = projectRepository.findSubProjectsByProjectId(1);
+
+        assertEquals(4, subProjects.size(),"Project 1 should have 4 subprojects");
+
     }
 
     @Test
