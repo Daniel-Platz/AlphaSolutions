@@ -9,6 +9,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -47,5 +49,54 @@ class EmployeeRepositoryTest {
         String password = "123456";
 
         assertThrows(EmptyResultDataAccessException.class, () -> employeeRepository.findByEmailAndPassword(email, password));
+    }
+
+    @Test
+    public void saveEmployee() {
+        Employee employee = new Employee();
+        employee.setFirstname("Alice");
+        employee.setLastname("Wonderland");
+        employee.setEmail("alice@alphasolutions.com");
+        employee.setRole(Role.EMPLOYEE);
+        employee.setPassword("test123");
+
+        employeeRepository.saveEmployee(employee);
+
+        Employee fetched = employeeRepository.findByEmailAndPassword("alice@alphasolutions.com", "test123");
+
+        assertNotNull(fetched);
+        assertEquals("Alice", fetched.getFirstname());
+        assertEquals("Wonderland", fetched.getLastname());
+        assertEquals("alice@alphasolutions.com", fetched.getEmail());
+        assertEquals(Role.EMPLOYEE, fetched.getRole());
+        assertEquals("test123", fetched.getPassword());
+    }
+
+    @Test
+    public void deleteEmployeeById() {
+        employeeRepository.deleteEmployeeById(1);
+
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+            employeeRepository.findByEmailAndPassword("admin@alphasolutions.com", "123456");
+        });
+    }
+
+    @Test
+    public void showAllEmployeesReturnsList() {
+        List<Employee> all = employeeRepository.showAllEmployees();
+        assertNotNull(all);
+        assertFalse(all.isEmpty());
+    }
+
+    @Test
+    public void updatePassword() {
+        String email = "admin@alphasolutions.com";
+        String newPassword = "newSecurePass!";
+
+        employeeRepository.updatePassword(email, newPassword);
+
+        Employee updated = employeeRepository.findByEmailAndPassword(email, newPassword);
+
+        assertEquals(email, updated.getEmail());
     }
 }
