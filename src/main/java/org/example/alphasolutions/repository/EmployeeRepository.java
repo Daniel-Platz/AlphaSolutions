@@ -43,6 +43,17 @@ public class EmployeeRepository {
         jdbcTemplate.update(sql, employeeId);
     }
 
+    public void updateEmployee(Employee employee) {
+        String sql = "UPDATE employee SET firstname = ?, lastname = ?, role = ?, password = ? WHERE employee_id = ?";
+        jdbcTemplate.update(sql,
+                employee.getFirstname(),
+                employee.getLastname(),
+                employee.getRole().name(),
+                employee.getPassword(),
+                employee.getEmployeeId()
+        );
+    }
+
     public List<Employee> getallManagers() {
         String sql ="SELECT * FROM employee WHERE role = 'PROJECT_MANAGER'";
 
