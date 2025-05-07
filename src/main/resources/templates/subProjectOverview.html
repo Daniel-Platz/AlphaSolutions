@@ -26,12 +26,11 @@
       <strong>Total Estimated Hours:</strong>
       <span th:text="${totalHours}">0</span> hours
     </div>
-    <!-- You can add more summary items here if you implement progress and deadline -->
   </div>
 
   <!-- Add Task Button (only for certain roles) -->
   <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-    <a th:href="@{/subprojects/{id}/tasks/create(id=${subProjectId})}">Add New Task</a>
+    <a th:href="@{/projects/{projectId}/subprojects/{subProjectId}/tasks/create(projectId=${projectId},subProjectId=${subProjectId})}">Add New Task</a>
   </div>
 
   <!-- Tasks List -->
@@ -55,12 +54,12 @@
         <td th:text="${task.taskEstimatedHours}"></td>
         <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
         <td>
-          <a th:href="@{/tasks/{id}(id=${task.taskId})}">View</a>
+          <a th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId},taskId=${task.taskId})}">View</a>
 
           <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
           <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-            <a th:href="@{/tasks/{id}/edit(id=${task.taskId})}">Edit</a>
-            <a th:href="@{/tasks/{id}/delete(id=${task.taskId})}"
+            <a th:href="@{/projects/{projectId}/tasks/{taskId}/edit(projectId=${projectId},taskId=${task.taskId})}">Edit</a>
+            <a th:href="@{/projects/{projectId}/tasks/{taskId}/delete(projectId=${projectId},taskId=${task.taskId})}"
                onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
           </span>
         </td>

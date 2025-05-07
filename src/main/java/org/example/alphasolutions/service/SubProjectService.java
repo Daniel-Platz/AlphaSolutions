@@ -1,5 +1,6 @@
 package org.example.alphasolutions.service;
 
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.repository.SubProjectRepository;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,10 @@ public class SubProjectService {
 
     public int calculateSubProjectTotalHours (int subProjectId) {
         return subProjectRepository.calculateSubProjectTotalHours(subProjectId);
+    }
+
+    public int addNewSubProject (SubProject subProject) {
+        return subProjectRepository.addNewSubProject(subProject);
     }
 
 }
