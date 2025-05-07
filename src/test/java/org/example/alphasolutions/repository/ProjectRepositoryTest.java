@@ -31,11 +31,11 @@ class ProjectRepositoryTest {
 
         List<Project> projects = projectRepository.findAllProjects();
 
-        assertEquals(3,projects.size(), "Should return the exact number of projects in the database");
+        assertEquals(3, projects.size(), "Should return the exact number of projects in the database");
     }
 
     @Test
-    public void testFindAllProjectCheckAttributes() throws  SQLException {
+    public void testFindAllProjectCheckAttributes() throws SQLException {
 
         List<Project> projects = projectRepository.findAllProjects();
 
@@ -91,7 +91,7 @@ class ProjectRepositoryTest {
     public void testFindSubProjectsByProjectId() {
         List<SubProject> subProjects = projectRepository.findSubProjectsByProjectId(1);
 
-        assertEquals(4, subProjects.size(),"Project 1 should have 4 subprojects");
+        assertEquals(4, subProjects.size(), "Project 1 should have 4 subprojects");
 
         SubProject firstSubProject = subProjects.getFirst();
         assertEquals(1, firstSubProject.getSubProjectId(), "First subproject should have ID 1");
@@ -100,14 +100,23 @@ class ProjectRepositoryTest {
     }
 
     @Test
+    public void testFindSubProjectsByProjectIdWithNoSubProjects() {
+        List<SubProject> subProjects = projectRepository.findSubProjectsByProjectId(999);
+
+        assertNotNull(subProjects, "Subprojects list should not be null");
+        assertEquals(0, subProjects.size(), "Non-existent project should have no subprojects");
+        assertTrue(subProjects.isEmpty(), "Subprojects list should be empty");
+    }
+
+    @Test
     @Transactional
     @Rollback
-    public void testAddProjectToDB(){
+    public void testAddProjectToDB() {
         Project projectToAdd = new Project();
         projectToAdd.setProjectName("Danske Bank ATMs");
         projectToAdd.setProjectDescription("Create a new software for Danske Banks ATMs");
         projectToAdd.setProjectStartDate(LocalDate.now());
-        projectToAdd.setProjectEndDate(LocalDate.of(2026, 10,1));
+        projectToAdd.setProjectEndDate(LocalDate.of(2026, 10, 1));
         projectToAdd.setProjectEstimatedHours(200);
         projectToAdd.setProjectStatus(ProjectStatus.ACTIVE);
 
