@@ -1,6 +1,8 @@
 package org.example.alphasolutions.service;
 
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +21,20 @@ public class ProjectService {
         return projectRepository.findAllProjects();
     }
 
-    public List<Project> findProjectsByEmployeeId(Integer employeeId) {
+    public List<Project> findProjectsByEmployeeId(int employeeId) {
         return projectRepository.findProjectsByEmployeeId(employeeId);
+    }
+
+    public Project findProjectById (int projectId) {
+        return projectRepository.findProjectById(projectId);
+    }
+
+    public List<SubProject> findSubProjectsByProjectId(int projectId) {
+        return projectRepository.findSubProjectsByProjectId(projectId);
+    }
+
+    public List<Employee> findAssignedEmployeesByProjectId(int projectId) {
+        return projectRepository.findAssignedEmployeesByProjectId(projectId);
     }
 
     public int addProjectToDB(Project newProjectToAdd){
