@@ -1,6 +1,7 @@
 package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.enums.ProjectStatus;
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
 import org.junit.jupiter.api.Test;
@@ -106,6 +107,20 @@ class ProjectRepositoryTest {
         assertNotNull(subProjects, "Subprojects list should not be null");
         assertEquals(0, subProjects.size(), "Non-existent project should have no subprojects");
         assertTrue(subProjects.isEmpty(), "Subprojects list should be empty");
+    }
+
+    @Test
+    public void testFindAssignedEmployeesByProjectId() {
+        List<Employee> employees = projectRepository.findAssignedEmployeesByProjectId(1);
+
+        assertNotNull(employees, "Employees list should not be null");
+        assertEquals(3, employees.size(), "Project 1 should have 3 assigned employees");
+
+        Employee firstEmployee = employees.getFirst();
+        assertEquals(1, firstEmployee.getEmployeeId(),"First employee should have ID 1");
+        assertEquals("John", firstEmployee.getFirstname(), "First employees firstname should be John");
+        assertEquals("Admin", firstEmployee.getLastname(), "First employees lastname should be Admin");
+        assertEquals("admin@alphasolutions.com", firstEmployee.getEmail(), "First employees email should be admin@alphasolutions.com");
     }
 
     @Test
