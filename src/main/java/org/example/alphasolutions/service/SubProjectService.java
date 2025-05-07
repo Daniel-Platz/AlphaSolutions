@@ -19,4 +19,8 @@ public class SubProjectService {
         return subProjectRepository.findTasksBySubProjectId(subProjectId);
     }
 
+    public int calculateSubProjectTotalHours (int subProjectId) {
+        return subProjectRepository.calculateSubProjectTotalHours(subProjectId);
+    }
+
 }
