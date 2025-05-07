@@ -29,15 +29,17 @@ public class SubProjectController {
             return "redirect:/login";
         }
 
+        int totalHours = subProjectService.calculateSubProjectTotalHours(subProjectId);
+
         List<Task> tasks = subProjectService.findTasksBySubProjectId(subProjectId);
         model.addAttribute("tasks", tasks);
         model.addAttribute("subProjectId", subProjectId);
+        model.addAttribute("totalHours", totalHours);
 
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
 
         return "subProjectOverview";
-
     }
 
 }
