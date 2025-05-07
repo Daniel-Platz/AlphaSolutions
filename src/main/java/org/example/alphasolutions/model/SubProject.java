@@ -2,7 +2,7 @@ package org.example.alphasolutions.model;
 
 import org.example.alphasolutions.enums.ProjectStatus;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class SubProject {
@@ -10,13 +10,13 @@ public class SubProject {
     private int subProjectId;
     private String subProjectName;
     private String subProjectDescription;
-    private Date subProjectStartDate;
-    private Date subProjectEndDate;
+    private LocalDate subProjectStartDate;
+    private LocalDate subProjectEndDate;
     private int subProjectEstimatedHours;
     private ProjectStatus subProjectStatus;
     private List<Task> tasks;
 
-    public SubProject(int subProjectId, String subProjectName, String subProjectDescription, Date subProjectStartDate, Date subProjectEndDate, int subProjectEstimatedHours, ProjectStatus subProjectStatus, List<Task> tasks) {
+    public SubProject(int subProjectId, String subProjectName, String subProjectDescription, LocalDate subProjectStartDate, LocalDate subProjectEndDate, int subProjectEstimatedHours, ProjectStatus subProjectStatus, List<Task> tasks) {
         this.subProjectId = subProjectId;
         this.subProjectName = subProjectName;
         this.subProjectDescription = subProjectDescription;
@@ -73,19 +73,19 @@ public class SubProject {
         this.subProjectEstimatedHours = subProjectEstimatedHours;
     }
 
-    public Date getSubProjectEndDate() {
+    public LocalDate getSubProjectEndDate() {
         return subProjectEndDate;
     }
 
-    public void setSubProjectEndDate(Date subProjectEndDate) {
+    public void setSubProjectEndDate(LocalDate subProjectEndDate) {
         this.subProjectEndDate = subProjectEndDate;
     }
 
-    public Date getSubProjectStartDate() {
+    public LocalDate getSubProjectStartDate() {
         return subProjectStartDate;
     }
 
-    public void setSubProjectStartDate(Date subProjectStartDate) {
+    public void setSubProjectStartDate(LocalDate subProjectStartDate) {
         this.subProjectStartDate = subProjectStartDate;
     }
 
