@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -52,6 +53,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Employee.class), projectId);
     }
 
+    @Transactional
     public int addProjectToDB(Project newProjectToAdd) {
         String sql = "INSERT INTO project (project_name, project_description, project_start_date, project_end_date, project_estimated_hours, project_status)" +
                 " VALUES (?,?,?,?,?,?)";
@@ -72,8 +74,15 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
+    @Transactional
     public void assignEmployeeToProject(int employeeId, int projectId){
         String sql = "INSERT INTO project_employee (employee_id, project_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, employeeId, projectId);
+    }
+
+    @Transactional
+    public void deleteProjectFromDB(int projectId){
+        String sql = "DELETE FROM project WHERE project_id = ?";
+        jdbcTemplate.update(sql, projectId);
     }
 }

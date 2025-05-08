@@ -89,4 +89,10 @@ public class ProjectController {
 
         return "redirect:/projects";
     }
+
+    @PostMapping("projects/{projectId}/delete")
+    public String deleteProjectFromDB(@PathVariable("projectId") int projectId){
+        projectService.deleteProjectFromDB(projectId);
+        return "redirect:/projects";
+    }
 }
