@@ -85,4 +85,27 @@ public class ProjectRepository {
         String sql = "DELETE FROM project WHERE project_id = ?";
         jdbcTemplate.update(sql, projectId);
     }
+
+    @Transactional
+    public void updateProject(Project projectToEdit){
+        String sql = "UPDATE project SET " +
+                "project_name = ?, " +
+                "project_description = ?, " +
+                "project_start_date = ?, " +
+                "project_end_date = ?, " +
+                "project_estimated_hours = ?, " +
+                "project_status = ? " +
+                "WHERE project_id = ?";
+
+        jdbcTemplate.update(sql, projectToEdit.getProjectName(), projectToEdit.getProjectDescription(), projectToEdit.getProjectStartDate(),
+                projectToEdit.getProjectEndDate(), projectToEdit.getProjectEstimatedHours(), projectToEdit.getProjectStatus(),
+                projectToEdit.getProjectId());
+    }
+
+    @Transactional
+    public void updateManagerForProject(int managerId){
+        String sql = "UPDATE project_employee SET ";
+
+        jdbcTemplate.update(sql);
+    }
 }
