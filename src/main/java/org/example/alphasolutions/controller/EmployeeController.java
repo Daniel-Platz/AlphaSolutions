@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @Controller
-public class EmployeeController {
+public class EmployeeController extends BaseController {
     private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
@@ -38,6 +38,10 @@ public class EmployeeController {
                         @RequestParam String password,
                         Model model,
                         HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
         try {
             String email = emailPrefix + "@alphasolutions.dk";
             Employee employeeLoggedIn = employeeService.findByEmailAndPassword(email, password);
@@ -59,6 +63,10 @@ public class EmployeeController {
 
     @GetMapping("/admin/employees")
     public String showEmployeeManagement(Model model, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
         if (!"ADMIN".equals(session.getAttribute("role"))) {
             return "redirect:/projects";
         }
@@ -76,6 +84,9 @@ public class EmployeeController {
                               @RequestParam String role,
                               HttpSession session,
                               RedirectAttributes redirectAttributes) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
 
         if (!"ADMIN".equals(session.getAttribute("role"))) {
             return "redirect:/projects";
@@ -96,6 +107,10 @@ public class EmployeeController {
 
     @PostMapping("/admin/employees/delete")
     public String deleteEmployee(@RequestParam int employeeId, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
         if (!"ADMIN".equals(session.getAttribute("role"))) {
             return "redirect:/projects";
         }
@@ -109,6 +124,10 @@ public class EmployeeController {
                                  @RequestParam String confirmPassword,
                                  HttpSession session,
                                  Model model) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
         Employee employee = (Employee) session.getAttribute("employee");
 
         if (employee == null) {
@@ -136,7 +155,6 @@ public class EmployeeController {
         return "redirect:/projects";
     }
 
-    //TODO Implement enhance logout method
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

@@ -13,16 +13,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/projects/{projectId}")
-public class SubProjectController {
+public class SubProjectController extends BaseController {
 
     private final SubProjectService subProjectService;
 
     public SubProjectController(SubProjectService subProjectService) {
         this.subProjectService = subProjectService;
-    }
-
-    private boolean isLoggedIn(HttpSession session) {
-        return session.getAttribute("employee") != null;
     }
 
     @GetMapping("/subprojects/{subProjectId}")
@@ -46,7 +42,11 @@ public class SubProjectController {
     }
 
     @GetMapping("/subprojects/addSubproject")
-    public String addNewSubProject(@PathVariable int projectId, Model model) {
+    public String addNewSubProject(@PathVariable int projectId, Model model, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
         SubProject newSubProject = new SubProject();
 
         newSubProject.setProjectId(projectId);
@@ -58,7 +58,10 @@ public class SubProjectController {
     }
 
     @PostMapping("/subprojects/saveSubproject")
-    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject) {
+    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
         newSubProject.setProjectId(projectId);
 
         return "redirect:/projects/" + projectId + "/subProjectOverview";

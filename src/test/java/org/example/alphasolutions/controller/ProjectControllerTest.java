@@ -195,7 +195,8 @@ class ProjectControllerTest {
                 .param("projectStartDate", "2025-01-01")
                 .param("projectEndDate", "2025-12-31")
                 .param("projectEstimatedHours", "200")
-                .param("projectStatus", "ACTIVE"))
+                .param("projectStatus", "ACTIVE")
+                        .param("projectManagerId", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }
