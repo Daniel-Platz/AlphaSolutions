@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Min Profil</title>
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<header class="header">
+  <a th:href="@{/projects}">
+    <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
+  </a>
+
+  <div class="header-right">
+    <div class="user-info" th:if="${session.employee != null}">
+      <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+      <span th:text="'(' + ${session.role} + ')'"></span>
+      <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+    <a href="/employee-profile">
+      <button class="circle-btn"><i class="fas fa-user"></i></button>
+    </a>
+  </div>
+</header>
+
+<h1><span th:text="${employee.firstname + ' ' + employee.lastname}"></span></h1>
+
+<div>
+  <p><strong>Email:</strong> <span th:text="${employee.email}"></span></p>
+  <p><strong>Rolle:</strong> <span th:text="${employee.role}"></span></p>
+</div>
+
+<h2>Skift adgangskode</h2>
+<form method="post" action="/employee-profile/change-password">
+  <label for="currentPassword">Nuværende kodeord:</label><br>
+  <input type="password" name="currentPassword" id="currentPassword" required><br><br>
+
+  <label for="newPassword">Ny kodeord:</label><br>
+  <input type="password" name="newPassword" id="newPassword" required><br><br>
+
+  <label for="confirmPassword">Bekræft kodeord:</label><br>
+  <input type="password" name="confirmPassword" id="confirmPassword" required><br><br>
+
+  <div th:if="${error}" class="error" th:text="${error}"></div>
+  <div th:if="${success}" class="success" th:text="${success}"></div>
+
+  <button type="submit">Opdater kodeord</button>
+</form>
+<a href="/projects" class="button">Tilbage til projektoversigten</a>
+</body>
+</html>

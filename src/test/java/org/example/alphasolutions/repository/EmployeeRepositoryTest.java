@@ -99,4 +99,31 @@ class EmployeeRepositoryTest {
 
         assertEquals(email, updated.getEmail());
     }
+
+    @Test
+    public void updateEmployeeUpdatesCorrectly() {
+        Employee employee = new Employee();
+        employee.setFirstname("Bob");
+        employee.setLastname("Builder");
+        employee.setEmail("bob@alphasolutions.com");
+        employee.setRole(Role.EMPLOYEE);
+        employee.setPassword("build123");
+
+        employeeRepository.saveEmployee(employee);
+
+        Employee saved = employeeRepository.findByEmailAndPassword("bob@alphasolutions.com", "build123");
+
+        saved.setFirstname("Robert");
+        saved.setLastname("Fixer");
+        saved.setRole(Role.ADMIN);
+        saved.setPassword("newPassword123!");
+
+        employeeRepository.updateEmployee(saved);
+
+        Employee updated = employeeRepository.findByEmailAndPassword("bob@alphasolutions.com", "newPassword123!");
+        assertEquals("Robert", updated.getFirstname());
+        assertEquals("Fixer", updated.getLastname());
+        assertEquals(Role.ADMIN, updated.getRole());
+        assertEquals("newPassword123!", updated.getPassword());
+    }
 }
