@@ -3,15 +3,14 @@ package org.example.alphasolutions.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.service.EmployeeService;
 import org.example.alphasolutions.service.ProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,6 +46,28 @@ public class ProjectController {
         model.addAttribute("role", role);
 
         return "projects";
+    }
+
+    @GetMapping("/projects/{projectId}/overview")
+    public String showProjectDetails (@PathVariable int projectId, Model model, HttpSession session) {
+        if (session.getAttribute("employee") == null) {
+            return "redirect:/login";
+        }
+        Project project = projectService.findProjectById(projectId);
+        if (project==null) {
+            return "redirect:/projects";
+        }
+
+        List<SubProject> subProjects = projectService.findSubProjectsByProjectId(projectId);
+        List<Employee> assignedEmployees = projectService.findAssignedEmployeesByProjectId(projectId);
+
+        model.addAttribute("project", project);
+        model.addAttribute("subProjects", subProjects);
+        model.addAttribute("assignedEmployees", assignedEmployees);
+        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("role", session.getAttribute("role"));
+
+        return "projectOverview";
     }
 
     @GetMapping("/projects/addProject")
