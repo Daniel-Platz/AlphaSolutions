@@ -97,7 +97,7 @@ class SubProjectControllerTest {
         int projectId = 1;
         int subProjectId = 1;
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId))
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -116,10 +116,10 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId)
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjects"))
+                .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("totalHours", totalHours))
@@ -140,10 +140,10 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId)
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjects"))
+                .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("totalHours", totalHours))
@@ -164,10 +164,10 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}/tasks", projectId, subProjectId)
+        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("subProjects"))
+                .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
                 .andExpect(model().attribute("totalHours", totalHours))
@@ -210,6 +210,6 @@ class SubProjectControllerTest {
                         .param("subProjectDescription", "New Description")
                         .param("subProjectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects/" + projectId + "/subProjects"));
+                .andExpect(redirectedUrl("/projects/" + projectId + "/subProjectOverview"));
     }
 }

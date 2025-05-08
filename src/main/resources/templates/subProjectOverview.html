@@ -73,7 +73,7 @@
 
   <!-- Back button -->
   <div>
-    <a th:href="@{/projects}">Back to Projects</a>
+    <a th:href="@{/projects/{id}/overview(id=${projectId})}" class="button">Back to Project Overview</a>
   </div>
 </main>
 </body>

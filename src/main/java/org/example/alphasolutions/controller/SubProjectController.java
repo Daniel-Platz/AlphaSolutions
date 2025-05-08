@@ -25,8 +25,8 @@ public class SubProjectController {
         return session.getAttribute("employee") != null;
     }
 
-    @GetMapping("/subprojects/{subProjectId}/tasks")
-    public String showSubProjectOverview(@PathVariable int subProjectId, Model model, HttpSession session) {
+    @GetMapping("/subprojects/{subProjectId}")
+    public String showSubProjectOverview(@PathVariable int projectId, @PathVariable int subProjectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
@@ -35,16 +35,17 @@ public class SubProjectController {
 
         List<Task> tasks = subProjectService.findTasksBySubProjectId(subProjectId);
         model.addAttribute("tasks", tasks);
+        model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
         model.addAttribute("totalHours", totalHours);
 
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
 
-        return "subProjects";
+        return "subProjectOverview";
     }
 
-    @GetMapping ("/subprojects/addSubproject")
+    @GetMapping("/subprojects/addSubproject")
     public String addNewSubProject(@PathVariable int projectId, Model model) {
         SubProject newSubProject = new SubProject();
 
@@ -60,8 +61,6 @@ public class SubProjectController {
     public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject) {
         newSubProject.setProjectId(projectId);
 
-        int subProjectId = subProjectService.addNewSubProject(newSubProject);
-
-        return "redirect:/projects/" + projectId + "/subProjects";
+        return "redirect:/projects/" + projectId + "/subProjectOverview";
     }
 }
