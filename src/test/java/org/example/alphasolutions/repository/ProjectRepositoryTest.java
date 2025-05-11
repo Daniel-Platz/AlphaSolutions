@@ -143,6 +143,7 @@ class ProjectRepositoryTest {
         projectToAdd.setProjectEndDate(LocalDate.of(2026, 10, 1));
         projectToAdd.setProjectEstimatedHours(200);
         projectToAdd.setProjectStatus(ProjectStatus.ACTIVE);
+        projectToAdd.setManagerId(2);
 
         projectRepository.addProjectToDB(projectToAdd);
 
