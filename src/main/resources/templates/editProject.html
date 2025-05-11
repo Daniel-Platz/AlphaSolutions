@@ -25,7 +25,7 @@
         <ul>
             <li>
                 <label for="projectManagerId">Project Manager</label>
-                <select id="projectManagerId" th:field="*{projectManagerId}">
+                <select id="projectManagerId" th:field="*{ManagerId}">
                     <option value="" disabled>Select a manager</option>
                     <option th:each="manager : ${managers}"
                             th:value="${manager.employeeId}"
@@ -35,23 +35,25 @@
             </li>
             <li>
                 <label for="projectName">Name:</label>
-                <input type="text" id="projectName" th:field="*{projectName}" required/>
+                <input type="text" id="projectName" th:field="*{projectName}" />
             </li>
             <li>
                 <label for="projectDescription">Description:</label>
-                <input type="text" id="projectDescription" th:field="*{projectDescription}" required/>
+                <input type="text" id="projectDescription" th:field="*{projectDescription}" />
             </li>
             <li>
                 <label for="projectStartDate">Start Date:</label>
-                <input type="date" id="projectStartDate" th:field="*{projectStartDate}" required/>
+                <input type="date" id="projectStartDate" name="projectStartDate"
+                       th:value="${project.projectStartDate}" />
             </li>
             <li>
                 <label for="projectEndDate">End Date:</label>
-                <input type="date" id="projectEndDate" th:field="*{projectEndDate}" required/>
+                <input type="date" id="projectEndDate" name="projectEndDate"
+                       th:value="${project.projectEndDate}" />
             </li>
             <li>
                 <label for="projectEstimatedHours">Estimated Hours:</label>
-                <input type="number" id="projectEstimatedHours" th:field="*{projectEstimatedHours}" required/>
+                <input type="number" id="projectEstimatedHours" th:field="*{projectEstimatedHours}" />
             </li>
             <li>
                 <label for="projectStatus">Status:</label>

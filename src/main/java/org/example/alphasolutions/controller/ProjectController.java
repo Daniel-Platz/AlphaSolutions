@@ -82,7 +82,7 @@ public class ProjectController {
     @PostMapping("/projects/saveProject")
     public String saveProjectToDatabase(@ModelAttribute("newProject") Project newProject) {
         int projectId = projectService.addProjectToDB(newProject);
-        int managerId = newProject.getProjectManagerId();
+        int managerId = newProject.getManagerId();
 
         projectService.assignEmployeeToProject(managerId, projectId);
 
@@ -102,7 +102,7 @@ public class ProjectController {
         model.addAttribute("statuses", ProjectStatus.values());
         model.addAttribute("managers", employeeService.getAllManagers());
         model.addAttribute("project", project);
-        model.addAttribute("oldManagerId", project.getProjectManagerId());
+        model.addAttribute("oldManagerId", project.getManagerId());
         return "editProject";
     }
 

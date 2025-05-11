@@ -69,7 +69,7 @@ public class ProjectRepository {
             ps.setDate(4, Date.valueOf(newProjectToAdd.getProjectEndDate()));
             ps.setInt(5, newProjectToAdd.getProjectEstimatedHours());
             ps.setString(6, newProjectToAdd.getProjectStatus().name());
-            ps.setInt(7, newProjectToAdd.getProjectManagerId());
+            ps.setInt(7, newProjectToAdd.getManagerId());
             return ps;
         }, keyHolder);
 
@@ -97,15 +97,15 @@ public class ProjectRepository {
                 "project_end_date = ?, " +
                 "project_estimated_hours = ?, " +
                 "project_status = ?, " +
-                "manager_id = ?" +
+                "manager_id = ? " +
                 "WHERE project_id = ?";
 
         jdbcTemplate.update(sql, projectToEdit.getProjectName(), projectToEdit.getProjectDescription(), projectToEdit.getProjectStartDate(),
-                projectToEdit.getProjectEndDate(), projectToEdit.getProjectEstimatedHours(), projectToEdit.getProjectStatus(),
-                projectToEdit.getProjectManagerId(), projectToEdit.getProjectId());
+                projectToEdit.getProjectEndDate(), projectToEdit.getProjectEstimatedHours(), projectToEdit.getProjectStatus().name(),
+                projectToEdit.getManagerId(), projectToEdit.getProjectId());
 
-        if (oldManagerId != projectToEdit.getProjectManagerId()){
-            replaceOldManager(oldManagerId, projectToEdit.getProjectManagerId(), projectToEdit.getProjectId());
+        if (oldManagerId != projectToEdit.getManagerId()){
+            replaceOldManager(oldManagerId, projectToEdit.getManagerId(), projectToEdit.getProjectId());
         }
     }
 

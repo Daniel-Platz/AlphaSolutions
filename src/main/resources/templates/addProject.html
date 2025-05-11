@@ -24,7 +24,7 @@
         <ul>
             <li>
                 <label for="projectManagerId">Project Manager</label>
-                <select id="projectManagerId" th:field="*{projectManagerId}">
+                <select id="projectManagerId" th:field="*{managerId}">
                     <option value="" disabled selected>Select a manager</option>
                     <option th:each="manager : ${managers}"
                             th:value="${manager.employeeId}"
