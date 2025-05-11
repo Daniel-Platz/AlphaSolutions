@@ -15,6 +15,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -206,5 +208,36 @@ class ProjectControllerTest {
         mockMvc.perform(post("/projects/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void showEditProjectForm_shouldReturnEditProjectView_withModelAttributes() throws Exception{
+        Project mockProject = new Project();
+
+        mockProject.setProjectId(1);
+        mockProject.setProjectName("mock name");
+        mockProject.setProjectDescription("mock description");
+        mockProject.setProjectStartDate(LocalDate.of(2025,1,1));
+        mockProject.setProjectEndDate(LocalDate.of(2025,12,31));
+        mockProject.setProjectEstimatedHours(5000);
+        mockProject.setProjectStatus(ProjectStatus.ACTIVE);
+        mockProject.setManagerId(2);
+
+        List<Employee> mockListOfManagers = new ArrayList<>();
+        Employee employee1 = new Employee(1,"Jack","Jensen","jack@alphasolutions.dk",Role.EMPLOYEE,"hejsa1234");
+        Employee employee2 = new Employee(2,"Test","Testen","test@alphasolutions.dk",Role.PROJECT_MANAGER,"hejsa1234");
+        mockListOfManagers.add(employee1);
+        mockListOfManagers.add(employee2);
+
+        when(projectService.findProjectById(1)).thenReturn(mockProject);
+        when(employeeService.getAllManagers()).thenReturn(mockListOfManagers);
+
+        mockMvc.perform(get("/projects/1/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editProject"))
+                .andExpect(model().attribute("project", mockProject))
+                .andExpect(model().attribute("statuses", ProjectStatus.values()))
+                .andExpect(model().attribute("managers", mockListOfManagers))
+                .andExpect(model().attribute("oldManagerId", 2));
     }
 }
