@@ -49,7 +49,7 @@ public class ProjectService {
         projectRepository.deleteProjectFromDB(projectId);
     }
 
-    public void updateProject(Project projectToEdit){
-        projectRepository.updateProject(projectToEdit);
+    public void updateProject(Project projectToEdit, int oldManagerId){
+        projectRepository.updateProject(projectToEdit, oldManagerId);
     }
 }

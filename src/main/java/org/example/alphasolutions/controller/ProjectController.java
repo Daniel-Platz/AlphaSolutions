@@ -2,7 +2,6 @@ package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.alphasolutions.enums.ProjectStatus;
-import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
@@ -76,7 +75,7 @@ public class ProjectController {
 
         model.addAttribute("newProject", newProject);
         model.addAttribute("statuses", ProjectStatus.values());
-        model.addAttribute("managers", employeeService.gerAllManagers());
+        model.addAttribute("managers", employeeService.getAllManagers());
         return "addProject";
     }
 
@@ -100,15 +99,19 @@ public class ProjectController {
     public String editProject(@PathVariable("projectId") int projectId, Model model){
         Project project = projectService.findProjectById(projectId);
 
+        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("managers", employeeService.getAllManagers());
         model.addAttribute("project", project);
+        model.addAttribute("oldManagerId", project.getProjectManagerId());
         return "editProject";
     }
 
     @PostMapping("/projects/{projectId}/edit")
     public String saveEditProject(@PathVariable("projectId") int projectId,
+                                  @RequestParam("oldManagerId") int oldManagerId,
                                   @ModelAttribute Project project){
         project.setProjectId(projectId);
-        projectService.updateProject(project);
+        projectService.updateProject(project, oldManagerId);
 
         return "redirect:/projects";
     }

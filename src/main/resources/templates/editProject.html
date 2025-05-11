@@ -21,6 +21,7 @@
     <h1>Edit Project</h1>
     <form th:action="@{/projects/{id}/edit(id=${project.projectId})}" th:object="${project}" method="post">
         <input type="hidden" th:field="*{projectId}" />
+        <input type="hidden" name="oldManagerId" th:value="${oldManagerId}" />
         <ul>
             <li>
                 <label for="projectManagerId">Project Manager</label>
