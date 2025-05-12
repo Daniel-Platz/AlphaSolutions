@@ -7,9 +7,7 @@ import org.example.alphasolutions.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -21,52 +19,18 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    //TODO Rigtig path skal sættes
-    //TODO lav en try/catch (??) som fanger og fejler hvis man forsøger at oprette en task uden et navn
-    @PostMapping("/{subProjectId}/add")
-    public String addTask(@PathVariable int subProjectId,
-                          @RequestParam("taskName") String taskName,
-                          @RequestParam(value = "taskDescription", required = false) String taskDescription,
-                          @RequestParam(value = "taskStartDate", required = false) LocalDate taskStartDate,
-                          @RequestParam(value = "taskEndDate", required = false) LocalDate taskEndDate,
-                          @RequestParam(value = "taskEstimatedHours", required = false) Integer taskEstimatedHours,
-                          @RequestParam(value = "taskStatus", required = false) TaskStatus taskStatus, RedirectAttributes redirectAttributes) {
-
-        Task newTask = new Task();
-        newTask.setTaskName(taskName);
-
-        if (taskName == null || taskName.trim().isEmpty()) {
-            throw new MissingTaskNameException(); //Throws exception if you try to add a new task without a name
+    @GetMapping("/addTask")
+    public String addNewTask(@PathVariable int projectId, @PathVariable int subProjectId,  Model model, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
         }
-
-        if (taskDescription != null && !taskDescription.trim().isEmpty()) {
-            newTask.setTaskDescription(taskDescription);
-        }
-
-        if (taskStartDate != null) {
-            newTask.setTaskStartDate(taskStartDate);
-        }
-        if (taskEndDate != null) {
-            newTask.setTaskEndDate(taskEndDate);
-        }
-        if (taskEstimatedHours != null) {
-            newTask.setTaskEstimatedHours(taskEstimatedHours);
-        }
-        if (taskStatus != null) {
-            newTask.setTaskStatus(taskStatus);
-        }
-
-        taskService.addTaskToDatabase(newTask,subProjectId);
-        return "redirect:/project/subproject/task/" + subProjectId;
-    }
-
 
     //TODO Rigtig path skal sættes
     @PostMapping("/{subProjectId}/delete")
     public String deleteTask(@PathVariable int subProjectId,
                              @PathVariable int taskId) {
 
-        taskService.deleteTask(taskService.getTaskByTaskId(taskId));
+        taskService.deleteTask(taskService.findTaskByTaskId(taskId));
 
         return "redirect:/project/subproject/task/" + subProjectId;
 
@@ -85,7 +49,7 @@ public class TaskController {
             return "project";
         }
 
-        Task task = taskService.getTaskByTaskId(taskId);
+        Task task = taskService.findTaskByTaskId(taskId);
 
         if (task == null) {
             return ("redirect:/employee/" + employeeId);
@@ -101,31 +65,12 @@ public class TaskController {
             return "redirect:/login";
         }
 
-        List<Task> tasks = taskService.getAllTasks();
+        List<Task> tasks = taskService.findAllTasks();
         model.addAttribute("tasks", tasks);
 
         return "sub-projects";
     }
 
-    @GetMapping("/tasks/{taskid}/overview")
-    public String showTaskDetails (@PathVariable int taskId, @PathVariable int subProjectId, Model model, HttpSession session) {
-        if (session.getAttribute("employee") == null) {
-            return "redirect:/login";
-        }
-        Task task = taskService.getTaskByTaskId(taskId);
-        if (task == null) {
-            return "redirect:/tasks";
-        }
-
-        List<Task> tasks = taskService.getTaskBySubProjectId(subProjectId);
-
-        model.addAttribute("SubProjectId", subProjectId);
-        model.addAttribute("tasks", tasks);
-        model.addAttribute("statuses", TaskStatus.values());
-
-
-        return "TaskOverview";
-    }
-
+ */
 
 }

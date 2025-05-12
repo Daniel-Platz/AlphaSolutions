@@ -30,9 +30,9 @@ public class TaskRepository {
     }
 
     @Transactional
-    public int addTask(Task newTaskToAdd, int subProjectId) {
-        String sql = "INSERT INTO task(task_name, task_description, task_start_date, " +
-                "task_end_date, task_estimated_hours, task_status, sub_project_id)" +
+    public int addNewTask(Task newTask) {
+        String sql = "INSERT INTO task(sub_project_id, task_name, task_description, task_start_date, " +
+                "task_end_date, task_estimated_hours, task_status)" +
                 " VALUES (?,?,?,?,?,?,?)";
 
         // Anvend et KeyHolder til at få det auto-genererede ID
@@ -87,28 +87,20 @@ public class TaskRepository {
         jdbcTemplate.update(sql, taskToDelete.getTaskId());
     }
 
-    public List<Task> getTasksBySubProjectId(int subProjectId) {
+    public List<Task> findTasksBySubProjectId(int subProjectId) {
         String sql = "SELECT * FROM task WHERE sub_project_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Task.class), subProjectId);
     }
 
 
 
-    public Task getTaskByTaskId(int taskId){
-        String sql = "SELECT task_id, sub_project_id," +
-                "task_name AS taskName, " +
-                "task_description AS taskDescription, " +
-                "task_start_date AS taskStartDate, " +
-                "task_end_date AS taskEndDate, " +
-                "task_estimated_hours AS taskEstimatedHours, " +
-                "task_status AS taskStatus " +
-                "FROM task WHERE task_id = ?";
+    public Task findTaskByTaskId(int taskId){
+        String sql = "SELECT * FROM task WHERE task_id = ?";
 
         return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Task.class),taskId);
     }
 
     @Transactional
-    //TODO skal det være muligt at ændre sub-projectID her?
     public boolean editTask(Task newTask) {
         String sql = "UPDATE Task " +
                 "SET task_name = ?, " +
@@ -132,7 +124,7 @@ public class TaskRepository {
         }
     }
 
-    public List<Task> getAlltasks() {
+    public List<Task> findAllTasks() {
         String sql = "SELECT * FROM task";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Task.class));
     }

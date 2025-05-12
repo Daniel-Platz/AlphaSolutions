@@ -14,28 +14,28 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public void addTaskToDatabase(Task newTask, int subProjectId) {
-        taskRepository.addTask(newTask, subProjectId);
+    public int addNewTask(Task task) {
+        return taskRepository.addNewTask(task);
     }
 
     public void deleteTask(Task taskToDelete){
         taskRepository.deleteTask(taskToDelete);
     }
 
-    public List<Task> getTaskBySubProjectId(int subProjectId){
-        return taskRepository.getTasksBySubProjectId(subProjectId);
+    public List<Task> findTaskBySubProjectId(int subProjectId){
+        return taskRepository.findTasksBySubProjectId(subProjectId);
     }
 
-    public Task getTaskByTaskId(int taskId) {
-        return taskRepository.getTaskByTaskId(taskId);
+    public Task findTaskByTaskId(int taskId) {
+        return taskRepository.findTaskByTaskId(taskId);
     }
 
     public boolean editTask(Task newTask) {
         return taskRepository.editTask(newTask);
     }
 
-    public List<Task> getAllTasks() {
-        return taskRepository.getAlltasks();
+    public List<Task> findAllTasks() {
+        return taskRepository.findAllTasks();
     }
 
 }

@@ -44,7 +44,7 @@ public class ProjectController extends BaseController {
         model.addAttribute("projects", projects);
         model.addAttribute("role", role);
 
-        return "projects";
+        return "dashboard";
     }
 
     @GetMapping("/projects/{projectId}/overview")

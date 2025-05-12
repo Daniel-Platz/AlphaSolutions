@@ -135,14 +135,14 @@ public class EmployeeController extends BaseController {
             model.addAttribute("error", "Kodeordene matcher ikke.");
             model.addAttribute("projects", List.of());  // tom liste for at undgå fejl
             model.addAttribute("role", session.getAttribute("role"));
-            return "projects";
+            return "dashboard";
         }
 
         if (!employeeService.isValidPassword(newPassword)) {
             model.addAttribute("error", "Kodeordet skal indeholde mindst ét stort bogstav, mindst ét tal og mindst et specialtegn.");
             model.addAttribute("projects", List.of());
             model.addAttribute("role", session.getAttribute("role"));
-            return "projects";
+            return "dashboard";
         }
 
         employee.setPassword(newPassword);

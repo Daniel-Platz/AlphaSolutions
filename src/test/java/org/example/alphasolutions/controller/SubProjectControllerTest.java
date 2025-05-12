@@ -61,7 +61,7 @@ class SubProjectControllerTest {
         task2.setTaskStartDate(LocalDate.of(2025, 2, 1));
         task2.setTaskEndDate(LocalDate.of(2025, 2, 15));
         task2.setTaskEstimatedHours(100);
-        task2.setTaskStatus(ProjectStatus.ACTIVE);
+        task2.setTaskStatus(TaskStatus.IN_PROGRESS);
         task2.setSubProjectId(1);
 
         subProjectTasks = Arrays.asList(task1, task2);

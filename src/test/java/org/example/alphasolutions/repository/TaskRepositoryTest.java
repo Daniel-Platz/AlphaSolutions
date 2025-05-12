@@ -104,7 +104,7 @@ public class TaskRepositoryTest {
         int taskId = 1;
 
         //Act
-        Task actualTask = taskRepository.getTaskByTaskId(taskId);
+        Task actualTask = taskRepository.findTaskByTaskId(taskId);
 
         //Assert
         assertEquals(taskId, actualTask.getTaskId());
