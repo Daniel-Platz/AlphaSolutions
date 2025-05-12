@@ -22,7 +22,9 @@ CREATE TABLE Project
     project_start_date      DATE         NOT NULL,
     project_end_date        DATE,
     project_estimated_hours INT,
-    project_status          VARCHAR(255) NOT NULL
+    project_status          VARCHAR(255) NOT NULL,
+    manager_id              int,
+    FOREIGN KEY (manager_id) REFERENCES employee (employee_id)
 );
 
 CREATE TABLE Sub_project
@@ -109,10 +111,10 @@ VALUES (1, 1),
        (6, 5);
 
 INSERT INTO Project (project_name, project_description, project_start_date, project_end_date,
-                     project_estimated_hours, project_status)
-VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE'),
-       ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING'),
-       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED');
+                     project_estimated_hours, project_status, manager_id)
+VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE', 2),
+       ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING', 5),
+       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED', 2);
 
 INSERT INTO Project_Employee (employee_id, project_id)
 VALUES (1, 1),

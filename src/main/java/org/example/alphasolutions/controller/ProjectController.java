@@ -80,7 +80,7 @@ public class ProjectController extends BaseController {
 
         model.addAttribute("newProject", newProject);
         model.addAttribute("statuses", ProjectStatus.values());
-        model.addAttribute("managers", employeeService.gerAllManagers());
+        model.addAttribute("managers", employeeService.getAllManagers());
         return "addProject";
     }
 
@@ -91,9 +91,36 @@ public class ProjectController extends BaseController {
         }
 
         int projectId = projectService.addProjectToDB(newProject);
-        int managerId = newProject.getProjectManagerId();
+        int managerId = newProject.getManagerId();
 
         projectService.assignEmployeeToProject(managerId, projectId);
+
+        return "redirect:/projects";
+    }
+
+    @PostMapping("projects/{projectId}/delete")
+    public String deleteProjectFromDB(@PathVariable("projectId") int projectId){
+        projectService.deleteProjectFromDB(projectId);
+        return "redirect:/projects";
+    }
+
+    @GetMapping("/projects/{projectId}/edit")
+    public String editProject(@PathVariable("projectId") int projectId, Model model){
+        Project project = projectService.findProjectById(projectId);
+
+        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("managers", employeeService.getAllManagers());
+        model.addAttribute("project", project);
+        model.addAttribute("oldManagerId", project.getManagerId());
+        return "editProject";
+    }
+
+    @PostMapping("/projects/{projectId}/edit")
+    public String saveEditProject(@PathVariable("projectId") int projectId,
+                                  @RequestParam("oldManagerId") int oldManagerId,
+                                  @ModelAttribute Project project){
+        project.setProjectId(projectId);
+        projectService.updateProject(project, oldManagerId);
 
         return "redirect:/projects";
     }

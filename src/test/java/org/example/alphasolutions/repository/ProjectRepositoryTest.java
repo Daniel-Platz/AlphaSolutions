@@ -4,6 +4,7 @@ import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -142,6 +143,7 @@ class ProjectRepositoryTest {
         projectToAdd.setProjectEndDate(LocalDate.of(2026, 10, 1));
         projectToAdd.setProjectEstimatedHours(200);
         projectToAdd.setProjectStatus(ProjectStatus.ACTIVE);
+        projectToAdd.setManagerId(2);
 
         projectRepository.addProjectToDB(projectToAdd);
 
@@ -156,5 +158,52 @@ class ProjectRepositoryTest {
         assertEquals(projectToAdd.getProjectEndDate(), newestAddedProject.getProjectEndDate(), "End date for both objects should be the same");
         assertEquals(projectToAdd.getProjectEstimatedHours(), newestAddedProject.getProjectEstimatedHours(), "Estimated hours for both objects should be equal");
         assertEquals(projectToAdd.getProjectStatus(), newestAddedProject.getProjectStatus(), "Status for both objects should be the same");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testDeleteProjectFromDB(){
+        List<Project> projectsBeforeDeletion = projectRepository.findAllProjects();
+
+        projectRepository.deleteProjectFromDB(1);
+
+        List<Project> projectsAfterDeletion = projectRepository.findAllProjects();
+
+        assertNotEquals(projectsBeforeDeletion.size(), projectsAfterDeletion.size(), "The size of the two lists should not be the same");
+        assertNotEquals(projectsBeforeDeletion.getFirst().getProjectName(), projectsAfterDeletion.getFirst().getProjectName(),
+                "The project name of the first project in each list should not be the same, as it should've been deleted in one of them");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testUpdateProject(){
+        Project projectToChange = projectRepository.findProjectById(1);
+        int oldManagerId = projectToChange.getManagerId();
+
+        projectToChange.setProjectName("test");
+        projectToChange.setProjectDescription("test description");
+        projectToChange.setProjectStartDate(LocalDate.of(2025, 7, 10));
+        projectToChange.setProjectEndDate(LocalDate.of(2025, 10, 20));
+        projectToChange.setProjectEstimatedHours(1000);
+        projectToChange.setProjectStatus(ProjectStatus.ON_HOLD);
+        projectToChange.setManagerId(5);
+
+        projectRepository.updateProject(projectToChange, oldManagerId);
+
+        Project updatedProject = projectRepository.findProjectById(1);
+
+        assertEquals(1, updatedProject.getProjectId(), "Edited project should have the same id at old project.");
+        assertEquals("test", updatedProject.getProjectName(), "The updated project name should be test");
+        assertNotEquals("ERP System", updatedProject.getProjectName(), "Updated project should no longer be called ERP System");
+        assertEquals("test description", updatedProject.getProjectDescription(), "New description should be: test description");
+        assertNotEquals("Enterprise Resource Planning System Development", updatedProject.getProjectDescription(),"Project description should no longer be: Enterprise Resource Planning System Development");
+        assertEquals(LocalDate.of(2025, 7, 10), updatedProject.getProjectStartDate(), "new start date should be 2025-7-10");
+        assertEquals(LocalDate.of(2025, 10,20), updatedProject.getProjectEndDate(), "new end date should be 2025-10-20");
+        assertEquals(1000, updatedProject.getProjectEstimatedHours(), "new project estimate should be 1000 hours");
+        assertNotEquals(2000, updatedProject.getProjectEstimatedHours(),"project estimated hours should no longer be 2000");
+        assertEquals(ProjectStatus.ON_HOLD, updatedProject.getProjectStatus(), "new status should be: ON_HOLD");
+        assertEquals(5, updatedProject.getManagerId(), "new managerId should be 5");
     }
 }

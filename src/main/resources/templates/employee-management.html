@@ -90,6 +90,41 @@
           <input type="hidden" th:name="employeeId" th:value="${employee.employeeId}"/>
           <button type="submit">🗑️</button>
         </form>
+
+        <!-- Rediger-knap -->
+        <label th:for="'editModalToggle' + ${employee.employeeId}" class="open-button">✏️</label>
+
+        <!-- Skjult checkbox til modal -->
+        <!-- Skjult checkbox -->
+        <input type="checkbox" th:id="'editModalToggle' + ${employee.employeeId}" class="modal-toggle" style="display:none;">
+
+        <!-- Modal direkte efter checkboxen -->
+        <div th:classappend="' edit-modal-' + ${employee.employeeId}" class="modal">
+          <div class="modal-content">
+            <label th:for="'editModalToggle' + ${employee.employeeId}" class="close-button">&times;</label>
+            <h2>Rediger medarbejder</h2>
+            <form th:action="@{/admin/employees/update}" method="post">
+              <input type="hidden" name="employeeId" th:value="${employee.employeeId}"/>
+              <label>Fornavn:
+                <input type="text" name="firstname" th:value="${employee.firstname}" required>
+              </label>
+              <label>Efternavn:
+                <input type="text" name="lastname" th:value="${employee.lastname}" required>
+              </label>
+              <label>Ny adgangskode:
+                <input type="text" name="password" placeholder="Ny adgangskode">
+              </label>
+              <label>Rolle:
+                <select name="role" required>
+                  <option value="EMPLOYEE" th:selected="${employee.role == 'EMPLOYEE'}">Medarbejder</option>
+                  <option value="PROJECT_MANAGER" th:selected="${employee.role == 'PROJECT_MANAGER'}">Projekt Manager</option>
+                  <option value="ADMIN" th:selected="${employee.role == 'ADMIN'}">Admin</option>
+                </select>
+              </label>
+              <button type="submit">Opdater</button>
+            </form>
+          </div>
+        </div>
       </td>
     </tr>
     </tbody>
