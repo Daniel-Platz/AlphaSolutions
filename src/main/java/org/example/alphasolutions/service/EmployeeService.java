@@ -39,6 +39,12 @@ public class EmployeeService {
         employeeRepository.deleteEmployeeById(employeeId);
     }
 
+    public void updateEmployee(Employee employee) {
+        employee.setFirstname(capitalize(employee.getFirstname()));
+        employee.setLastname(capitalize(employee.getLastname()));
+        employeeRepository.updateEmployee(employee);
+    }
+
     private String capitalize(String name) {
         if (name == null || name.isBlank()) {
             return name;
