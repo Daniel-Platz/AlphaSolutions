@@ -1,10 +1,18 @@
 package org.example.alphasolutions.repository;
 
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -23,8 +31,58 @@ public class ProjectRepository {
 
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
         String sql = "SELECT Project.* FROM Project " +
-                "JOIN project_employees ON Project.project_id = project_employees.project_id " +
-                "WHERE project_employees.employee_id = ?";
+                "JOIN project_employee ON Project.project_id = project_employee.project_id " +
+                "WHERE project_employee.employee_id = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
+    }
+
+    public Project findProjectById(int projectId) {
+        String sql = "SELECT * FROM Project WHERE project_id = ?";
+            return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Project.class), projectId);
+    }
+
+    public List<SubProject> findSubProjectsByProjectId(int projectId) {
+        String sql = "SELECT * FROM sub_project WHERE project_id = ?";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(SubProject.class), projectId);
+    }
+
+    public List<Employee> findAssignedEmployeesByProjectId(int projectId) {
+        String sql = "SELECT employee.* FROM employee " +
+                "JOIN project_employee ON employee.employee_id = project_employee.employee_id " +
+                "WHERE project_employee.project_id = ?";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Employee.class), projectId);
+    }
+
+    @Transactional
+    public int addProjectToDB(Project newProjectToAdd) {
+        String sql = "INSERT INTO project (project_name, project_description, project_start_date, project_end_date, project_estimated_hours, project_status)" +
+                " VALUES (?,?,?,?,?,?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, newProjectToAdd.getProjectName());
+            ps.setString(2, newProjectToAdd.getProjectDescription());
+            ps.setDate(3, Date.valueOf(newProjectToAdd.getProjectStartDate()));
+            ps.setDate(4, Date.valueOf(newProjectToAdd.getProjectEndDate()));
+            ps.setInt(5, newProjectToAdd.getProjectEstimatedHours());
+            ps.setString(6, newProjectToAdd.getProjectStatus().name());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
+    }
+
+    @Transactional
+    public void assignEmployeeToProject(int employeeId, int projectId){
+        String sql = "INSERT INTO project_employee (employee_id, project_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, employeeId, projectId);
+    }
+
+    @Transactional
+    public void deleteProjectFromDB(int projectId){
+        String sql = "DELETE FROM project WHERE project_id = ?";
+        jdbcTemplate.update(sql, projectId);
     }
 }

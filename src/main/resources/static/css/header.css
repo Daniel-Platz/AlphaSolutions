@@ -1,0 +1,42 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: white;
+    color: black;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logout-btn {
+    padding: 6px 12px;
+    text-decoration: none;
+    background-color: #ca2c5b;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.circle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #474747;
+    border: none;
+    cursor: pointer;
+}
