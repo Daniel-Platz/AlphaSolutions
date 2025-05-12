@@ -110,11 +110,11 @@ public class Project {
         this.projectAssignedEmployees = projectAssignedEmployees;
     }
 
-    public Integer getProjectManagerId() {
+    public Integer getManagerId() {
         return projectManagerId;
     }
 
-    public void setProjectManagerId(Integer projectManagerId) {
+    public void setManagerId(Integer projectManagerId) {
         this.projectManagerId = projectManagerId;
     }
 

@@ -55,8 +55,9 @@ public class ProjectRepository {
 
     @Transactional
     public int addProjectToDB(Project newProjectToAdd) {
-        String sql = "INSERT INTO project (project_name, project_description, project_start_date, project_end_date, project_estimated_hours, project_status)" +
-                " VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO project (project_name, project_description, project_start_date, project_end_date, " +
+                "project_estimated_hours, project_status, manager_id)" +
+                " VALUES (?,?,?,?,?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -68,6 +69,7 @@ public class ProjectRepository {
             ps.setDate(4, Date.valueOf(newProjectToAdd.getProjectEndDate()));
             ps.setInt(5, newProjectToAdd.getProjectEstimatedHours());
             ps.setString(6, newProjectToAdd.getProjectStatus().name());
+            ps.setInt(7, newProjectToAdd.getManagerId());
             return ps;
         }, keyHolder);
 
@@ -84,5 +86,34 @@ public class ProjectRepository {
     public void deleteProjectFromDB(int projectId){
         String sql = "DELETE FROM project WHERE project_id = ?";
         jdbcTemplate.update(sql, projectId);
+    }
+
+    @Transactional
+    public void updateProject(Project projectToEdit, int oldManagerId){
+        String sql = "UPDATE project SET " +
+                "project_name = ?, " +
+                "project_description = ?, " +
+                "project_start_date = ?, " +
+                "project_end_date = ?, " +
+                "project_estimated_hours = ?, " +
+                "project_status = ?, " +
+                "manager_id = ? " +
+                "WHERE project_id = ?";
+
+        jdbcTemplate.update(sql, projectToEdit.getProjectName(), projectToEdit.getProjectDescription(), projectToEdit.getProjectStartDate(),
+                projectToEdit.getProjectEndDate(), projectToEdit.getProjectEstimatedHours(), projectToEdit.getProjectStatus().name(),
+                projectToEdit.getManagerId(), projectToEdit.getProjectId());
+
+        if (oldManagerId != projectToEdit.getManagerId()){
+            replaceOldManager(oldManagerId, projectToEdit.getManagerId(), projectToEdit.getProjectId());
+        }
+    }
+
+    @Transactional
+    protected void replaceOldManager(int oldManagerId, int newManagerId, int projectId){
+        String sql = "DELETE FROM project_employee WHERE employee_id = ? AND project_id = ?";
+        jdbcTemplate.update(sql, oldManagerId, projectId);
+        sql = "INSERT INTO project_employee (employee_id, project_id) VALUES (?,?)";
+        jdbcTemplate.update(sql, newManagerId, projectId);
     }
 }

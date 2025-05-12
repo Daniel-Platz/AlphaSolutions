@@ -48,4 +48,8 @@ public class ProjectService {
     public void deleteProjectFromDB(int projectId){
         projectRepository.deleteProjectFromDB(projectId);
     }
+
+    public void updateProject(Project projectToEdit, int oldManagerId){
+        projectRepository.updateProject(projectToEdit, oldManagerId);
+    }
 }

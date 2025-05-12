@@ -77,7 +77,7 @@ public class EmployeeService {
     }
 
 
-    public List<Employee> gerAllManagers(){
+    public List<Employee> getAllManagers(){
         return employeeRepository.getAllManagers();
     }
 
