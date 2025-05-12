@@ -204,12 +204,12 @@ class SubProjectControllerTest {
 
         when(subProjectService.addNewSubProject(any(SubProject.class))).thenReturn(newSubProjectId);
 
-        mockMvc.perform(post("/projects/{projectId}/subprojects/saveSubproject", projectId)
+        mockMvc.perform(post("/projects/{projectId}/subprojects/saveSubProject", projectId)
                         .session(session)
                         .param("subProjectName", "New SubProject")
                         .param("subProjectDescription", "New Description")
                         .param("subProjectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects/" + projectId + "/subProjectOverview"));
+                .andExpect(redirectedUrl("/projects/" + projectId + "/overview"));
     }
 }
