@@ -1,17 +1,21 @@
 package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.exception.Task.MissingTaskNameException;
+import org.example.alphasolutions.model.Employee;
+import org.example.alphasolutions.model.Project;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.service.TaskService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/project/subproject/task") //TODO Skal fjernes igen...
@@ -67,7 +71,7 @@ public class TaskController {
     public String deleteTask(@PathVariable int subProjectId,
                              @PathVariable int taskId) {
 
-        taskService.deleteTask(taskService.getTaskById(taskId));
+        taskService.deleteTask(taskService.getTaskByTaskId(taskId));
 
         return "redirect:/project/subproject/task/" + subProjectId;
 
@@ -86,7 +90,7 @@ public class TaskController {
             return "project";
         }
 
-        Task task = taskService.getTaskById(taskId);
+        Task task = taskService.getTaskByTaskId(taskId);
 
         if (task == null) {
             return ("redirect:/employee/" + employeeId);
@@ -94,6 +98,38 @@ public class TaskController {
 
         model.addAttribute("task", task);
         return "editTask";
+    }
+
+    @GetMapping("/tasks")
+    public String showTasks(Model model, HttpSession session) {
+        if (session.getAttribute("employee") == null) {
+            return "redirect:/login";
+        }
+
+        List<Task> tasks = taskService.getAllTasks();
+        model.addAttribute("tasks", tasks);
+
+        return "sub-projects";
+    }
+
+    @GetMapping("/tasks/{taskid}/overview")
+    public String showTaskDetails (@PathVariable int taskId, @PathVariable int subProjectId, Model model, HttpSession session) {
+        if (session.getAttribute("employee") == null) {
+            return "redirect:/login";
+        }
+        Task task = taskService.getTaskByTaskId(taskId);
+        if (task == null) {
+            return "redirect:/tasks";
+        }
+
+        List<Task> tasks = taskService.getTaskBySubProjectId(subProjectId);
+
+        model.addAttribute("SubProjectId", subProjectId);
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("statuses", TaskStatus.values());
+
+
+        return "TaskOverview";
     }
 
 

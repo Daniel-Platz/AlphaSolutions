@@ -13,15 +13,15 @@ public class Task {
     private String taskDescription;
     private Date taskStartDate;
     private Date taskEndDate;
-    private ProjectStatus taskStatus;
-    private int taskEstimatedHours; //evt double (PO-møde)
+    private TaskStatus taskStatus;
+    private int taskEstimatedHours;
     private List<Employee> taskAssignedEmployees;
 
     public Task() {
 
     }
 
-    public Task(int taskId, String taskName, String taskDescription, Date taskStartDate, Date taskEndDate, ProjectStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
+    public Task(int taskId, String taskName, String taskDescription, Date taskStartDate, Date taskEndDate, TaskStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -75,11 +75,11 @@ public class Task {
         this.taskEndDate = taskEndDate;
     }
 
-    public ProjectStatus getTaskStatus() {
+    public TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    public void setTaskStatus(ProjectStatus taskStatus) {
+    public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 

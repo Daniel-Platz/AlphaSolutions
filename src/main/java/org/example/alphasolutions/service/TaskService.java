@@ -4,6 +4,8 @@ import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
@@ -20,12 +22,20 @@ public class TaskService {
         taskRepository.deleteTask(taskToDelete);
     }
 
-    public Task getTaskById(int taskId) {
-        return taskRepository.getTaskById(taskId);
+    public List<Task> getTaskBySubProjectId(int subProjectId){
+        return taskRepository.getTasksBySubProjectId(subProjectId);
+    }
+
+    public Task getTaskByTaskId(int taskId) {
+        return taskRepository.getTaskByTaskId(taskId);
     }
 
     public boolean editTask(Task newTask) {
         return taskRepository.editTask(newTask);
+    }
+
+    public List<Task> getAllTasks() {
+        return taskRepository.getAlltasks();
     }
 
 }

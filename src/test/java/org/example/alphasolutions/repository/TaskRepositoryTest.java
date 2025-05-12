@@ -1,21 +1,15 @@
-package org.example.alphasolutions;
+package org.example.alphasolutions.repository;
 
-import net.bytebuddy.dynamic.TypeResolutionStrategy;
 import org.example.alphasolutions.enums.TaskStatus;
-import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
-import org.example.alphasolutions.repository.TaskRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
+import java.util.Calendar;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,11 +22,9 @@ public class TaskRepositoryTest {
 
     @Autowired
     private TaskRepository taskRepository;
-    //private Task testTask;
 
     @Test
     public void addTask() throws SQLException {
-
         //Arrange
         int subProjectId = 1;
 
@@ -40,31 +32,40 @@ public class TaskRepositoryTest {
         Task newTask = new Task();
         newTask.setTaskName("Ny opgave");
         newTask.setTaskDescription("Ny beskrivelse");
-        newTask.setTaskStartDate(new Date(2025,06,05));
-        newTask.setTaskEndDate(new Date(2025,07,12));
+
+        // Brug java.util.Calendar i stedet for direkte Date konstruktion
+        Calendar startCal = Calendar.getInstance();
+        startCal.set(2025, Calendar.JUNE, 5); // Bemærk: måneder er 0-baseret i Calendar
+        newTask.setTaskStartDate(startCal.getTime());
+
+        Calendar endCal = Calendar.getInstance();
+        endCal.set(2025, Calendar.JULY, 12);
+        newTask.setTaskEndDate(endCal.getTime());
+
         newTask.setTaskEstimatedHours(10);
         newTask.setTaskStatus(TaskStatus.IN_PROGRESS);
 
         //Act
         taskRepository.addTask(newTask, subProjectId);
 
+        // Efter addTask bør newTask have fået et ID tildelt
+        assertNotNull(newTask.getTaskId(), "Task ID blev ikke sat efter tilføjelse");
+
         //Assert
         Map<Integer, Task> tasks = taskRepository.getTasksBySubProjectId(subProjectId);
         assertNotNull(tasks, "Kunne ikke hente opgaver efter tilføjelse");
         assertFalse(tasks.isEmpty(), "Ingen opgaver blev fundet efter tilføjelse");
 
-        boolean found = false;
-        for (Task task : tasks.values()) {
-            if (task.getTaskId() != 1 ) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            System.out.println("WARNING: Kunne ikke finde opgave med taskId '1'");
-        }
+        // Verificer at den nye task blev tilføjet - nu hvor ID'et er kendt
+        assertTrue(tasks.containsKey(newTask.getTaskId()),
+                "Den tilføjede opgave med ID " + newTask.getTaskId() + " blev ikke fundet");
 
-        assertTrue(found, "Den tilføjede opgave blev ikke fundet");
+        // Verificer opgavens indhold
+        Task retrievedTask = tasks.get(newTask.getTaskId());
+        assertEquals("Ny opgave", retrievedTask.getTaskName());
+        assertEquals("Ny beskrivelse", retrievedTask.getTaskDescription());
+        assertEquals(10, retrievedTask.getTaskEstimatedHours());
+        assertEquals(TaskStatus.IN_PROGRESS, retrievedTask.getTaskStatus());
     }
 
     @Test
@@ -103,7 +104,7 @@ public class TaskRepositoryTest {
         int taskId = 1;
 
         //Act
-        Task actualTask = taskRepository.getTaskById(taskId);
+        Task actualTask = taskRepository.getTaskByTaskId(taskId);
 
         //Assert
         assertEquals(taskId, actualTask.getTaskId());
