@@ -13,13 +13,13 @@
     <form th:action="@{/logout}" method="post">
       <button type="submit" class="btn btn-danger">Logout</button>
     </form>
-    <a th:href="@{/projects/{id}(id=${projectId})}" class="btn btn-danger" style="margin-left: 10px;">Back to Project</a>
+    <a th:href="@{/dashboard/{projectId}(projectId=${projectId})}" class="btn btn-danger" style="margin-left: 10px;">Back to Project</a>
   </div>
 </header>
 <main>
   <h1>Add Subproject</h1>
   <!-- The form action now uses the project ID from the URL path -->
-  <form th:action="@{/projects/{projectId}/subprojects/saveSubProject(projectId=${projectId})}" th:object="${newSubProject}" method="post">
+  <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}" th:object="${newSubProject}" method="post">
     <!-- Hidden field to store the project ID -->
     <input type="hidden" th:field="*{projectId}" th:value="${projectId}" />
 

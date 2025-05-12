@@ -40,13 +40,14 @@ public class TaskRepository {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, newTaskToAdd.getTaskName());
-            ps.setString(2, newTaskToAdd.getTaskDescription());
-            ps.setDate(3, Date.valueOf(newTaskToAdd.getTaskStartDate()));
-            ps.setDate(4, Date.valueOf(newTaskToAdd.getTaskEndDate()));
-            ps.setDouble(5, newTaskToAdd.getTaskEstimatedHours());
-            ps.setString(6, newTaskToAdd.getTaskStatus().toString());
-            ps.setInt(7, subProjectId);
+            ps.setInt(1, newTask.getSubProjectId());
+            ps.setString(2, newTask.getTaskName());
+            ps.setString(3, newTask.getTaskDescription());
+            ps.setDate(4, Date.valueOf(newTask.getTaskStartDate()));
+            ps.setDate(5, Date.valueOf(newTask.getTaskEndDate()));
+            ps.setDouble(6, newTask.getTaskEstimatedHours());
+            ps.setString(7, newTask.getTaskStatus().toString());
+
             return ps;
         }, keyHolder);
 
@@ -59,25 +60,6 @@ public class TaskRepository {
         return key.intValue();
 
     }
-
-
-
-//    @Transactional
-//    public void addTask(Task newTaskToAdd, int subProjectId) {
-//
-//        String sql = "INSERT INTO task(task_name, task_description, task_start_date, " +
-//                "task_end_date, task_estimated_hours, task_status, sub_project_id)" +
-//                "  VALUES (?,?,?,?,?,?,?)";
-//
-//        jdbcTemplate.update(sql,
-//                newTaskToAdd.getTaskName(),
-//                newTaskToAdd.getTaskDescription(),
-//                newTaskToAdd.getTaskStartDate(),
-//                newTaskToAdd.getTaskEndDate(),
-//                newTaskToAdd.getTaskEstimatedHours(),
-//                newTaskToAdd.getTaskStatus().toString(),
-//                subProjectId);
-//    }
 
 
     public void deleteTask(Task taskToDelete) {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/projects/{projectId}")
+@RequestMapping("/dashboard/{projectId}/projectOverview")
 public class SubProjectController extends BaseController {
 
     private final SubProjectService subProjectService;
@@ -21,7 +21,7 @@ public class SubProjectController extends BaseController {
         this.subProjectService = subProjectService;
     }
 
-    @GetMapping("/subprojects/{subProjectId}")
+    @GetMapping("/{subProjectId}/subProjectOverview")
     public String showSubProjectOverview(@PathVariable int projectId, @PathVariable int subProjectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -41,7 +41,7 @@ public class SubProjectController extends BaseController {
         return "subProjectOverview";
     }
 
-    @GetMapping("/subprojects/addSubproject")
+    @GetMapping("/addSubproject")
     public String addNewSubProject(@PathVariable int projectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -57,7 +57,7 @@ public class SubProjectController extends BaseController {
         return "addSubProject";
     }
 
-    @PostMapping("/subprojects/saveSubProject")
+    @PostMapping("/saveSubProject")
     public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -66,6 +66,6 @@ public class SubProjectController extends BaseController {
 
         subProjectService.addNewSubProject(newSubProject);
 
-        return "redirect:/projects/" + projectId + "/overview";
+        return "redirect:/dashboard/" + projectId + "/projectOverview";
     }
 }

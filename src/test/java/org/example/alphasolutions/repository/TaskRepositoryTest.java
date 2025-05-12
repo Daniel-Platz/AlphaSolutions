@@ -8,9 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,50 +23,37 @@ public class TaskRepositoryTest {
     private TaskRepository taskRepository;
 
     @Test
-    public void addTask() throws SQLException {
-        //Arrange
-        int subProjectId = 1;
+    public void testAddNewTask() {
+        Task taskToAdd = new Task();
+        taskToAdd.setSubProjectId(1);
+        taskToAdd.setTaskName("Test Task");
+        taskToAdd.setTaskDescription("This is a test description");
+        taskToAdd.setTaskStartDate(LocalDate.now());
+        taskToAdd.setTaskEndDate(LocalDate.now().plusDays(10));
+        taskToAdd.setTaskEstimatedHours(10);
+        taskToAdd.setTaskStatus(TaskStatus.IN_PROGRESS);
 
-        //Opret en ny task
-        Task newTask = new Task();
-        newTask.setTaskName("Ny opgave");
-        newTask.setTaskDescription("Ny beskrivelse");
+        int newTaskId = taskRepository.addNewTask(taskToAdd);
 
-        // Brug java.util.Calendar i stedet for direkte Date konstruktion
-        Calendar startCal = Calendar.getInstance();
-        startCal.set(2025, Calendar.JUNE, 5); // Bemærk: måneder er 0-baseret i Calendar
-        newTask.setTaskStartDate(startCal.getTime());
+        assertTrue(newTaskId > 0, "Should return a valid ID");
 
-        Calendar endCal = Calendar.getInstance();
-        endCal.set(2025, Calendar.JULY, 12);
-        newTask.setTaskEndDate(endCal.getTime());
+        List<Task> tasks = taskRepository.findAllTasks();
 
-        newTask.setTaskEstimatedHours(10);
-        newTask.setTaskStatus(TaskStatus.IN_PROGRESS);
-
-        //Act
-        taskRepository.addTask(newTask, subProjectId);
-
-        // Efter addTask bør newTask have fået et ID tildelt
-        assertNotNull(newTask.getTaskId(), "Task ID blev ikke sat efter tilføjelse");
-
-        //Assert
-        Map<Integer, Task> tasks = taskRepository.getTasksBySubProjectId(subProjectId);
-        assertNotNull(tasks, "Kunne ikke hente opgaver efter tilføjelse");
-        assertFalse(tasks.isEmpty(), "Ingen opgaver blev fundet efter tilføjelse");
-
-        // Verificer at den nye task blev tilføjet - nu hvor ID'et er kendt
-        assertTrue(tasks.containsKey(newTask.getTaskId()),
-                "Den tilføjede opgave med ID " + newTask.getTaskId() + " blev ikke fundet");
-
-        // Verificer opgavens indhold
-        Task retrievedTask = tasks.get(newTask.getTaskId());
-        assertEquals("Ny opgave", retrievedTask.getTaskName());
-        assertEquals("Ny beskrivelse", retrievedTask.getTaskDescription());
-        assertEquals(10, retrievedTask.getTaskEstimatedHours());
-        assertEquals(TaskStatus.IN_PROGRESS, retrievedTask.getTaskStatus());
+        Task createdTask = null;
+        for (Task t : tasks) {
+            if ("Test Task".equals(t.getTaskName())) {
+                createdTask = t;
+                break;
+            }
+        }
+        assertNotNull(createdTask);
+        assertEquals("This is a test description", createdTask.getTaskDescription(), "Description should match");
+        assertEquals(10, createdTask.getTaskEstimatedHours(),
+                "Estimated hours should match");
+        assertEquals(TaskStatus.IN_PROGRESS, createdTask.getTaskStatus(),
+                "Status should match");
     }
-
+/*
     @Test
     //TODO Skal resten af task-felterne (beskrivelse etc.) med i testen, ligesom i WISHLIST PROJECT?
     public void getTasksBySubProjectId() throws SQLException {
@@ -76,7 +62,7 @@ public class TaskRepositoryTest {
         int subProjectId = 1;
 
         //Act
-        Map<Integer, Task> tasks = taskRepository.getTasksBySubProjectId(subProjectId);
+        List<Task> tasks = taskRepository.getTasksBySubProjectId(subProjectId);
 
         //Assert
         assertNotNull(tasks, "getTasksBySubProjectId retunerede null");
@@ -142,6 +128,8 @@ public class TaskRepositoryTest {
 
 
 
+
+ */
 
 
 

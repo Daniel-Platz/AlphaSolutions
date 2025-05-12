@@ -30,7 +30,7 @@
 
   <!-- Add Task Button (only for certain roles) -->
   <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-    <a th:href="@{/projects/{projectId}/subprojects/{subProjectId}/tasks/create(projectId=${projectId},subProjectId=${subProjectId})}">Add New Task</a>
+    <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask(projectId=${projectId},subProjectId=${subProjectId})}">Add New Task</a>
   </div>
 
   <!-- Tasks List -->
@@ -54,12 +54,12 @@
         <td th:text="${task.taskEstimatedHours}"></td>
         <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
         <td>
-          <a th:href="@{/projects/{projectId}/tasks/{taskId}(projectId=${projectId},taskId=${task.taskId})}">View</a>
+          <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview(projectId=${projectId},subProjectId=${subProjectId}, taskId=${task.taskId})}">View</a>
 
           <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
           <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-            <a th:href="@{/projects/{projectId}/tasks/{taskId}/edit(projectId=${projectId},taskId=${task.taskId})}">Edit</a>
-            <a th:href="@{/projects/{projectId}/tasks/{taskId}/delete(projectId=${projectId},taskId=${task.taskId})}"
+            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}">Edit</a>
+            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/deleteTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}"
                onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
           </span>
         </td>
@@ -73,7 +73,7 @@
 
   <!-- Back button -->
   <div>
-    <a th:href="@{/projects/{id}/overview(id=${projectId})}" class="button">Back to Project Overview</a>
+    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Back to Project Overview</a>
   </div>
 </main>
 </body>

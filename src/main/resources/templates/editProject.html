@@ -13,13 +13,13 @@
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-danger">Logout</button>
         </form>
-        <a href="/projects" class="btn btn-danger" style="margin-left: 10px;">Back</a>
+        <a href="/dashboard" class="btn btn-danger" style="margin-left: 10px;">Back</a>
     </div>
 </header>
 
 <main>
     <h1>Edit Project</h1>
-    <form th:action="@{/projects/{id}/edit(id=${project.projectId})}" th:object="${project}" method="post">
+    <form th:action="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}" th:object="${project}" method="post">
         <input type="hidden" th:field="*{projectId}" />
         <input type="hidden" name="oldManagerId" th:value="${oldManagerId}" />
         <ul>

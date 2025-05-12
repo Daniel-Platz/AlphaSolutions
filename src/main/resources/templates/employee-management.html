@@ -8,7 +8,7 @@
 </head>
 <body>
 <header class="header">
-  <a th:href="@{/projects}">
+  <a th:href="@{/dashboard}">
     <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
   </a>
 
@@ -16,7 +16,9 @@
     <div class="user-info" th:if="${session.employee != null}">
       <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
       <span th:text="'(' + ${session.role} + ')'"></span>
-      <a href="/logout" class="logout-btn">Logout</a>
+      <form action="/logout" method="post" style="display: inline;">
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
     </div>
     <button class="circle-btn"></button>
   </div>
@@ -129,7 +131,7 @@
     </tr>
     </tbody>
   </table>
-  <a href="/projects" class="button">Tilbage til projektoversigten</a>
+  <a href="/dashboard" class="button">Tilbage til projektoversigten</a>
 </div>
 </body>
 </html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Overview</title>
+</head>
+<body>
+<header>
+    <div>ALPHA SOLUTIONS</div>
+    <div th:if="${session.employee != null}">
+        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+        <span th:text="'(' + ${session.role} + ')'"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</header>
+<main>
+    <h1>Task Details</h1>
+    <!-- Task Information -->
+    <div th:if="${task != null}">
+        <table>
+            <tr>
+                <th>Task Name</th>
+                <td th:text="${task.taskName}"></td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td th:text="${task.taskDescription}"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${task.taskStatus}"></td>
+            </tr>
+            <tr>
+                <th>Start Date</th>
+                <td th:text="${task.taskStartDate != null ? #temporals.format(task.taskStartDate, 'yyyy-MM-dd') : ''}"></td>
+            </tr>
+            <tr>
+                <th>Deadline</th>
+                <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
+            </tr>
+            <tr>
+                <th>Estimated Hours</th>
+                <td th:text="${task.taskEstimatedHours}"></td>
+            </tr>
+            <tr>
+                <th>Assigned To</th>
+                <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
+            </tr>
+        </table>
+
+        <!-- Actions -->
+        <div class="actions">
+            <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}">Edit</a>
+                <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/deleteTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}"
+                   onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- Message if no task found -->
+    <div th:if="${task == null}">
+        <p>No task found</p>
+    </div>
+
+    <!-- Back button -->
+    <div>
+        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Back to Project Overview</a>
+    </div>
+</main>
+</body>
+</html>

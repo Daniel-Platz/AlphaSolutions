@@ -1,5 +1,6 @@
 package org.example.alphasolutions.repository;
 
+import org.example.alphasolutions.exception.CreationException;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
@@ -73,7 +74,12 @@ public class ProjectRepository {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().intValue();
+        Number key = keyHolder.getKey();
+        if (key==null) {
+            throw new CreationException();
+        }
+
+        return key.intValue();
     }
 
     @Transactional

@@ -8,7 +8,7 @@
 
 <h1>Rediger Opgave</h1>
 
-<form th:action="@{'/subProject/' + ${task.subProjectId} + '/task/' + ${task.taskId} + '/edit'}" method="post">
+<form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${project.projectId},subProjectId=${subProject.subProjectId},taskId=${task.taskId})}" method="post">
     <label for="taskName">Opgave Navn</label>
     <input type="text" id="taskName" name ="taskTitle" th:value="${task.taskTitle}" required><br><br>
 
