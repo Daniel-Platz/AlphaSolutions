@@ -50,14 +50,14 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void loginSuccessRedirectsToProjects() throws Exception {
+    void loginSuccessRedirectsToDashboard() throws Exception {
         when(employeeService.findByEmailAndPassword("test@alphasolutions.dk", "password")).thenReturn(employee);
 
         mockMvc.perform(post("/login")
                         .param("emailPrefix", "test") // ✅ fixed
                         .param("password", "password"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"))
+                .andExpect(redirectedUrl("/dashboard"))
                 .andExpect(request().sessionAttribute("employee", employee))
                 .andExpect(request().sessionAttribute("employeeId", 1))
                 .andExpect(request().sessionAttribute("role", "EMPLOYEE"));
@@ -150,7 +150,7 @@ class EmployeeControllerTest {
                         .param("email", "jane.doe@mail.com")
                         .param("role", "EMPLOYEE"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
@@ -178,11 +178,11 @@ class EmployeeControllerTest {
                         .session(session)
                         .param("employeeId", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
-    void changePasswordSuccessRedirectsToProjects() throws Exception {
+    void changePasswordSuccessRedirectsToDashboard() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employee", employee);
         session.setAttribute("role", "EMPLOYEE");
@@ -194,7 +194,7 @@ class EmployeeControllerTest {
                         .param("newPassword", "NewPassword1")
                         .param("confirmPassword", "NewPassword1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
@@ -208,7 +208,7 @@ class EmployeeControllerTest {
                         .param("newPassword", "abc")
                         .param("confirmPassword", "def"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("projects"))
+                .andExpect(view().name("dashboard"))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -225,7 +225,7 @@ class EmployeeControllerTest {
                         .param("newPassword", "abc")
                         .param("confirmPassword", "abc"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("projects"))
+                .andExpect(view().name("dashboard"))
                 .andExpect(model().attributeExists("error"));
     }
 
@@ -274,7 +274,7 @@ class EmployeeControllerTest {
                         .param("lastname", "User")
                         .param("role", "EMPLOYEE"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
