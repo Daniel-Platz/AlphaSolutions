@@ -3,7 +3,6 @@ package org.example.alphasolutions.model;
 import org.example.alphasolutions.enums.ProjectStatus;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class Project {
@@ -110,11 +109,11 @@ public class Project {
         this.projectAssignedEmployees = projectAssignedEmployees;
     }
 
-    public Integer getProjectManagerId() {
+    public Integer getManagerId() {
         return projectManagerId;
     }
 
-    public void setProjectManagerId(Integer projectManagerId) {
+    public void setManagerId(Integer projectManagerId) {
         this.projectManagerId = projectManagerId;
     }
 
@@ -124,64 +123,5 @@ public class Project {
 
     public Employee getProjectManager(){
         return projectManager;
-    }
-
-
-
-
-    //Methods
-    //TODO
-    public void addSubProject(SubProject subProject) {
-
-    }
-
-    //TODO
-    public void removeSubProject(int subProjectId) {
-
-    }
-
-    //TODO
-    public void getSubProject(int subProjectId) {
-
-    }
-
-    //TODO
-    public void calculateProjectTotalHours() {
-
-    }
-
-    //TODO
-    public void calculateProjectProgress() {
-
-    }
-
-    //TODO
-    public void getProjectDeadline() {
-
-    }
-
-    //TODO
-    public void updateProjectStatus(ProjectStatus projectStatus) {
-
-    }
-
-    //TODO
-    public void getAllSubProjects() {
-
-    }
-
-    //TODO
-    public void addEmployeeToProject(int employeeId){
-
-    }
-
-    //TODO
-    public void removeEmployeeFromProject(int employeeId){
-
-    }
-
-    //TODO
-    public void editProject(){
-
     }
 }

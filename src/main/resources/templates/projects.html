@@ -17,9 +17,13 @@
         <div class="user-info" th:if="${session.employee != null}">
             <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
             <span th:text="'(' + ${session.role} + ')'"></span>
-            <a href="/logout" class="logout-btn">Logout</a>
+            <form action="/logout" method="post" style="display: inline;">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
-        <button class="circle-btn"></button>
+        <a href="/employee-profile">
+            <button class="circle-btn"><i class="fas fa-user"></i></button>
+        </a>
     </div>
 </header>
 
@@ -81,8 +85,6 @@
 
                     <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
                             <a th:href="@{/projects/{id}/edit(id=${project.projectId})}" class="button">Edit</a>
-<!--                            <a th:href="@{/projects/{id}/delete(id=${project.projectId})}" class="button"-->
-<!--                               onclick="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')">Delete</a>-->
                         <form th:action="@{/projects/{id}/delete(id=${project.projectId})}" method="post"
                               onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
                               style="display: inline;">

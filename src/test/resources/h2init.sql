@@ -22,7 +22,9 @@ CREATE TABLE Project
     project_start_date      DATE         NOT NULL,
     project_end_date        DATE,
     project_estimated_hours INT,
-    project_status          VARCHAR(255) NOT NULL
+    project_status          VARCHAR(255) NOT NULL,
+    manager_id              int,
+    FOREIGN KEY (manager_id) REFERENCES employee (employee_id)
 );
 
 CREATE TABLE Sub_project
@@ -109,10 +111,10 @@ VALUES (1, 1),
        (6, 5);
 
 INSERT INTO Project (project_name, project_description, project_start_date, project_end_date,
-                     project_estimated_hours, project_status)
-VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE'),
-       ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING'),
-       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED');
+                     project_estimated_hours, project_status, manager_id)
+VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE', 2),
+       ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING', 5),
+       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED', 2);
 
 INSERT INTO Project_Employee (employee_id, project_id)
 VALUES (1, 1),
@@ -125,20 +127,17 @@ VALUES (1, 1),
        (3, 3),
        (6, 3);
 
-INSERT INTO Sub_project (sub_project_id, project_id, sub_project_name, sub_project_description, sub_project_start_date,
+INSERT INTO Sub_project (project_id, sub_project_name, sub_project_description, sub_project_start_date,
                          sub_project_end_date, sub_project_estimated_hours, sub_project_status)
-VALUES (1, 1, 'Database Design', 'Database schema design and implementation', '2025-01-15', '2025-03-15', 300,
-        'ACTIVE'),
-       (2, 1, 'Backend Development', 'API and business logic implementation', '2025-02-15', '2025-06-30', 800,
-        'PLANNING'),
-       (3, 1, 'Frontend Development', 'User interface development', '2025-04-01', '2025-07-31', 600, 'PLANNING'),
-       (4, 1, 'Testing', 'System testing and QA', '2025-07-01', '2025-08-15', 300, 'PLANNING'),
-       (5, 2, 'Requirements Analysis', 'Gathering and documenting requirements', '2025-02-01', '2025-02-28', 200,
-        'PLANNING'),
-       (6, 2, 'App Development', 'Implementing the mobile application', '2025-03-01', '2025-05-15', 800, 'PLANNING'),
-       (7, 2, 'Testing', 'QA and user acceptance testing', '2025-05-16', '2025-06-15', 200, 'PLANNING'),
-       (8, 3, 'Design', 'UI/UX design for website', '2024-11-01', '2024-11-30', 200, 'COMPLETED'),
-       (9, 3, 'Implementation', 'Front-end development', '2024-12-01', '2025-01-15', 600, 'COMPLETED');
+VALUES (1, 'Database Design', 'Database schema design and implementation', '2025-01-15', '2025-03-15', 300, 'ACTIVE'),
+       (1, 'Backend Development', 'API and business logic implementation', '2025-02-15', '2025-06-30', 800, 'PLANNING'),
+       (1, 'Frontend Development', 'User interface development', '2025-04-01', '2025-07-31', 600, 'PLANNING'),
+       (1, 'Testing', 'System testing and QA', '2025-07-01', '2025-08-15', 300, 'PLANNING'),
+       (2, 'Requirements Analysis', 'Gathering and documenting requirements', '2025-02-01', '2025-02-28', 200, 'PLANNING'),
+       (2, 'App Development', 'Implementing the mobile application', '2025-03-01', '2025-05-15', 800, 'PLANNING'),
+       (2, 'Testing', 'QA and user acceptance testing', '2025-05-16', '2025-06-15', 200, 'PLANNING'),
+       (3, 'Design', 'UI/UX design for website', '2024-11-01', '2024-11-30', 200, 'COMPLETED'),
+       (3, 'Implementation', 'Front-end development', '2024-12-01', '2025-01-15', 600, 'COMPLETED');
 
 INSERT INTO Task (task_id, sub_project_id, task_name, task_description, task_start_date, task_end_date,
                   task_estimated_hours, task_status)

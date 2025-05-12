@@ -15,6 +15,8 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -180,7 +182,13 @@ class ProjectControllerTest {
 
     @Test
     void showAddProjectForm_ShouldReturnAddProjectView_WithModelAttributes() throws Exception {
-        mockMvc.perform(get("/projects/addProject"))
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        mockMvc.perform(get("/projects/addProject")
+                .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addProject"))
                 .andExpect(model().attributeExists("newProject"))
@@ -189,8 +197,14 @@ class ProjectControllerTest {
 
     @Test
     void saveProject_ShouldRedirectToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
         mockMvc.perform(post("/projects/saveProject")
-                        .param("projectManagerId", "1")
+                        .session(session)
+                        .param("managerId", "1")
                         .param("projectName", "Test Project")
                         .param("projectDescription", "This is a test project")
                         .param("projectStartDate", "2025-01-01")
@@ -204,6 +218,55 @@ class ProjectControllerTest {
     @Test
     void deleteProject_ShouldRedirectToProjects() throws Exception {
         mockMvc.perform(post("/projects/1/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void showEditProjectForm_shouldReturnEditProjectView_withModelAttributes() throws Exception {
+        Project mockProject = new Project();
+
+        mockProject.setProjectId(1);
+        mockProject.setProjectName("mock name");
+        mockProject.setProjectDescription("mock description");
+        mockProject.setProjectStartDate(LocalDate.of(2025, 1, 1));
+        mockProject.setProjectEndDate(LocalDate.of(2025, 12, 31));
+        mockProject.setProjectEstimatedHours(5000);
+        mockProject.setProjectStatus(ProjectStatus.ACTIVE);
+        mockProject.setManagerId(2);
+
+        List<Employee> mockListOfManagers = new ArrayList<>();
+        Employee employee1 = new Employee(1, "Jack", "Jensen", "jack@alphasolutions.dk", Role.EMPLOYEE, "hejsa1234");
+        Employee employee2 = new Employee(2, "Test", "Testen", "test@alphasolutions.dk", Role.PROJECT_MANAGER, "hejsa1234");
+        mockListOfManagers.add(employee1);
+        mockListOfManagers.add(employee2);
+
+        when(projectService.findProjectById(1)).thenReturn(mockProject);
+        when(employeeService.getAllManagers()).thenReturn(mockListOfManagers);
+
+        mockMvc.perform(get("/projects/1/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editProject"))
+                .andExpect(model().attribute("project", mockProject))
+                .andExpect(model().attribute("statuses", ProjectStatus.values()))
+                .andExpect(model().attribute("managers", mockListOfManagers))
+                .andExpect(model().attribute("oldManagerId", 2));
+    }
+
+    @Test
+    void saveEditProject_shouldUpdateProjectAndRedirect() throws Exception {
+        int projectId = 1;
+        int oldManagerId = 2;
+
+        mockMvc.perform(post("/projects/{projectId}/edit", projectId)
+                        .param("projectName", "updated name")
+                        .param("projectDescription", "updated Description")
+                        .param("projectStartDate", "2025-01-01")
+                        .param("projectEndDate", "2025-12-31")
+                        .param("projectEstimatedHours", "1000")
+                        .param("projectStatus", "ACTIVE")
+                        .param("managerId", "3")
+                        .param("oldManagerId", String.valueOf(oldManagerId)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }

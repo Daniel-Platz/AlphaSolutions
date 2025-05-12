@@ -31,7 +31,9 @@ CREATE TABLE Project
     project_start_date      DATE         NOT NULL,
     project_end_date        DATE,
     project_estimated_hours INT(10),
-    project_status          VARCHAR(255) NOT NULL
+    project_status          VARCHAR(255) NOT NULL,
+    manager_id              int,
+    FOREIGN KEY (manager_id) REFERENCES Employee (employee_id)
 );
 
 -- Create Sub_project table
