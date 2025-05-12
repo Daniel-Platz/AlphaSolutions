@@ -98,7 +98,7 @@ class SubProjectControllerTest {
         int projectId = 1;
         int subProjectId = 1;
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId))
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -117,7 +117,7 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId)
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subProjectOverview"))
@@ -141,7 +141,7 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId)
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subProjectOverview"))
@@ -165,7 +165,7 @@ class SubProjectControllerTest {
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
         when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/{subProjectId}", projectId, subProjectId)
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subProjectOverview"))
@@ -205,12 +205,12 @@ class SubProjectControllerTest {
 
         when(subProjectService.addNewSubProject(any(SubProject.class))).thenReturn(newSubProjectId);
 
-        mockMvc.perform(post("/projects/{projectId}/subprojects/saveSubProject", projectId)
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
                         .session(session)
                         .param("subProjectName", "New SubProject")
                         .param("subProjectDescription", "New Description")
                         .param("subProjectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects/" + projectId + "/overview"));
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
     }
 }
