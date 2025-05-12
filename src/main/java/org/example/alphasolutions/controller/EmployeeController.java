@@ -38,9 +38,6 @@ public class EmployeeController extends BaseController {
                         @RequestParam String password,
                         Model model,
                         HttpSession session) {
-        if (!isLoggedIn(session)) {
-            return "redirect:/login";
-        }
 
         try {
             String email = emailPrefix + "@alphasolutions.dk";

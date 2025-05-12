@@ -57,13 +57,15 @@ public class SubProjectController extends BaseController {
         return "addSubProject";
     }
 
-    @PostMapping("/subprojects/saveSubproject")
+    @PostMapping("/subprojects/saveSubProject")
     public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
         newSubProject.setProjectId(projectId);
 
-        return "redirect:/projects/" + projectId + "/subProjectOverview";
+        subProjectService.addNewSubProject(newSubProject);
+
+        return "redirect:/projects/" + projectId + "/overview";
     }
 }
