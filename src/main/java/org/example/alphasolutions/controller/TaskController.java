@@ -1,12 +1,7 @@
 package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
-import org.example.alphasolutions.exception.Task.MissingTaskNameException;
-import org.example.alphasolutions.model.Employee;
-import org.example.alphasolutions.model.Project;
-import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.service.TaskService;
 import org.springframework.stereotype.Controller;
@@ -14,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -32,8 +27,8 @@ public class TaskController {
     public String addTask(@PathVariable int subProjectId,
                           @RequestParam("taskName") String taskName,
                           @RequestParam(value = "taskDescription", required = false) String taskDescription,
-                          @RequestParam(value = "taskStartDate", required = false) Date taskStartDate,
-                          @RequestParam(value = "taskEndDate", required = false) Date taskEndDate,
+                          @RequestParam(value = "taskStartDate", required = false) LocalDate taskStartDate,
+                          @RequestParam(value = "taskEndDate", required = false) LocalDate taskEndDate,
                           @RequestParam(value = "taskEstimatedHours", required = false) Integer taskEstimatedHours,
                           @RequestParam(value = "taskStatus", required = false) TaskStatus taskStatus, RedirectAttributes redirectAttributes) {
 

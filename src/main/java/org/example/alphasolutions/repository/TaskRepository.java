@@ -1,12 +1,15 @@
 package org.example.alphasolutions.repository;
 
 
+import org.example.alphasolutions.exception.CreationException;
 import org.example.alphasolutions.model.Task;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import org.springframework.stereotype.Repository;
@@ -27,7 +30,7 @@ public class TaskRepository {
     }
 
     @Transactional
-    public void addTask(Task newTaskToAdd, int subProjectId) {
+    public int addTask(Task newTaskToAdd, int subProjectId) {
         String sql = "INSERT INTO task(task_name, task_description, task_start_date, " +
                 "task_end_date, task_estimated_hours, task_status, sub_project_id)" +
                 " VALUES (?,?,?,?,?,?,?)";
@@ -39,8 +42,8 @@ public class TaskRepository {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, newTaskToAdd.getTaskName());
             ps.setString(2, newTaskToAdd.getTaskDescription());
-            ps.setDate(3, new java.sql.Date(newTaskToAdd.getTaskStartDate().getTime()));
-            ps.setDate(4, new java.sql.Date(newTaskToAdd.getTaskEndDate().getTime()));
+            ps.setDate(3, Date.valueOf(newTaskToAdd.getTaskStartDate()));
+            ps.setDate(4, Date.valueOf(newTaskToAdd.getTaskEndDate()));
             ps.setDouble(5, newTaskToAdd.getTaskEstimatedHours());
             ps.setString(6, newTaskToAdd.getTaskStatus().toString());
             ps.setInt(7, subProjectId);
@@ -49,9 +52,12 @@ public class TaskRepository {
 
         // Sæt det genererede ID på task-objektet
         Number key = keyHolder.getKey();
-        if (key != null) {
-            newTaskToAdd.setTaskId(key.intValue());
+        if (key == null) {
+            throw new CreationException();
         }
+
+        return key.intValue();
+
     }
 
 
