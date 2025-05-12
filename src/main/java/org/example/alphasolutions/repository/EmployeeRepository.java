@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -43,6 +42,7 @@ public class EmployeeRepository {
         jdbcTemplate.update(sql, employeeId);
     }
 
+
     public void updateEmployee(Employee employee) {
         String sql = "UPDATE employee SET firstname = ?, lastname = ?, role = ?, password = ? WHERE employee_id = ?";
         jdbcTemplate.update(sql,
@@ -54,7 +54,8 @@ public class EmployeeRepository {
         );
     }
 
-    public List<Employee> getallManagers() {
+
+    public List<Employee> getAllManagers() {
         String sql ="SELECT * FROM employee WHERE role = 'PROJECT_MANAGER'";
 
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Employee.class));

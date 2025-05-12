@@ -190,12 +190,20 @@ class ProjectControllerTest {
     @Test
     void saveProject_ShouldRedirectToProjects() throws Exception {
         mockMvc.perform(post("/projects/saveProject")
-                .param("projectName", "Test Project")
-                .param("projectDescription", "This is a test project")
-                .param("projectStartDate", "2025-01-01")
-                .param("projectEndDate", "2025-12-31")
-                .param("projectEstimatedHours", "200")
-                .param("projectStatus", "ACTIVE"))
+                        .param("projectManagerId", "1")
+                        .param("projectName", "Test Project")
+                        .param("projectDescription", "This is a test project")
+                        .param("projectStartDate", "2025-01-01")
+                        .param("projectEndDate", "2025-12-31")
+                        .param("projectEstimatedHours", "200")
+                        .param("projectStatus", "ACTIVE"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/projects"));
+    }
+
+    @Test
+    void deleteProject_ShouldRedirectToProjects() throws Exception {
+        mockMvc.perform(post("/projects/1/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/projects"));
     }

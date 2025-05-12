@@ -157,4 +157,19 @@ class ProjectRepositoryTest {
         assertEquals(projectToAdd.getProjectEstimatedHours(), newestAddedProject.getProjectEstimatedHours(), "Estimated hours for both objects should be equal");
         assertEquals(projectToAdd.getProjectStatus(), newestAddedProject.getProjectStatus(), "Status for both objects should be the same");
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testDeleteProjectFromDB(){
+        List<Project> projectsBeforeDeletion = projectRepository.findAllProjects();
+
+        projectRepository.deleteProjectFromDB(1);
+
+        List<Project> projectsAfterDeletion = projectRepository.findAllProjects();
+
+        assertNotEquals(projectsBeforeDeletion.size(), projectsAfterDeletion.size(), "The size of the two lists should not be the same");
+        assertNotEquals(projectsBeforeDeletion.getFirst().getProjectName(), projectsAfterDeletion.getFirst().getProjectName(),
+                "The project name of the first project in each list should not be the same, as it should've been deleted in one of them");
+    }
 }
