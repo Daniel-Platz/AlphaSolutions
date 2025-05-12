@@ -94,6 +94,8 @@ class EmployeeControllerTest {
     void showEmployeeManagementAsAdminReturnsEmployeeManagementView() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("role", "ADMIN");
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", employee.getEmployeeId());
 
         List<Employee> employees = List.of(employee);
         when(employeeService.getAllEmployees()).thenReturn(employees);
@@ -108,6 +110,8 @@ class EmployeeControllerTest {
     void showEmployeeManagementAsNonAdminRedirectsToProjects() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("role", "EMPLOYEE");
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", employee.getEmployeeId());
 
         mockMvc.perform(get("/admin/employees").session(session))
                 .andExpect(status().is3xxRedirection())
@@ -118,6 +122,8 @@ class EmployeeControllerTest {
     void addEmployeeAsAdminAddsEmployeeAndRedirects() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("role", "ADMIN");
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", employee.getEmployeeId());
 
         mockMvc.perform(post("/admin/employees/add")
                         .session(session)
@@ -134,6 +140,8 @@ class EmployeeControllerTest {
     void addEmployeeAsNonAdminRedirectsToProjects() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("role", "EMPLOYEE");
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", employee.getEmployeeId());
 
         mockMvc.perform(post("/admin/employees/add")
                         .session(session)
@@ -149,6 +157,8 @@ class EmployeeControllerTest {
     void deleteEmployeeAsAdminDeletesAndRedirects() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("role", "ADMIN");
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", employee.getEmployeeId());
 
         mockMvc.perform(post("/admin/employees/delete")
                         .session(session)
@@ -161,6 +171,8 @@ class EmployeeControllerTest {
     void deleteEmployeeAsNonAdminRedirectsToProjects() throws Exception {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("role", "EMPLOYEE");
+        session.setAttribute("employee", employee);
+        session.setAttribute("employeeId", employee.getEmployeeId());
 
         mockMvc.perform(post("/admin/employees/delete")
                         .session(session)
