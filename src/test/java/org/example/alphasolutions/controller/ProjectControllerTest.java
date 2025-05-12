@@ -182,7 +182,13 @@ class ProjectControllerTest {
 
     @Test
     void showAddProjectForm_ShouldReturnAddProjectView_WithModelAttributes() throws Exception {
-        mockMvc.perform(get("/projects/addProject"))
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        mockMvc.perform(get("/projects/addProject")
+                .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addProject"))
                 .andExpect(model().attributeExists("newProject"))
@@ -191,7 +197,13 @@ class ProjectControllerTest {
 
     @Test
     void saveProject_ShouldRedirectToProjects() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
         mockMvc.perform(post("/projects/saveProject")
+                        .session(session)
                         .param("managerId", "1")
                         .param("projectName", "Test Project")
                         .param("projectDescription", "This is a test project")

@@ -1,28 +1,29 @@
 package org.example.alphasolutions.model;
 
 import org.example.alphasolutions.enums.ProjectStatus;
-import org.example.alphasolutions.enums.TaskStatus;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Task {
 
     private int taskId;
+    private int subProjectId;
     private String taskName;
     private String taskDescription;
-    private Date taskStartDate;
-    private Date taskEndDate;
+    private LocalDate taskStartDate;
+    private LocalDate taskEndDate;
     private ProjectStatus taskStatus;
-    private int taskEstimatedHours; //evt double (PO-møde)
+    private int taskEstimatedHours;
     private List<Employee> taskAssignedEmployees;
 
     public Task() {
 
     }
 
-    public Task(int taskId, String taskName, String taskDescription, Date taskStartDate, Date taskEndDate, ProjectStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
+    public Task(int taskId, int subProjectId, String taskName, String taskDescription, LocalDate taskStartDate, LocalDate taskEndDate, ProjectStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
         this.taskId = taskId;
+        this.subProjectId = subProjectId;
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStartDate = taskStartDate;
@@ -43,6 +44,14 @@ public class Task {
         this.taskId = taskId;
     }
 
+    public int getSubProjectId() {
+        return taskId;
+    }
+
+    public void setSubProjectId(int taskId) {
+        this.taskId = taskId;
+    }
+
     public String getTaskName() {
         return taskName;
     }
@@ -59,19 +68,19 @@ public class Task {
         this.taskDescription = taskDescription;
     }
 
-    public Date getTaskStartDate() {
+    public LocalDate getTaskStartDate() {
         return taskStartDate;
     }
 
-    public void setTaskStartDate(Date taskStartDate) {
+    public void setTaskStartDate(LocalDate taskStartDate) {
         this.taskStartDate = taskStartDate;
     }
 
-    public Date getTaskEndDate() {
+    public LocalDate getTaskEndDate() {
         return taskEndDate;
     }
 
-    public void setTaskEndDate(Date taskEndDate) {
+    public void setTaskEndDate(LocalDate taskEndDate) {
         this.taskEndDate = taskEndDate;
     }
 
@@ -98,35 +107,4 @@ public class Task {
     public void setTaskAssignedEmployees(List<Employee> taskAssignedEmployees) {
         this.taskAssignedEmployees = taskAssignedEmployees;
     }
-
-    // Methods
-    public void calculateTaskTotalHours() {
-        // TODO
-    }
-
-    public void calculateTaskProgress() {
-        // TODO: udregn progress
-    }
-
-    public void getTaskDeadline() {
-        // TODO
-    }
-
-    public void assignEmployeeToTask(int employeeId) {
-        // TODO: find employee i ID og tilføj til taskAssignedEmployees
-    }
-
-    public void removeEmployeeFromTask(int employeeId) {
-        // TODO: find employee af ID og fjerne fra taskAssignedEmployees
-    }
-
-    public void updateTaskStatus() {
-        // TODO
-    }
-
-    public void editTask() {
-        // TODO
-    }
-
-
 }

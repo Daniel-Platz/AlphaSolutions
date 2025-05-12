@@ -8,6 +8,7 @@ import java.util.List;
 public class SubProject {
 
     private int subProjectId;
+    private int projectId;
     private String subProjectName;
     private String subProjectDescription;
     private LocalDate subProjectStartDate;
@@ -16,8 +17,9 @@ public class SubProject {
     private ProjectStatus subProjectStatus;
     private List<Task> tasks;
 
-    public SubProject(int subProjectId, String subProjectName, String subProjectDescription, LocalDate subProjectStartDate, LocalDate subProjectEndDate, int subProjectEstimatedHours, ProjectStatus subProjectStatus, List<Task> tasks) {
+    public SubProject(int subProjectId, int projectId, String subProjectName, String subProjectDescription, LocalDate subProjectStartDate, LocalDate subProjectEndDate, int subProjectEstimatedHours, ProjectStatus subProjectStatus, List<Task> tasks) {
         this.subProjectId = subProjectId;
+        this.projectId = projectId;
         this.subProjectName = subProjectName;
         this.subProjectDescription = subProjectDescription;
         this.subProjectStartDate = subProjectStartDate;
@@ -39,6 +41,14 @@ public class SubProject {
 
     public void setSubProjectId(int subProjectId) {
         this.subProjectId = subProjectId;
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public String getSubProjectName() {
@@ -95,47 +105,5 @@ public class SubProject {
 
     public void setSubProjectDescription(String subProjectDescription) {
         this.subProjectDescription = subProjectDescription;
-    }
-
-
-    //Methods
-    //TODO
-    public void addTask(Task task){
-
-    }
-
-    //TODO
-    public void removeTask(int taskId){
-
-    }
-
-    //TODO
-    public void getTask(int taskId){
-
-    }
-
-    //TODO
-    public void calculateSubProjectTotalHours(){
-
-    }
-
-    //TODO
-    public void calculateSubProjectProgress(){
-
-    }
-
-    //TODO
-    public void getSubProjectDeadline(){
-
-    }
-
-    //TODO
-    public void updateSubProjectStatus(ProjectStatus subProjectStatus){
-
-    }
-
-    //TODO
-    public void editSubProject(){
-
     }
 }

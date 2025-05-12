@@ -102,10 +102,7 @@
                 <td th:text="${subProject.subProjectEndDate != null ? #temporals.format(subProject.subProjectEndDate, 'yyyy-MM-dd') : ''}"></td>
                 <td th:text="${subProject.subProjectStatus}"></td>
                 <td>
-                    <a th:href="@{/subProjects/{id}(id=${subProject.subProjectId})}" class="button">View</a>
-
-                    <!-- Edit/Delete buttons (only for ADMIN, PROJECT_MANAGER, and subProject owner) -->
-                    <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">                        <a
+                    <a th:href="@{/projects/{projectId}/subprojects/{subProjectId}(projectId=${project.projectId},subProjectId=${subProject.subProjectId})}" class="button">View</a>                    <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">                        <a
                             th:href="@{/subProjects/{id}/edit(id=${subProject.subProjectId})}" class="button">Edit</a>
                         <a th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
                            th:href="@{/subProjects/{id}/delete(id=${subProject.subProjectId})}"
@@ -122,11 +119,10 @@
 
         <!-- Add Sub Project Button (only for ADMIN, PROJECT_MANAGER and project members) -->
         <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-subproject-section">
-            <a th:href="@{/projects/{id}/subProjects/create(id=${project.projectId})}" class="button">Add New Sub
+            <a th:href="@{/projects/{id}/subprojects/addSubproject(id=${project.projectId})}" class="button">Add New Sub
                 Project</a>
         </div>
     </div>
-
     <!-- Back to Projects List -->
     <div class="navigation-buttons">
         <a th:href="@{/projects}" class="button">Back to Projects</a>
