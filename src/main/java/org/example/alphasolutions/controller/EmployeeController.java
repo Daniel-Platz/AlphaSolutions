@@ -51,7 +51,7 @@ public class EmployeeController extends BaseController {
                 session.setAttribute("forcePasswordChange", true);
             }
 
-            return "redirect:/projects";
+            return "redirect:/dashboard";
         } catch (InvalidCredentialsException e) {
             model.addAttribute("error", e.getMessage());
             return "login";
@@ -86,7 +86,7 @@ public class EmployeeController extends BaseController {
         }
 
         if (!"ADMIN".equals(session.getAttribute("role"))) {
-            return "redirect:/projects";
+            return "redirect:/dashboard";
         }
 
         Employee newEmployee = new Employee();
@@ -109,7 +109,7 @@ public class EmployeeController extends BaseController {
         }
 
         if (!"ADMIN".equals(session.getAttribute("role"))) {
-            return "redirect:/projects";
+            return "redirect:/dashboard";
         }
 
         employeeService.deleteEmployeeById(employeeId);
@@ -135,21 +135,21 @@ public class EmployeeController extends BaseController {
             model.addAttribute("error", "Kodeordene matcher ikke.");
             model.addAttribute("projects", List.of());  // tom liste for at undgå fejl
             model.addAttribute("role", session.getAttribute("role"));
-            return "projects";
+            return "dashboard";
         }
 
         if (!employeeService.isValidPassword(newPassword)) {
             model.addAttribute("error", "Kodeordet skal indeholde mindst ét stort bogstav, mindst ét tal og mindst et specialtegn.");
             model.addAttribute("projects", List.of());
             model.addAttribute("role", session.getAttribute("role"));
-            return "projects";
+            return "dashboard";
         }
 
         employee.setPassword(newPassword);
         employeeService.updatePassword(employee);
         session.setAttribute("forcePasswordChange", false);
 
-        return "redirect:/projects";
+        return "redirect:/dahboard";
     }
 
     @PostMapping("/admin/employees/update")
@@ -160,7 +160,7 @@ public class EmployeeController extends BaseController {
                                  @RequestParam String role,
                                  HttpSession session) {
         if (!"ADMIN".equals(session.getAttribute("role"))) {
-            return "redirect:/projects";
+            return "redirect:/dashboard";
         }
 
         Employee employee = new Employee();
@@ -228,7 +228,6 @@ public class EmployeeController extends BaseController {
         return "user-profile";
     }
 
-    //TODO Implement enhance logout method
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

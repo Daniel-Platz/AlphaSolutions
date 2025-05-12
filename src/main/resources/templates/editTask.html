@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rediger opgave</title>
+</head>
+<body>
+
+<h1>Rediger Opgave</h1>
+
+<form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${project.projectId},subProjectId=${subProject.subProjectId},taskId=${task.taskId})}" method="post">
+    <label for="taskName">Opgave Navn</label>
+    <input type="text" id="taskName" name ="taskTitle" th:value="${task.taskTitle}" required><br><br>
+
+    <label for="taskDescription">Beskrivelse</label>
+    <input type="text" id="taskDescription" name="taskDescription" th:value="${task.taskDescription}"><br><br>
+
+    <label for="taskStartDate">Start dato</label>
+    <input type="date" id="taskStartDate" name="taskStartDate" th:value="${task.taskStartDate}"><br><br>
+
+    <label for="taskEndDate">slut dato</label>
+    <input type="date" id="taskEndDate" name="taskEndDate" th:value="${task.taskEndDate}"><br><br>
+
+    <label for="taskEstimatedHours">Estimeret antal timer</label>
+    <input type="number" id="taskEstimatedHours" name="taskEstimatedHours" th:value="${task.taskEstimatedHours}"><br><br>
+
+    <label for="taskStatus">Status</label>
+    <select  id="taskStatus" name="taskStatus" th:value="${task.taskStatus}">
+      <option value="">--Vælg Status--</option>
+      <option th:each="statusOption : ${T(org.example.alphasolutions.enums.TaskStatus).values()}"
+              th:value="${statusOption}"
+              th:text="${statusOption}"
+              th:selected="${statusOption == task.taskStatus}">
+      </option>
+    </select> <br><br>
+
+    <button type="button" class="cancel-btn" onclick="window.location.href='projects.html'">Annuller</button>
+    <button type="submit" onclick="window.location.href='projects.html'">Gem Opgave</button>
+
+
+
+
+</form>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package org.example.alphasolutions.model;
 
 import org.example.alphasolutions.enums.ProjectStatus;
+import org.example.alphasolutions.enums.TaskStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +14,7 @@ public class Task {
     private String taskDescription;
     private LocalDate taskStartDate;
     private LocalDate taskEndDate;
-    private ProjectStatus taskStatus;
+    private TaskStatus taskStatus;
     private int taskEstimatedHours;
     private List<Employee> taskAssignedEmployees;
 
@@ -21,7 +22,7 @@ public class Task {
 
     }
 
-    public Task(int taskId, int subProjectId, String taskName, String taskDescription, LocalDate taskStartDate, LocalDate taskEndDate, ProjectStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
+    public Task(int taskId, int subProjectId, String taskName, String taskDescription, LocalDate taskStartDate, LocalDate taskEndDate, TaskStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
         this.taskId = taskId;
         this.subProjectId = subProjectId;
         this.taskName = taskName;
@@ -45,11 +46,11 @@ public class Task {
     }
 
     public int getSubProjectId() {
-        return taskId;
+        return subProjectId;
     }
 
-    public void setSubProjectId(int taskId) {
-        this.taskId = taskId;
+    public void setSubProjectId(int subProjectId) {
+        this.subProjectId = subProjectId;
     }
 
     public String getTaskName() {
@@ -84,11 +85,11 @@ public class Task {
         this.taskEndDate = taskEndDate;
     }
 
-    public ProjectStatus getTaskStatus() {
+    public TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    public void setTaskStatus(ProjectStatus taskStatus) {
+    public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 

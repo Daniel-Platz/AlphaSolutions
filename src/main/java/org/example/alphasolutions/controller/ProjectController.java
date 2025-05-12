@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@RequestMapping("/dashboard")
 public class ProjectController extends BaseController {
 
     private final ProjectService projectService;
@@ -23,8 +24,7 @@ public class ProjectController extends BaseController {
         this.projectService = projectService;
         this.employeeService = employeeService;
     }
-
-    @GetMapping("/projects")
+    @GetMapping("")
     public String showProjects(Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -44,10 +44,10 @@ public class ProjectController extends BaseController {
         model.addAttribute("projects", projects);
         model.addAttribute("role", role);
 
-        return "projects";
+        return "dashboard";
     }
 
-    @GetMapping("/projects/{projectId}/overview")
+    @GetMapping("/{projectId}/projectOverview")
     public String showProjectDetails (@PathVariable int projectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -55,7 +55,7 @@ public class ProjectController extends BaseController {
 
         Project project = projectService.findProjectById(projectId);
         if (project==null) {
-            return "redirect:/projects";
+            return "redirect:/dashboard";
         }
 
         List<SubProject> subProjects = projectService.findSubProjectsByProjectId(projectId);
@@ -70,7 +70,7 @@ public class ProjectController extends BaseController {
         return "projectOverview";
     }
 
-    @GetMapping("/projects/addProject")
+    @GetMapping("/addProject")
     public String addProjectToDatabase(Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -84,7 +84,7 @@ public class ProjectController extends BaseController {
         return "addProject";
     }
 
-    @PostMapping("/projects/saveProject")
+    @PostMapping("/saveProject")
     public String saveProjectToDatabase(@ModelAttribute("newProject") Project newProject, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
@@ -95,16 +95,16 @@ public class ProjectController extends BaseController {
 
         projectService.assignEmployeeToProject(managerId, projectId);
 
-        return "redirect:/projects";
+        return "redirect:/dashboard";
     }
 
-    @PostMapping("projects/{projectId}/delete")
+    @PostMapping("/{projectId}/deleteProject")
     public String deleteProjectFromDB(@PathVariable("projectId") int projectId){
         projectService.deleteProjectFromDB(projectId);
-        return "redirect:/projects";
+        return "redirect:/dashboard";
     }
 
-    @GetMapping("/projects/{projectId}/edit")
+    @GetMapping("/{projectId}/editProject")
     public String editProject(@PathVariable("projectId") int projectId, Model model){
         Project project = projectService.findProjectById(projectId);
 
@@ -115,13 +115,13 @@ public class ProjectController extends BaseController {
         return "editProject";
     }
 
-    @PostMapping("/projects/{projectId}/edit")
+    @PostMapping("/{projectId}/editProject")
     public String saveEditProject(@PathVariable("projectId") int projectId,
                                   @RequestParam("oldManagerId") int oldManagerId,
                                   @ModelAttribute Project project){
         project.setProjectId(projectId);
         projectService.updateProject(project, oldManagerId);
 
-        return "redirect:/projects";
+        return "redirect:/dashboard";
     }
 }

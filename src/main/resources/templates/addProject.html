@@ -13,14 +13,14 @@
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-danger">Logout</button>
         </form>
-        <a href="/projects" class="btn btn-danger" style="margin-left: 10px;">Back</a>
+        <a href="/dashboard" class="btn btn-danger" style="margin-left: 10px;">Back</a>
     </div>
 </header>
 
 <main>
     <h1>Add Project</h1>
 
-    <form th:action="@{/projects/saveProject}" th:object="${newProject}" method="post">
+    <form th:action="@{/dashboard/saveProject}" th:object="${newProject}" method="post">
         <ul>
             <li>
                 <label for="projectManagerId">Project Manager</label>

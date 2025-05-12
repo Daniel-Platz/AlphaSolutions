@@ -2,6 +2,7 @@ package org.example.alphasolutions.controller;
 
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
+import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
@@ -51,7 +52,7 @@ class SubProjectControllerTest {
         task1.setTaskStartDate(LocalDate.of(2025, 1, 15));
         task1.setTaskEndDate(LocalDate.of(2025, 1, 31));
         task1.setTaskEstimatedHours(80);
-        task1.setTaskStatus(ProjectStatus.COMPLETED);
+        task1.setTaskStatus(TaskStatus.COMPLETED);
         task1.setSubProjectId(1);
 
         task2 = new Task();
@@ -61,7 +62,7 @@ class SubProjectControllerTest {
         task2.setTaskStartDate(LocalDate.of(2025, 2, 1));
         task2.setTaskEndDate(LocalDate.of(2025, 2, 15));
         task2.setTaskEstimatedHours(100);
-        task2.setTaskStatus(ProjectStatus.ACTIVE);
+        task2.setTaskStatus(TaskStatus.IN_PROGRESS);
         task2.setSubProjectId(1);
 
         subProjectTasks = Arrays.asList(task1, task2);
@@ -183,7 +184,7 @@ class SubProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        mockMvc.perform(get("/projects/{projectId}/subprojects/addSubproject", projectId)
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/addSubproject", projectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addSubProject"))

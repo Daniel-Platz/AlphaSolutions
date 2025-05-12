@@ -139,23 +139,22 @@ VALUES (1, 'Database Design', 'Database schema design and implementation', '2025
        (3, 'Design', 'UI/UX design for website', '2024-11-01', '2024-11-30', 200, 'COMPLETED'),
        (3, 'Implementation', 'Front-end development', '2024-12-01', '2025-01-15', 600, 'COMPLETED');
 
-INSERT INTO Task (task_id, sub_project_id, task_name, task_description, task_start_date, task_end_date,
+INSERT INTO Task (sub_project_id, task_name, task_description, task_start_date, task_end_date,
                   task_estimated_hours, task_status)
-VALUES (1, 1, 'ER Diagram', 'Create entity-relationship diagrams', '2025-01-15', '2025-01-31', 80, 'COMPLETED'),
-       (2, 1, 'Schema Creation', 'Define database schema', '2025-02-01', '2025-02-15', 100, 'ACTIVE'),
-       (3, 1, 'Data Migration Plan', 'Plan for migrating existing data', '2025-02-16', '2025-03-15', 120, 'PLANNING'),
-       (4, 2, 'API Design', 'Design RESTful API endpoints', '2025-02-15', '2025-03-15', 200, 'PLANNING'),
-       (5, 2, 'Business Logic', 'Implement core business logic', '2025-03-16', '2025-05-15', 400, 'PLANNING'),
-       (6, 2, 'Integration', 'Integrate with external systems', '2025-05-16', '2025-06-30', 200, 'PLANNING'),
-       (7, 3, 'Component Design', 'Design reusable UI components', '2025-04-01', '2025-05-15', 200, 'PLANNING'),
-       (8, 3, 'UI Implementation', 'Implement user interfaces', '2025-05-16', '2025-07-15', 300, 'PLANNING'),
-       (9, 3, 'Responsive Design', 'Ensure responsive design for all devices', '2025-07-16', '2025-07-31', 100,
-        'PLANNING'),
-       (10, 8, 'Wireframes', 'Create wireframes for new website', '2024-11-01', '2024-11-15', 80, 'COMPLETED'),
-       (11, 8, 'Visual Design', 'Create visual design elements', '2024-11-16', '2024-11-30', 120, 'COMPLETED'),
-       (12, 9, 'HTML/CSS', 'Convert design to HTML/CSS', '2024-12-01', '2024-12-15', 200, 'COMPLETED'),
-       (13, 9, 'JavaScript', 'Implement interactive features', '2024-12-16', '2025-01-05', 250, 'COMPLETED'),
-       (14, 9, 'Testing', 'Cross-browser testing', '2025-01-06', '2025-01-15', 150, 'COMPLETED');
+VALUES (1, 'ER Diagram', 'Create entity-relationship diagrams', '2025-01-15', '2025-01-31', 80, 'COMPLETED'),
+       (1, 'Schema Creation', 'Define database schema', '2025-02-01', '2025-02-15', 100, 'IN_PROGRESS'),
+       (1, 'Data Migration Plan', 'Plan for migrating existing data', '2025-02-16', '2025-03-15', 120, 'NOT_STARTED'),
+       (2, 'API Design', 'Design RESTful API endpoints', '2025-02-15', '2025-03-15', 200, 'NOT_STARTED'),
+       (2, 'Business Logic', 'Implement core business logic', '2025-03-16', '2025-05-15', 400, 'NOT_STARTED'),
+       (2, 'Integration', 'Integrate with external systems', '2025-05-16', '2025-06-30', 200, 'NOT_STARTED'),
+       (3, 'Component Design', 'Design reusable UI components', '2025-04-01', '2025-05-15', 200, 'NOT_STARTED'),
+       (3, 'UI Implementation', 'Implement user interfaces', '2025-05-16', '2025-07-15', 300, 'NOT_STARTED'),
+       (3, 'Responsive Design', 'Ensure responsive design for all devices', '2025-07-16', '2025-07-31', 100, 'NOT_STARTED'),
+       (8, 'Wireframes', 'Create wireframes for new website', '2024-11-01', '2024-11-15', 80, 'COMPLETED'),
+       (8, 'Visual Design', 'Create visual design elements', '2024-11-16', '2024-11-30', 120, 'COMPLETED'),
+       (9, 'HTML/CSS', 'Convert design to HTML/CSS', '2024-12-01', '2024-12-15', 200, 'COMPLETED'),
+       (9, 'JavaScript', 'Implement interactive features', '2024-12-16', '2025-01-05', 250, 'COMPLETED'),
+       (9, 'Testing', 'Cross-browser testing', '2025-01-06', '2025-01-15', 150, 'COMPLETED');
 
 INSERT INTO Employee_Task (employee_id, task_id)
 VALUES (1, 1),
