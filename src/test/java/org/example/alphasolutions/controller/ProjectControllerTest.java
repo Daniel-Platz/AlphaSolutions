@@ -92,7 +92,7 @@ class ProjectControllerTest {
 
     @Test
     void showProjectsWithNoSessionRedirectsToLogin() throws Exception {
-        mockMvc.perform(get("/projects"))
+        mockMvc.perform(get("/dashboard"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -106,9 +106,9 @@ class ProjectControllerTest {
 
         when(projectService.findAllProjects()).thenReturn(allProjects);
 
-        mockMvc.perform(get("/projects").session(session))
+        mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("projects"))
+                .andExpect(view().name("dashboard"))
                 .andExpect(model().attribute("projects", allProjects))
                 .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
     }
@@ -122,9 +122,9 @@ class ProjectControllerTest {
 
         when(projectService.findAllProjects()).thenReturn(allProjects);
 
-        mockMvc.perform(get("/projects").session(session))
+        mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("projects"))
+                .andExpect(view().name("dashboard"))
                 .andExpect(model().attribute("projects", allProjects))
                 .andExpect(model().attribute("role", managerEmployee.getRole().toString()));
     }
@@ -138,9 +138,9 @@ class ProjectControllerTest {
 
         when(projectService.findProjectsByEmployeeId(regularEmployee.getEmployeeId())).thenReturn(employeeProjects);
 
-        mockMvc.perform(get("/projects").session(session))
+        mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
-                .andExpect(view().name("projects"))
+                .andExpect(view().name("dashboard"))
                 .andExpect(model().attribute("projects", employeeProjects))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
     }
@@ -154,9 +154,9 @@ class ProjectControllerTest {
 
         when(projectService.findProjectById(anyInt())).thenReturn(null);
 
-        mockMvc.perform(get("/projects/999/overview").session(session))
+        mockMvc.perform(get("/dashboard/999/projectOverview").session(session))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
@@ -170,7 +170,7 @@ class ProjectControllerTest {
         when(projectService.findSubProjectsByProjectId(1)).thenReturn(subProjects);
         when(projectService.findAssignedEmployeesByProjectId(1)).thenReturn(assignedEmployees);
 
-        mockMvc.perform(get("/projects/1/overview").session(session))
+        mockMvc.perform(get("/dashboard/1/projectOverview").session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("projectOverview"))
                 .andExpect(model().attribute("project", project1))
@@ -187,7 +187,7 @@ class ProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        mockMvc.perform(get("/projects/addProject")
+        mockMvc.perform(get("/dashboard/addProject")
                 .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addProject"))
@@ -202,7 +202,7 @@ class ProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        mockMvc.perform(post("/projects/saveProject")
+        mockMvc.perform(post("/dashboard/saveProject")
                         .session(session)
                         .param("managerId", "1")
                         .param("projectName", "Test Project")
@@ -212,14 +212,14 @@ class ProjectControllerTest {
                         .param("projectEstimatedHours", "200")
                         .param("projectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
     void deleteProject_ShouldRedirectToProjects() throws Exception {
-        mockMvc.perform(post("/projects/1/delete"))
+        mockMvc.perform(post("/dashboard/1/deleteProject"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 
     @Test
@@ -244,7 +244,7 @@ class ProjectControllerTest {
         when(projectService.findProjectById(1)).thenReturn(mockProject);
         when(employeeService.getAllManagers()).thenReturn(mockListOfManagers);
 
-        mockMvc.perform(get("/projects/1/edit"))
+        mockMvc.perform(get("/dashboard/1/editProject"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editProject"))
                 .andExpect(model().attribute("project", mockProject))
@@ -258,7 +258,7 @@ class ProjectControllerTest {
         int projectId = 1;
         int oldManagerId = 2;
 
-        mockMvc.perform(post("/projects/{projectId}/edit", projectId)
+        mockMvc.perform(post("/dashboard/{projectId}/editProject", projectId)
                         .param("projectName", "updated name")
                         .param("projectDescription", "updated Description")
                         .param("projectStartDate", "2025-01-01")
@@ -268,6 +268,6 @@ class ProjectControllerTest {
                         .param("managerId", "3")
                         .param("oldManagerId", String.valueOf(oldManagerId)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects"));
+                .andExpect(redirectedUrl("/dashboard"));
     }
 }

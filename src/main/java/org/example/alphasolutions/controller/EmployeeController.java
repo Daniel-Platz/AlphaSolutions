@@ -149,7 +149,7 @@ public class EmployeeController extends BaseController {
         employeeService.updatePassword(employee);
         session.setAttribute("forcePasswordChange", false);
 
-        return "redirect:/dahboard";
+        return "redirect:/dashboard";
     }
 
     @PostMapping("/admin/employees/update")
