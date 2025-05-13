@@ -32,9 +32,9 @@ public class ProjectRepository {
             String sql = "SELECT * FROM Project WHERE project_status = ?";
             return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), projectStatus.name());
         }
-        else {
-            String sql = "SELECT * FROM Project";
-            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class));
+        else { // If status is null it will get all projects that don't have the Archived status.
+            String sql = "SELECT * FROM Project WHERE NOT project_status = ?";
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), ProjectStatus.ARCHIVED.name());
         }
     }
 
