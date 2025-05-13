@@ -31,7 +31,7 @@ class ProjectRepositoryTest {
     @Test
     public void testFindAllProjectsCorrectSize() throws SQLException {
 
-        List<Project> projects = projectRepository.findAllProjects();
+        List<Project> projects = projectRepository.findAllProjects(null);
 
         assertEquals(3, projects.size(), "Should return the exact number of projects in the database");
     }
@@ -39,7 +39,7 @@ class ProjectRepositoryTest {
     @Test
     public void testFindAllProjectCheckAttributes() throws SQLException {
 
-        List<Project> projects = projectRepository.findAllProjects();
+        List<Project> projects = projectRepository.findAllProjects(null);
 
         assertNotNull(projects);
         assertFalse(projects.isEmpty());
@@ -148,7 +148,7 @@ class ProjectRepositoryTest {
         projectRepository.addProjectToDB(projectToAdd);
 
 
-        List<Project> projects = projectRepository.findAllProjects();
+        List<Project> projects = projectRepository.findAllProjects(null);
 
         Project newestAddedProject = projects.getLast();
         assertEquals(4, newestAddedProject.getProjectId(), "First project should have id of 1");
@@ -164,11 +164,11 @@ class ProjectRepositoryTest {
     @Transactional
     @Rollback
     public void testDeleteProjectFromDB(){
-        List<Project> projectsBeforeDeletion = projectRepository.findAllProjects();
+        List<Project> projectsBeforeDeletion = projectRepository.findAllProjects(null);
 
         projectRepository.deleteProjectFromDB(1);
 
-        List<Project> projectsAfterDeletion = projectRepository.findAllProjects();
+        List<Project> projectsAfterDeletion = projectRepository.findAllProjects(null);
 
         assertNotEquals(projectsBeforeDeletion.size(), projectsAfterDeletion.size(), "The size of the two lists should not be the same");
         assertNotEquals(projectsBeforeDeletion.getFirst().getProjectName(), projectsAfterDeletion.getFirst().getProjectName(),
