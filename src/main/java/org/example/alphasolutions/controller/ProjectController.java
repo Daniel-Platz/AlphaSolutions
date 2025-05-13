@@ -24,6 +24,7 @@ public class ProjectController extends BaseController {
         this.projectService = projectService;
         this.employeeService = employeeService;
     }
+
     @GetMapping("")
     public String showProjects(Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
@@ -45,6 +46,28 @@ public class ProjectController extends BaseController {
         model.addAttribute("role", role);
 
         return "dashboard";
+    }
+
+    private String showFilteredProjects(ProjectStatus statusFilter, String viewName, Model model, HttpSession session){
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        String role = (String) session.getAttribute("role");
+        Integer employeeId = (Integer) session.getAttribute("employeeId");
+
+        List<Project> projects;
+
+        if (role.equals("ADMIN") || role.equals("PROJECT_MANAGER")) {
+            projects = projectService.findAllProjects(statusFilter);
+        } else {
+            projects = projectService.findProjectsByEmployeeId(employeeId);
+        }
+
+        model.addAttribute("projects", projects);
+        model.addAttribute("role", role);
+
+        return viewName;
     }
 
     @GetMapping("/{projectId}/projectOverview")
