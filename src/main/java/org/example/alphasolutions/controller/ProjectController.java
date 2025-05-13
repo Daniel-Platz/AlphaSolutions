@@ -30,6 +30,11 @@ public class ProjectController extends BaseController {
         return showFilteredProjects(null, "dashboard", model, session);
     }
 
+    @GetMapping("/archived")
+    public String showArchivedProjects(Model model, HttpSession session){
+        return showFilteredProjects(ProjectStatus.ARCHIVED, "archiveDashboard", model, session);
+    }
+
     private String showFilteredProjects(ProjectStatus statusFilter, String viewName, Model model, HttpSession session){
         if (!isLoggedIn(session)) {
             return "redirect:/login";
