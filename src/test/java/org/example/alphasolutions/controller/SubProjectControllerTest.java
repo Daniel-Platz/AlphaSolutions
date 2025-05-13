@@ -265,4 +265,15 @@ class SubProjectControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
     }
+
+    @Test
+    void deleteSubProjectTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/deleteSubProject", projectId, subProjectId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
+    }
+
 }
