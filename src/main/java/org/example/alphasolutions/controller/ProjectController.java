@@ -36,7 +36,7 @@ public class ProjectController extends BaseController {
         List<Project> projects;
 
         if (role.equals("ADMIN") || role.equals("PROJECT_MANAGER")) {
-            projects = projectService.findAllProjects();
+            projects = projectService.findAllProjects(null);
         } else {
             projects = projectService.findProjectsByEmployeeId(employeeId);
         }

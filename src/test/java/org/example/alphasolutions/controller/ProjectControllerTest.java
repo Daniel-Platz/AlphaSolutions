@@ -104,7 +104,7 @@ class ProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        when(projectService.findAllProjects()).thenReturn(allProjects);
+        when(projectService.findAllProjects(null)).thenReturn(allProjects);
 
         mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
@@ -120,7 +120,7 @@ class ProjectControllerTest {
         session.setAttribute("employeeId", managerEmployee.getEmployeeId());
         session.setAttribute("role", managerEmployee.getRole().toString());
 
-        when(projectService.findAllProjects()).thenReturn(allProjects);
+        when(projectService.findAllProjects(null)).thenReturn(allProjects);
 
         mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
