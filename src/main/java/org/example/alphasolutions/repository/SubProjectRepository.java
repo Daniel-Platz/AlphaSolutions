@@ -25,7 +25,7 @@ public class SubProjectRepository {
     }
 
     public List<SubProject> findAllSubProjects() {
-        String sql = "SELECT * FROM Sub_project";
+        String sql = "SELECT * FROM sub_project";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(SubProject.class));
     }
 
@@ -69,6 +69,11 @@ public class SubProjectRepository {
         }
 
         return key.intValue();
+    }
+
+    public void deleteSubProject(int subProjectId) {
+        String sql = "DELETE FROM sub_project WHERE sub_project_id = ?";
+        jdbcTemplate.update(sql, subProjectId);
     }
 
     public void editSubProject(SubProject subProjectToEdit) {
