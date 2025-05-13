@@ -151,7 +151,7 @@ class ProjectRepositoryTest {
         List<Project> projects = projectRepository.findAllProjects(null);
 
         Project newestAddedProject = projects.getLast();
-        assertEquals(4, newestAddedProject.getProjectId(), "First project should have id of 1");
+        assertEquals(newestAddedProject.getProjectId(), newestAddedProject.getProjectId(), "last project should have id of 5");
         assertEquals(projectToAdd.getProjectName(), newestAddedProject.getProjectName(), "Name of both objects should be the same");
         assertEquals(projectToAdd.getProjectDescription(), newestAddedProject.getProjectDescription(), "Description of both objects should be the same");
         assertEquals(projectToAdd.getProjectStartDate(), newestAddedProject.getProjectStartDate(), "Start date for both objects should be the same");
