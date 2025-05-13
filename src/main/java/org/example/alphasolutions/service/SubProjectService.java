@@ -20,12 +20,20 @@ public class SubProjectService {
         return subProjectRepository.findTasksBySubProjectId(subProjectId);
     }
 
+    public SubProject findSubProjectById(int subProjectId){
+        return subProjectRepository.findSubProjectById(subProjectId);
+    }
+
     public int calculateSubProjectTotalHours (int subProjectId) {
         return subProjectRepository.calculateSubProjectTotalHours(subProjectId);
     }
 
     public int addNewSubProject (SubProject subProject) {
         return subProjectRepository.addNewSubProject(subProject);
+    }
+
+    public void editSubProject (SubProject subProjectToEdit){
+        subProjectRepository.editSubProject(subProjectToEdit);
     }
 
 }

@@ -57,15 +57,31 @@ public class SubProjectController extends BaseController {
         return "addSubProject";
     }
 
-    @PostMapping("/saveSubProject")
-    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject newSubProject, HttpSession session) {
+    @GetMapping("/{subProjectId}/editSubProject")
+    public String editProject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
-        newSubProject.setProjectId(projectId);
 
-        subProjectService.addNewSubProject(newSubProject);
+        SubProject subProject = subProjectService.findSubProjectById(subProjectId);
 
+        model.addAttribute("statuses", ProjectStatus.values());
+        model.addAttribute("subProject", subProject);
+        return "editSubProject";
+    }
+
+    @PostMapping("/saveSubProject")
+    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+        subProject.setProjectId(projectId);
+
+        if (subProject.getSubProjectId() > 0) {
+            subProjectService.editSubProject(subProject);
+        } else {
+            subProjectService.addNewSubProject(subProject);
+        }
         return "redirect:/dashboard/" + projectId + "/projectOverview";
     }
 }

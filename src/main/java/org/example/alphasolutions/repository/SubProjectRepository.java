@@ -29,6 +29,11 @@ public class SubProjectRepository {
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(SubProject.class));
     }
 
+    public SubProject findSubProjectById(int subProjectId) {
+        String sql = "SELECT * FROM sub_project WHERE sub_project_id = ?";
+        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(SubProject.class), subProjectId);
+    }
+
     public List<Task> findTasksBySubProjectId(int subProjectId) {
         String sql = "SELECT * FROM TASK WHERE SUB_PROJECT_ID = ?";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Task.class), subProjectId);
@@ -66,6 +71,26 @@ public class SubProjectRepository {
         return key.intValue();
     }
 
+    public void editSubProject(SubProject subProjectToEdit) {
+        String sql = "UPDATE sub_project SET " +
+                "sub_project_name = ?, " +
+                "sub_project_description = ?, " +
+                "sub_project_start_date = ?, " +
+                "sub_project_end_date = ?, " +
+                "sub_project_estimated_hours = ?, " +
+                "sub_project_status = ? " +
+                "WHERE sub_project_id = ?";
+
+        jdbcTemplate.update(sql,
+                subProjectToEdit.getSubProjectName(),
+                subProjectToEdit.getSubProjectDescription(),
+                subProjectToEdit.getSubProjectStartDate(),
+                subProjectToEdit.getSubProjectEndDate(),
+                subProjectToEdit.getSubProjectEstimatedHours(),
+                subProjectToEdit.getSubProjectStatus().name(),  // Convert enum to string
+                subProjectToEdit.getSubProjectId());
+    }
+
     public void calculateSubProjectProgress() {
 
     }
@@ -78,7 +103,5 @@ public class SubProjectRepository {
 
     }
 
-    public void editSubProject() {
 
-    }
 }
