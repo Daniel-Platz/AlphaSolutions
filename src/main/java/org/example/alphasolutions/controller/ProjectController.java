@@ -27,25 +27,7 @@ public class ProjectController extends BaseController {
 
     @GetMapping("")
     public String showProjects(Model model, HttpSession session) {
-        if (!isLoggedIn(session)) {
-            return "redirect:/login";
-        }
-
-        String role = (String) session.getAttribute("role");
-        Integer employeeId = (Integer) session.getAttribute("employeeId");
-
-        List<Project> projects;
-
-        if (role.equals("ADMIN") || role.equals("PROJECT_MANAGER")) {
-            projects = projectService.findAllProjects(null);
-        } else {
-            projects = projectService.findProjectsByEmployeeId(employeeId);
-        }
-
-        model.addAttribute("projects", projects);
-        model.addAttribute("role", role);
-
-        return "dashboard";
+        return showFilteredProjects(null, "dashboard", model, session);
     }
 
     private String showFilteredProjects(ProjectStatus statusFilter, String viewName, Model model, HttpSession session){
