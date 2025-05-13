@@ -4,11 +4,9 @@ package org.example.alphasolutions.repository;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
-import org.example.alphasolutions.service.SubProjectService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cglib.core.Local;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -25,8 +23,6 @@ class SubProjectRepositoryTest {
 
     @Autowired
     private SubProjectRepository subProjectRepository;
-    @Autowired
-    private SubProjectService subProjectService;
 
     @Test
     void testGetTaskBySubProjectId() {
@@ -109,5 +105,39 @@ class SubProjectRepositoryTest {
         List<Task> tasksAfterDelete = subProjectRepository.findTasksBySubProjectId(subProjectId);
 
         assertEquals(0, tasksAfterDelete.size());
+    }
+
+    @Test
+    void testEditSubProject() {
+        SubProject createdSubProject = new SubProject();
+        createdSubProject.setProjectId(1);
+        createdSubProject.setSubProjectName("Test SubProject");
+        createdSubProject.setSubProjectDescription("This is a test description");
+        createdSubProject.setSubProjectStartDate(LocalDate.now());
+        createdSubProject.setSubProjectEndDate(LocalDate.now().plusDays(10));
+        createdSubProject.setSubProjectEstimatedHours(50);
+        createdSubProject.setSubProjectStatus(ProjectStatus.ACTIVE);
+
+        int subProjectId = subProjectRepository.addNewSubProject(createdSubProject);
+
+        SubProject subProjectToEdit = new SubProject();
+        subProjectToEdit.setSubProjectId(subProjectId);
+        subProjectToEdit.setSubProjectName("Edited SubProject");
+        subProjectToEdit.setSubProjectDescription("Edited description");
+        subProjectToEdit.setSubProjectStartDate(LocalDate.now().plusDays(1));
+        subProjectToEdit.setSubProjectEndDate(LocalDate.now().plusDays(15));
+        subProjectToEdit.setSubProjectEstimatedHours(100);
+        subProjectToEdit.setSubProjectStatus(ProjectStatus.COMPLETED);
+
+        subProjectRepository.editSubProject(subProjectToEdit);
+
+        SubProject editedSubProject = subProjectRepository.findSubProjectById(subProjectId);
+        assertNotNull(editedSubProject);
+        assertEquals("Edited SubProject", editedSubProject.getSubProjectName());
+        assertEquals("Edited description", editedSubProject.getSubProjectDescription());
+        assertEquals(LocalDate.now().plusDays(1), editedSubProject.getSubProjectStartDate());
+        assertEquals(LocalDate.now().plusDays(15), editedSubProject.getSubProjectEndDate());
+        assertEquals(100, editedSubProject.getSubProjectEstimatedHours());
+        assertEquals(ProjectStatus.COMPLETED, editedSubProject.getSubProjectStatus());
     }
 }
