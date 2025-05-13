@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Subproject</title>
+</head>
+<body>
+<header>
+    <div>ALPHA SOLUTIONS</div>
+    <div th:if="${session.employee != null}">
+        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+        <span th:text="'(' + ${session.role} + ')'"></span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+        <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}">Back to Project Overview</a>
+    </div>
+</header>
+<main>
+    <h1>Edit Subproject</h1>
+    <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
+          method="post"
+          th:object="${subProject}">
+
+        <!-- Hidden fields for IDs -->
+        <input type="hidden" th:field="*{subProjectId}" />
+        <input type="hidden" th:field="*{projectId}" />
+
+        <ul>
+            <li>
+                <label for="subProjectName">Name:</label>
+                <input type="text" id="subProjectName" th:field="*{subProjectName}" required/>
+            </li>
+            <li>
+                <label for="subProjectDescription">Description:</label>
+                <input type="text" id="subProjectDescription" th:field="*{subProjectDescription}" required/>
+            </li>
+            <li>
+                <label for="subProjectStartDate">Start Date:</label>
+                <input type="date" id="subProjectStartDate" name="subProjectStartDate"
+                       th:value="${subProject.subProjectStartDate}" required/>
+            </li>
+            <li>
+                <label for="subProjectEndDate">End Date:</label>
+                <input type="date" id="subProjectEndDate" name="subProjectEndDate"
+                       th:value="${subProject.subProjectEndDate}" required/>
+            </li>
+            <li>
+                <label for="subProjectEstimatedHours">Estimated Hours:</label>
+                <input type="number" id="subProjectEstimatedHours" th:field="*{subProjectEstimatedHours}" required/>
+            </li>
+            <li>
+                <label for="subProjectStatus">Status:</label>
+                <select id="subProjectStatus" th:field="*{subProjectStatus}">
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}"></option>
+                </select>
+            </li>
+            <li>
+                <button type="submit">Save Changes</button>
+            </li>
+        </ul>
+    </form>
+</main>
+</body>
+</html>
