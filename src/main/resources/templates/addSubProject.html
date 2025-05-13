@@ -19,7 +19,9 @@
 <main>
   <h1>Add Subproject</h1>
   <!-- The form action now uses the project ID from the URL path -->
-  <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}" th:object="${newSubProject}" method="post">
+  <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
+        method="post"
+        th:object="${newSubProject}">
     <!-- Hidden field to store the project ID -->
     <input type="hidden" th:field="*{projectId}" th:value="${projectId}" />
 
