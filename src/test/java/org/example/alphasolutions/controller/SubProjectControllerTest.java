@@ -176,7 +176,7 @@ class SubProjectControllerTest {
     }
 
     @Test
-    void addNewSubProjectTest() throws Exception {
+    void showAddSubProjectForm() throws Exception {
         int projectId = 1;
 
         MockHttpSession session = new MockHttpSession();
@@ -194,16 +194,68 @@ class SubProjectControllerTest {
     }
 
     @Test
-    void saveSubProjectTest() throws Exception {
+    void showEditSubProjectForm() throws Exception {
         int projectId = 1;
-        int newSubProjectId = 1;
+        int subProjectId = 5;
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employee", adminEmployee);
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        when(subProjectService.addNewSubProject(any(SubProject.class))).thenReturn(newSubProjectId);
+        when(subProjectService.findSubProjectById(subProjectId)).thenReturn(subProject);
+
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/editSubProject",
+                        projectId, subProjectId)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editSubProject"))
+                .andExpect(model().attribute("subProject", subProject))
+                .andExpect(model().attributeExists("statuses"));
+
+
+    }
+
+    @Test
+    void editSubProjectWithoutSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 5;
+
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/editSubProject",
+                        projectId, subProjectId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+
+    @Test
+    void saveEditedSubProject() throws Exception {
+        int projectId = 1;
+        int subProjectId = 5;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
+                        .session(session)
+                        .param("subProjectName", "Updated SubProject")
+                        .param("subProjectDescription", "Updated Description")
+                        .param("subProjectStatus", "COMPLETED"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
+    }
+
+    @Test
+    void saveNewSubProject() throws Exception {
+        int projectId = 1;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(subProjectService.addNewSubProject(any(SubProject.class))).thenReturn(1);
 
         mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
                         .session(session)
