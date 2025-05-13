@@ -56,7 +56,7 @@
 
     <h1 th:text="${archivedView} ? 'Archived Projects' : 'Dashboard'">Dashboard</h1>
 
-    <div th:if="${!archivedView}">
+    <div th:if="${archivedView != true}">
         <div th:if="${role == 'ADMIN'}">
             <a href="/admin/employees" class="button">Medarbejderadministration</a>
         </div>
@@ -89,7 +89,7 @@
                     <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}"
                        class="button">View</a>
 
-                    <div th:if="${!archivedView && role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                    <div th:if="${archivedView != true and role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
                         <a th:href="@{/dashboard/{projectId}/edit(projectId=${project.projectId})}"
                            class="button">Edit</a>
                         <form th:action="@{/dashboard/{projectId}/delete(projectId=${project.projectId})}" method="post"
