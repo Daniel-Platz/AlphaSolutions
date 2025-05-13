@@ -4,6 +4,7 @@ package org.example.alphasolutions.repository;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
+import org.example.alphasolutions.service.SubProjectService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,8 @@ class SubProjectRepositoryTest {
 
     @Autowired
     private SubProjectRepository subProjectRepository;
+    @Autowired
+    private SubProjectService subProjectService;
 
     @Test
     void testGetTaskBySubProjectId() {
@@ -92,5 +95,19 @@ class SubProjectRepositoryTest {
                 "Estimated hours should match");
         assertEquals(ProjectStatus.ACTIVE, createdSubProject.getSubProjectStatus(),
                 "Status should match");
+    }
+
+    @Test
+    void testDeleteSubProject() {
+        int subProjectId = 1;
+
+        List<Task> tasksBeforeDelete = subProjectRepository.findTasksBySubProjectId(subProjectId);
+        assertEquals(3, tasksBeforeDelete.size());
+
+        subProjectRepository.deleteSubProject(subProjectId);
+
+        List<Task> tasksAfterDelete = subProjectRepository.findTasksBySubProjectId(subProjectId);
+
+        assertEquals(0, tasksAfterDelete.size());
     }
 }
