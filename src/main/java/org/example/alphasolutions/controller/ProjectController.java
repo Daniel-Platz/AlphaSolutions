@@ -27,15 +27,15 @@ public class ProjectController extends BaseController {
 
     @GetMapping("")
     public String showProjects(Model model, HttpSession session) {
-        return showFilteredProjects(null, "dashboard", model, session);
+        return showFilteredProjects(null, false, model, session);
     }
 
     @GetMapping("/archived")
     public String showArchivedProjects(Model model, HttpSession session){
-        return showFilteredProjects(ProjectStatus.ARCHIVED, "archiveDashboard", model, session);
+        return showFilteredProjects(ProjectStatus.ARCHIVED, true, model, session);
     }
 
-    private String showFilteredProjects(ProjectStatus statusFilter, String viewName, Model model, HttpSession session){
+    private String showFilteredProjects(ProjectStatus statusFilter, Boolean archivedView, Model model, HttpSession session){
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
@@ -53,8 +53,9 @@ public class ProjectController extends BaseController {
 
         model.addAttribute("projects", projects);
         model.addAttribute("role", role);
+        model.addAttribute("archivedView", archivedView);
 
-        return viewName;
+        return "dashboard";
     }
 
     @GetMapping("/{projectId}/projectOverview")
