@@ -206,4 +206,15 @@ class ProjectRepositoryTest {
         assertEquals(ProjectStatus.ON_HOLD, updatedProject.getProjectStatus(), "new status should be: ON_HOLD");
         assertEquals(5, updatedProject.getManagerId(), "new managerId should be 5");
     }
+
+    @Test
+    public void testFindAllProjects_thatArchivedProjectsListNotSameAsNonArchivedProjectList(){
+        List <Project> nonArchivedProjects = projectRepository.findAllProjects(null);
+        List <Project> archivedProjects = projectRepository.findAllProjects(ProjectStatus.ARCHIVED);
+
+        assertNotEquals(nonArchivedProjects.size(), archivedProjects.size(), "The two lists should not be the same size");
+        assertEquals(1, archivedProjects.size(),"There should only be one archived project");
+        assertNotEquals(archivedProjects.getFirst(), nonArchivedProjects.getFirst(), "The first object on either list should not be the same");
+        assertEquals(3, nonArchivedProjects.size(), "Non archived list should only have 3 objects despite there being 4 in the database.");
+    }
 }
