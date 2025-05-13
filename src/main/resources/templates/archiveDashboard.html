@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/projects.css}">
+</head>
+<body>
+
+<header class="header">
+  <a th:href="@{/dashboard}">
+    <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
+  </a>
+
+  <div class="header-right">
+    <div class="user-info" th:if="${session.employee != null}">
+      <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
+      <span th:text="'(' + ${session.role} + ')'"></span>
+      <form action="/logout" method="post" style="display: inline;">
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </div>
+    <a href="/employee-profile">
+      <button class="circle-btn"><i class="fas fa-user"></i></button>
+    </a>
+  </div>
+</header>
+
+<main>
+  <!-- Password change modal -->
+  <div th:if="${session.forcePasswordChange}" class="password-overlay">
+    <div class="password-popup">
+      <h2>Skift kodeord</h2>
+      <p><strong>Din velkomstkode er ikke længere gyldig, skift venligst dit kodeord</strong></p>
+      <p>Adgangskoden skal indeholde:</p>
+      <ul>
+        <li>Et stort bogstav</li>
+        <li>Minimum et tal</li>
+        <li>Minimum et specialtegn</li>
+      </ul>
+
+      <form method="post" action="/change-password">
+        <label for="newPassword">Nyt kodeord:</label><br>
+        <input type="password" name="newPassword" id="newPassword" required><br><br>
+
+        <label for="confirmPassword">Gentag kodeord:</label><br>
+        <input type="password" name="confirmPassword" id="confirmPassword" required><br><br>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <button type="submit" class="button">Skift kodeord</button>
+      </form>
+    </div>
+  </div>
+
+  <h1>Dashboard</h1>
+
+  <div th:if="${role == 'ADMIN'}">
+    <a href="/admin/employees" class="button">Medarbejderadministration</a>
+  </div>
+
+  <!-- Projects List -->
+  <div class="projects-list">
+    <table>
+      <thead>
+      <tr>
+        <th>Projekt Navn</th>
+        <th>Start Dato</th>
+        <th>Slut Date</th>
+        <th>Handlinger</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="project : ${projects}">
+        <td th:text="${project.projectName}"></td>
+        <td th:text="${project.projectStartDate != null ? #temporals.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
+        <td th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
+        <td>
+          <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}" class="button">View</a>
+
+          <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+            <form th:action="@{/dashboard/{projectId}/delete(projectId=${project.projectId})}" method="post"
+                  onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
+                  style="display: inline;">
+              <button type="submit" class="button">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      <tr th:if="${projects.empty}">
+        <td colspan="4">Ingen projekter endnu</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>
