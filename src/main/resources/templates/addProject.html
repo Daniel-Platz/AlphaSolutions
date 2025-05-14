@@ -5,27 +5,17 @@
     <title>Add Project</title>
 </head>
 <body>
-<header>
-    <div class="logo">ALPHA SOLUTIONS</div>
-    <div class="user-info" th:if="${session.employee != null}">
-        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-        <span th:text="'(' + ${session.role} + ')'"></span>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-danger">Logout</button>
-        </form>
-        <a href="/dashboard" class="btn btn-danger" style="margin-left: 10px;">Back</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main>
-    <h1>Add Project</h1>
+    <h1>Tilføj Projekt</h1>
 
     <form th:action="@{/dashboard/saveProject}" th:object="${newProject}" method="post">
         <ul>
             <li>
                 <label for="projectManagerId">Project Manager</label>
                 <select id="projectManagerId" th:field="*{managerId}">
-                    <option value="" disabled selected>Select a manager</option>
+                    <option value="" disabled selected>Vælg en projekt manager</option>
                     <option th:each="manager : ${managers}"
                             th:value="${manager.employeeId}"
                             th:text="${manager.firstname + ' ' + manager.lastname}">
@@ -37,19 +27,19 @@
                 <input type="text" id="projectName" th:field="*{projectName}" required/>
             </li>
             <li>
-                <label for="projectDescription">Description:</label>
+                <label for="projectDescription">Beskrivelse:</label>
                 <input type="text" id="projectDescription" th:field="*{projectDescription}" required/>
             </li>
             <li>
-                <label for="projectStartDate">Start Date:</label>
+                <label for="projectStartDate">Startdato:</label>
                 <input type="date" id="projectStartDate" th:field="*{projectStartDate}" required/>
             </li>
             <li>
-                <label for="projectEndDate">End Date:</label>
+                <label for="projectEndDate">Slutdato:</label>
                 <input type="date" id="projectEndDate" th:field="*{projectEndDate}" required/>
             </li>
             <li>
-                <label for="projectEstimatedHours">Estimated Hours:</label>
+                <label for="projectEstimatedHours">Estimerede Timer:</label>
                 <input type="number" id="projectEstimatedHours" th:field="*{projectEstimatedHours}" required/>
             </li>
             <li>
@@ -61,7 +51,7 @@
                 </select>
             </li>
             <li>
-                <button type="submit">Submit</button>
+                <button type="submit">Tilføj</button>
             </li>
         </ul>
     </form>

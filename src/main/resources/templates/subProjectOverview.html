@@ -6,25 +6,16 @@
   <title>Task Management</title>
 </head>
 <body>
-<header>
-  <div>ALPHA SOLUTIONS</div>
-  <div th:if="${session.employee != null}">
-    <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-    <span th:text="'(' + ${session.role} + ')'"></span>
-    <form th:action="@{/logout}" method="post">
-      <button type="submit">Logout</button>
-    </form>
-  </div>
-</header>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main>
-  <h1>Tasks for Sub-Project</h1>
+  <h1>Tasks for Sub-Projekt</h1>
 
   <!-- Subproject Summary Information -->
   <div class="subproject-summary">
     <div class="summary-item">
-      <strong>Total Estimated Hours:</strong>
-      <span th:text="${totalHours}">0</span> hours
+      <strong>Total Estimerede Timer:</strong>
+      <span th:text="${totalHours}">0</span> timer
     </div>
   </div>
 

@@ -6,16 +6,7 @@
     <title>Task Overview</title>
 </head>
 <body>
-<header>
-    <div>ALPHA SOLUTIONS</div>
-    <div th:if="${session.employee != null}">
-        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-        <span th:text="'(' + ${session.role} + ')'"></span>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit">Logout</button>
-        </form>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 <main>
     <h1>Task Details</h1>
     <!-- Task Information -->

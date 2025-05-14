@@ -5,7 +5,7 @@
     <title>Rediger opgave</title>
 </head>
 <body>
-
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 <h1>Rediger Opgave</h1>
 
 <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${project.projectId},subProjectId=${subProject.subProjectId},taskId=${task.taskId})}" method="post">
