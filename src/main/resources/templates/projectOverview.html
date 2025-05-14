@@ -7,7 +7,6 @@
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
-
 <main>
     <h1 th:text="${project.projectName}">Project Detaljer</h1>
 
@@ -30,7 +29,7 @@
         </div>
     </div>
 
-    <!-- Project Team Members -->
+    <!-- Project Team Employees -->
     <div class="project-section">
         <h2>Team Medarbejdere</h2>
         <table>
@@ -42,15 +41,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="member : ${assignedEmployees}">
-                <td th:text="${member.firstname + ' ' + member.lastname}"></td>
-                <td th:text="${member.role}"></td>
+            <tr th:each="employee : ${assignedEmployees}">
+                <td th:text="${employee.firstname + ' ' + employee.lastname}"></td>
+                <td th:text="${employee.role}"></td>
                 <td>
-                    <!-- Remove Member Button (only for ADMIN and PROJECT_MANAGER) -->
-                    <a th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
-                       th:href="@{/dashboard/{projectId}/members/{memberId}/remove(projectId=${project.projectId},memberId=${member.employeeId})}"
-                       class="button"
-                       onclick="return confirm('Er du sikker på du vil fjerne denne team medarbejder?')">Fjern</a>
+                    <!-- Remove Employee Button (only for ADMIN and PROJECT_MANAGER) -->
+                    <form th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
+                          th:action="@{/dashboard/{projectId}/employees/{employeeId}/remove(projectId=${project.projectId}, employeeId=${employee.employeeId})}"
+                          method="post"
+                          style="display:inline;">
+                        <button type="submit" class="button" onclick="return confirm('Er du sikker på du vil fjerne denne team medarbejder?')">Fjern</button>
+                    </form>
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(assignedEmployees)}">
@@ -62,7 +63,7 @@
         <!-- Add Team Member Form (only for ADMIN and PROJECT_MANAGER) -->
         <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-member-section">
             <h3>Add Team Member</h3>
-            <form th:action="@{/dashboard/{id}/members/add(id=${project.projectId})}" method="post">
+            <form th:action="@{/dashboard/{id}/employees/add(id=${project.projectId})}" method="post">
                 <select name="employeeId" required>
                     <option value="">Vælg en medarbejder</option>
                     <option th:each="employee : ${availableEmployees}"
@@ -109,11 +110,12 @@
             </tbody>
         </table>
 
-        <!-- Add Sub Project Button (only for ADMIN, PROJECT_MANAGER and project members) -->
+        <!-- Add Sub Project Button (only for ADMIN, PROJECT_MANAGER and project employees) -->
         <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-subproject-section">
             <a th:href="@{/dashboard/{projectId}/projectOverview/addSubproject(projectId=${project.projectId})}" class="button">Tilføj nyt Sub Projekt</a>
         </div>
     </div>
+
     <!-- Back to Projects List -->
     <div class="navigation-buttons">
         <a th:href="@{/dashboard}" class="button">Tilbage til Dashboard</a>

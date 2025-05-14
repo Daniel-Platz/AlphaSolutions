@@ -52,4 +52,8 @@ public class ProjectService {
     public void updateProject(Project projectToEdit, int oldManagerId){
         projectRepository.updateProject(projectToEdit, oldManagerId);
     }
+
+    public void removeEmployeeFromProject(int employeeId, int projectId) {
+        projectRepository.removeEmployeeFromProject(employeeId, projectId);
+    }
 }

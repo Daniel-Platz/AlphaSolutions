@@ -122,4 +122,10 @@ public class ProjectRepository {
         sql = "INSERT INTO project_employee (employee_id, project_id) VALUES (?,?)";
         jdbcTemplate.update(sql, newManagerId, projectId);
     }
+
+    @Transactional
+    public void removeEmployeeFromProject(int employeeId, int projectId) {
+        String sql = "DELETE FROM project_employee WHERE employee_id = ? AND project_id = ?";
+        jdbcTemplate.update(sql, employeeId, projectId);
+    }
 }

@@ -131,7 +131,7 @@ public class ProjectController extends BaseController {
         return "redirect:/dashboard";
     }
 
-    @PostMapping("/{projectId}/members/add")
+    @PostMapping("/{projectId}/employees/add")
     public String addEmployeeToProject(@PathVariable int projectId,
                                        @RequestParam("employeeId") int employeeId,
                                        HttpSession session) {
@@ -141,6 +141,18 @@ public class ProjectController extends BaseController {
 
         projectService.assignEmployeeToProject(employeeId, projectId);
 
+        return "redirect:/dashboard/" + projectId + "/projectOverview";
+    }
+
+    @PostMapping("/{projectId}/employees/{employeeId}/remove")
+    public String removeEmployeeFromProject(@PathVariable int projectId,
+                                            @PathVariable int employeeId,
+                                            HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        projectService.removeEmployeeFromProject(employeeId, projectId);
         return "redirect:/dashboard/" + projectId + "/projectOverview";
     }
 }
