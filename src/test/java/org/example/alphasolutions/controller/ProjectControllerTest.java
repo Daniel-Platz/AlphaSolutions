@@ -104,7 +104,7 @@ class ProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        when(projectService.findAllProjects()).thenReturn(allProjects);
+        when(projectService.findAllProjects(null)).thenReturn(allProjects);
 
         mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
@@ -120,7 +120,7 @@ class ProjectControllerTest {
         session.setAttribute("employeeId", managerEmployee.getEmployeeId());
         session.setAttribute("role", managerEmployee.getRole().toString());
 
-        when(projectService.findAllProjects()).thenReturn(allProjects);
+        when(projectService.findAllProjects(null)).thenReturn(allProjects);
 
         mockMvc.perform(get("/dashboard").session(session))
                 .andExpect(status().isOk())
@@ -270,4 +270,22 @@ class ProjectControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard"));
     }
+
+    @Test
+    void showArchivedProjects_shouldReturnDashboardWithArchivedViewTrue() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(projectService.findAllProjects(ProjectStatus.ARCHIVED)).thenReturn(employeeProjects);
+
+        mockMvc.perform(get("/dashboard/archived").session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("dashboard"))
+                .andExpect(model().attribute("projects", employeeProjects))
+                .andExpect(model().attribute("role", adminEmployee.getRole().toString()))
+                .andExpect(model().attribute("archivedView", true));
+    }
+
 }

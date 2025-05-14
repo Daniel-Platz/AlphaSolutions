@@ -24,8 +24,18 @@ public class ProjectController extends BaseController {
         this.projectService = projectService;
         this.employeeService = employeeService;
     }
+
     @GetMapping("")
     public String showProjects(Model model, HttpSession session) {
+        return showFilteredProjects(null, false, model, session);
+    }
+
+    @GetMapping("/archived")
+    public String showArchivedProjects(Model model, HttpSession session){
+        return showFilteredProjects(ProjectStatus.ARCHIVED, true, model, session);
+    }
+
+    private String showFilteredProjects(ProjectStatus statusFilter, Boolean archivedView, Model model, HttpSession session){
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
@@ -36,13 +46,14 @@ public class ProjectController extends BaseController {
         List<Project> projects;
 
         if (role.equals("ADMIN") || role.equals("PROJECT_MANAGER")) {
-            projects = projectService.findAllProjects();
+            projects = projectService.findAllProjects(statusFilter);
         } else {
             projects = projectService.findProjectsByEmployeeId(employeeId);
         }
 
         model.addAttribute("projects", projects);
         model.addAttribute("role", role);
+        model.addAttribute("archivedView", archivedView);
 
         return "dashboard";
     }

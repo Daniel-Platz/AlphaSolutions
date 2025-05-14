@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title th:text="${archivedView} ? 'Archived Projects' : 'Dashboard'">Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/projects.css}">
 </head>
@@ -54,16 +54,21 @@
         </div>
     </div>
 
-    <h1>Dashboard</h1>
+    <h1 th:text="${archivedView} ? 'Archived Projects' : 'Dashboard'">Dashboard</h1>
 
-    <div th:if="${role == 'ADMIN'}">
-        <a href="/admin/employees" class="button">Medarbejderadministration</a>
+    <div th:if="${archivedView != true}">
+        <div th:if="${role == 'ADMIN'}">
+            <a href="/admin/employees" class="button">Medarbejderadministration</a>
+        </div>
+
+        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+            <a href="/dashboard/addProject" class="button">Add New Project</a>
+        </div>
+
+        <div>
+            <a href="dashboard/archived" class="button">View Archived Projects</a>
+        </div>
     </div>
-
-    <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-        <a href="/dashboard/addProject" class="button">Add New Project</a>
-    </div>
-
     <!-- Projects List -->
     <div class="projects-list">
         <table>
@@ -81,16 +86,18 @@
                 <td th:text="${project.projectStartDate != null ? #temporals.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
                 <td th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
                 <td>
-                    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}" class="button">View</a>
+                    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}"
+                       class="button">View</a>
 
-                    <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                            <a th:href="@{/dashboard/{projectId}/edit(projectId=${project.projectId})}" class="button">Edit</a>
+                    <div th:if="${archivedView != true and role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                        <a th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}"
+                           class="button">Edit</a>
                         <form th:action="@{/dashboard/{projectId}/delete(projectId=${project.projectId})}" method="post"
                               onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
                               style="display: inline;">
                             <button type="submit" class="button">Delete</button>
                         </form>
-                        </div>
+                    </div>
                 </td>
             </tr>
             <tr th:if="${projects.empty}">

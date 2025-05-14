@@ -1,5 +1,6 @@
 package org.example.alphasolutions.repository;
 
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.exception.CreationException;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
@@ -25,9 +26,16 @@ public class ProjectRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Project> findAllProjects() {
-        String sql = "SELECT * FROM Project";
-        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class));
+    public List<Project> findAllProjects(ProjectStatus projectStatus) {
+        if (projectStatus != null) // It's checking for null so it might be reused later for getting other statuses if needed
+        {
+            String sql = "SELECT * FROM Project WHERE project_status = ?";
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), projectStatus.name());
+        }
+        else { // If status is null it will get all projects that don't have the Archived status.
+            String sql = "SELECT * FROM Project WHERE NOT project_status = ?";
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), ProjectStatus.ARCHIVED.name());
+        }
     }
 
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
