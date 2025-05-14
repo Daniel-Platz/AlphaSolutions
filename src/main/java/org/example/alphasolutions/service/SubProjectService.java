@@ -32,6 +32,10 @@ public class SubProjectService {
         return subProjectRepository.addNewSubProject(subProject);
     }
 
+    public void deleteSubProject(int subProjectId) {
+        subProjectRepository.deleteSubProject(subProjectId);
+    }
+
     public void editSubProject (SubProject subProjectToEdit){
         subProjectRepository.editSubProject(subProjectToEdit);
     }

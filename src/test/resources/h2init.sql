@@ -114,7 +114,8 @@ INSERT INTO Project (project_name, project_description, project_start_date, proj
                      project_estimated_hours, project_status, manager_id)
 VALUES ('ERP System', 'Enterprise Resource Planning System Development', '2025-01-15', '2025-08-30', 2000, 'ACTIVE', 2),
        ('Mobile App', 'Customer Mobile Application Development', '2025-02-01', '2025-06-15', 1200, 'PLANNING', 5),
-       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED', 2);
+       ('Website Redesign', 'Corporate Website Redesign Project', '2024-11-01', '2025-01-15', 800, 'COMPLETED', 2),
+       ('Archived Project', 'This project is archived', '2024-11-01', '2025-01-15', 400, 'ARCHIVED', 2);
 
 INSERT INTO Project_Employee (employee_id, project_id)
 VALUES (1, 1),

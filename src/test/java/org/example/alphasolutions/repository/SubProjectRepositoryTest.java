@@ -7,7 +7,6 @@ import org.example.alphasolutions.model.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cglib.core.Local;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -92,6 +91,20 @@ class SubProjectRepositoryTest {
                 "Estimated hours should match");
         assertEquals(ProjectStatus.ACTIVE, createdSubProject.getSubProjectStatus(),
                 "Status should match");
+    }
+
+    @Test
+    void testDeleteSubProject() {
+        int subProjectId = 1;
+
+        List<Task> tasksBeforeDelete = subProjectRepository.findTasksBySubProjectId(subProjectId);
+        assertEquals(3, tasksBeforeDelete.size());
+
+        subProjectRepository.deleteSubProject(subProjectId);
+
+        List<Task> tasksAfterDelete = subProjectRepository.findTasksBySubProjectId(subProjectId);
+
+        assertEquals(0, tasksAfterDelete.size());
     }
 
     @Test

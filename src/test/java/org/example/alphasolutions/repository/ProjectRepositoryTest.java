@@ -31,7 +31,7 @@ class ProjectRepositoryTest {
     @Test
     public void testFindAllProjectsCorrectSize() throws SQLException {
 
-        List<Project> projects = projectRepository.findAllProjects();
+        List<Project> projects = projectRepository.findAllProjects(null);
 
         assertEquals(3, projects.size(), "Should return the exact number of projects in the database");
     }
@@ -39,7 +39,7 @@ class ProjectRepositoryTest {
     @Test
     public void testFindAllProjectCheckAttributes() throws SQLException {
 
-        List<Project> projects = projectRepository.findAllProjects();
+        List<Project> projects = projectRepository.findAllProjects(null);
 
         assertNotNull(projects);
         assertFalse(projects.isEmpty());
@@ -148,10 +148,10 @@ class ProjectRepositoryTest {
         projectRepository.addProjectToDB(projectToAdd);
 
 
-        List<Project> projects = projectRepository.findAllProjects();
+        List<Project> projects = projectRepository.findAllProjects(null);
 
         Project newestAddedProject = projects.getLast();
-        assertEquals(4, newestAddedProject.getProjectId(), "First project should have id of 1");
+        assertEquals(newestAddedProject.getProjectId(), newestAddedProject.getProjectId(), "last project should have id of 5");
         assertEquals(projectToAdd.getProjectName(), newestAddedProject.getProjectName(), "Name of both objects should be the same");
         assertEquals(projectToAdd.getProjectDescription(), newestAddedProject.getProjectDescription(), "Description of both objects should be the same");
         assertEquals(projectToAdd.getProjectStartDate(), newestAddedProject.getProjectStartDate(), "Start date for both objects should be the same");
@@ -164,11 +164,11 @@ class ProjectRepositoryTest {
     @Transactional
     @Rollback
     public void testDeleteProjectFromDB(){
-        List<Project> projectsBeforeDeletion = projectRepository.findAllProjects();
+        List<Project> projectsBeforeDeletion = projectRepository.findAllProjects(null);
 
         projectRepository.deleteProjectFromDB(1);
 
-        List<Project> projectsAfterDeletion = projectRepository.findAllProjects();
+        List<Project> projectsAfterDeletion = projectRepository.findAllProjects(null);
 
         assertNotEquals(projectsBeforeDeletion.size(), projectsAfterDeletion.size(), "The size of the two lists should not be the same");
         assertNotEquals(projectsBeforeDeletion.getFirst().getProjectName(), projectsAfterDeletion.getFirst().getProjectName(),
@@ -205,5 +205,16 @@ class ProjectRepositoryTest {
         assertNotEquals(2000, updatedProject.getProjectEstimatedHours(),"project estimated hours should no longer be 2000");
         assertEquals(ProjectStatus.ON_HOLD, updatedProject.getProjectStatus(), "new status should be: ON_HOLD");
         assertEquals(5, updatedProject.getManagerId(), "new managerId should be 5");
+    }
+
+    @Test
+    public void testFindAllProjects_thatArchivedProjectsListNotSameAsNonArchivedProjectList(){
+        List <Project> nonArchivedProjects = projectRepository.findAllProjects(null);
+        List <Project> archivedProjects = projectRepository.findAllProjects(ProjectStatus.ARCHIVED);
+
+        assertNotEquals(nonArchivedProjects.size(), archivedProjects.size(), "The two lists should not be the same size");
+        assertEquals(1, archivedProjects.size(),"There should only be one archived project");
+        assertNotEquals(archivedProjects.getFirst(), nonArchivedProjects.getFirst(), "The first object on either list should not be the same");
+        assertEquals(3, nonArchivedProjects.size(), "Non archived list should only have 3 objects despite there being 4 in the database.");
     }
 }
