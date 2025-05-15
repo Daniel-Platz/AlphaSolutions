@@ -32,11 +32,20 @@ public class SubProjectController extends BaseController {
             return "redirect:/login";
         }
 
-
         List<Task> tasks = subProjectService.findTasksBySubProjectId(subProjectId);
+        SubProject subProject = subProjectService.findSubProjectById(subProjectId);
+
+        int totalEstimatedHours = subProject.getSubProjectEstimatedHours();
+        int actualHours = subProjectService.calculateActualHours(subProjectId);
+        int hoursUsedPercentage = totalEstimatedHours > 0 ? (actualHours * 100) / totalEstimatedHours : 0;
+
         model.addAttribute("tasks", tasks);
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
+        model.addAttribute("totalEstimatedHours", totalEstimatedHours);
+        model.addAttribute("actualHours", actualHours);
+        model.addAttribute("hoursUsedPercentage", hoursUsedPercentage);
+
 
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
@@ -106,7 +115,7 @@ public class SubProjectController extends BaseController {
     }
 
     @PostMapping("/{subProjectId}/deleteSubProject")
-    public String deleteSubProject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId){
+    public String deleteSubProject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId) {
         subProjectService.deleteSubProject(subProjectId);
         return "redirect:/dashboard/" + projectId + "/projectOverview";
     }

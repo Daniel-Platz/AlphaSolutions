@@ -46,6 +46,12 @@ public class SubProjectRepository {
         return result != null ? result : 0;
     }
 
+    public int calculateActualHours(int subProjectId) {
+        String sql = "SELECT IFNULL(SUM(TASK_ACTUAL_HOURS), 0) FROM TASK WHERE SUB_PROJECT_ID = ?";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, subProjectId);
+        return result != null ? result : 0;
+    }
+
     public int addNewSubProject(SubProject newSubProject) {
         String sql = "INSERT INTO sub_project (project_id, sub_project_name, sub_project_description, sub_project_start_date, sub_project_end_date, sub_project_estimated_hours, sub_project_status)" +
                 " VALUES (?,?,?,?,?,?,?)";

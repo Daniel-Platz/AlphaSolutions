@@ -1,62 +1,76 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Management</title>
+  <title>Opgave Styring</title>
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main>
-  <h1>Tasks for Sub-Projekt</h1>
+  <h1>Opgaver for Del-Projekt</h1>
 
-  <!-- Add Task Button (only for certain roles) -->
-  <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-    <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask(projectId=${projectId},subProjectId=${subProjectId})}">Add New Task</a>
+  <!-- Sub-projekt Oversigt -->
+  <div class="subproject-overview">
+    <div class="overview-item">
+      <strong>Total Estimerede Timer:</strong>
+      <span th:text="${totalEstimatedHours ?: 0}">0</span> timer
+    </div>
+    <div class="overview-item">
+      <strong>Faktiske Timer:</strong>
+      <span th:text="${actualHours ?: 0}">0</span> timer
+    </div>
+    <div class="overview-item">
+      <strong>Timer Brugt:</strong>
+      <span th:text="${hoursUsedPercentage ?: 0}">0</span>%
+    </div>
   </div>
 
-  <!-- Tasks List -->
+  <!-- Tilføj Opgave Knap (kun for visse roller) -->
+  <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+    <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask(projectId=${projectId},subProjectId=${subProjectId})}">Tilføj Ny Opgave</a>
+  </div>
+
+  <!-- Opgave Liste -->
   <div>
     <table>
       <thead>
       <tr>
-        <th>Task Name</th>
-        <th>Status</th>
+        <th>Opgave Navn</th>
+        <th>Estimeret Tid</th>
         <th>Deadline</th>
-        <th>Estimated Hours</th>
-        <th>Assigned To</th>
-        <th>Actions</th>
+        <th>Status</th>
+        <th>Handlinger</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="task : ${tasks}">
         <td th:text="${task.taskName}"></td>
-        <td th:text="${task.taskStatus}"></td>
-        <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
         <td th:text="${task.taskEstimatedHours}"></td>
-        <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
+        <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
+        <td th:text="${task.taskStatus}"></td>
         <td>
-          <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview(projectId=${projectId},subProjectId=${subProjectId}, taskId=${task.taskId})}">View</a>
+          <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview(projectId=${projectId},subProjectId=${subProjectId}, taskId=${task.taskId})}">Vis</a>
 
-          <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
+          <!-- Rediger/Slet knapper (kun for ADMIN og PROJECT_MANAGER) -->
           <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}">Edit</a>
+            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}">Rediger</a>
             <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/deleteTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}"
-               onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
+               onclick="return confirm('Er du sikker på at du vil slette denne opgave?')">Slet</a>
           </span>
         </td>
       </tr>
       <tr th:if="${tasks.empty}">
-        <td colspan="6">No tasks found</td>
+        <td colspan="5">Ingen opgaver fundet</td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Back button -->
+  <!-- Tilbage knap -->
   <div>
-    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Back to Project Overview</a>
+    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Tilbage til Projekt Oversigt</a>
   </div>
 </main>
 </body>
