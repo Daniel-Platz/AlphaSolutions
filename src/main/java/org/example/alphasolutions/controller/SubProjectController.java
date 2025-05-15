@@ -2,8 +2,11 @@ package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.alphasolutions.enums.ProjectStatus;
+import org.example.alphasolutions.exception.InsufficientHoursException;
+import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
+import org.example.alphasolutions.service.ProjectService;
 import org.example.alphasolutions.service.SubProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +19,11 @@ import java.util.List;
 public class SubProjectController extends BaseController {
 
     private final SubProjectService subProjectService;
+    private final ProjectService projectService;
 
-    public SubProjectController(SubProjectService subProjectService) {
+    public SubProjectController(SubProjectService subProjectService, ProjectService projectService) {
         this.subProjectService = subProjectService;
+        this.projectService = projectService;
     }
 
     @GetMapping("/{subProjectId}/subProjectOverview")
@@ -71,15 +76,35 @@ public class SubProjectController extends BaseController {
     }
 
     @PostMapping("/saveSubProject")
-    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject) {
+    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject, Model model, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
         subProject.setProjectId(projectId);
 
-        if (subProject.getSubProjectId() > 0) {
-            subProjectService.editSubProject(subProject);
-        } else {
-            subProjectService.addNewSubProject(subProject);
+        try {
+            Project project = projectService.findProjectById(projectId);
+            int projectEstimatedHours = project.getProjectEstimatedHours();
+
+            if (subProject.getSubProjectId() > 0) {
+                subProjectService.editSubProject(subProject, projectEstimatedHours);
+            } else {
+                subProjectService.addNewSubProject(subProject, projectEstimatedHours);
+            }
+            return "redirect:/dashboard/" + projectId + "/projectOverview";
+
+        } catch (InsufficientHoursException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("statuses", ProjectStatus.values());
+
+            if (subProject.getSubProjectId() > 0) {
+                model.addAttribute("subProject", subProject);
+                return "editSubProject";
+            } else {
+                model.addAttribute("newSubProject", subProject);
+                return "addSubProject";
+            }
         }
-        return "redirect:/dashboard/" + projectId + "/projectOverview";
     }
 
     @PostMapping("/{subProjectId}/deleteSubProject")
