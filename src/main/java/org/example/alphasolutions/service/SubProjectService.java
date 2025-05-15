@@ -44,7 +44,7 @@ public class SubProjectService {
     }
 
     private void validateSubProjectHours(SubProject subProject, int projectEstimatedHours) {
-        int totalSubProjectHours = subProjectRepository.getTotalSubProjectEstimatedHours(subProject.getProjectId());
+        int totalSubProjectHours = subProjectRepository.calculateTotalSubProjectEstimatedHours(subProject.getProjectId());
 
         if (subProject.getSubProjectId() > 0) {
             SubProject existingSubProject = subProjectRepository.findSubProjectById(subProject.getSubProjectId());

@@ -45,7 +45,7 @@ public class SubProjectRepository {
         return result != null ? result : 0;
     }
 
-    public int getTotalSubProjectEstimatedHours(int projectId) {
+    public int calculateTotalSubProjectEstimatedHours(int projectId) {
         String sql = "SELECT IFNULL(SUM(sub_project_estimated_hours), 0) FROM sub_project WHERE project_id = ?";
         Integer result = jdbcTemplate.queryForObject(sql, Integer.class, projectId);
         return result != null ? result : 0;
