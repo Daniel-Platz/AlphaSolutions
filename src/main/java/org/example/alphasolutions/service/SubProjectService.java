@@ -25,8 +25,11 @@ public class SubProjectService {
         return subProjectRepository.findSubProjectById(subProjectId);
     }
 
-    public int calculateTotalSubProjectEstimatedHours (int projectId) {
-        return subProjectRepository.calculateTotalSubProjectEstimatedHours(projectId);
+    public int calculateHoursUsedPercentage(int subProjectId) {
+        SubProject subProject = findSubProjectById(subProjectId);
+        int totalEstimatedHours = subProject.getSubProjectEstimatedHours();
+        int actualHours = calculateActualHours(subProjectId);
+        return totalEstimatedHours > 0 ? (actualHours * 100) / totalEstimatedHours : 0;
     }
 
     public int calculateActualHours(int subProjectId) {

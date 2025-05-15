@@ -37,7 +37,7 @@ public class SubProjectController extends BaseController {
 
         int totalEstimatedHours = subProject.getSubProjectEstimatedHours();
         int actualHours = subProjectService.calculateActualHours(subProjectId);
-        int hoursUsedPercentage = totalEstimatedHours > 0 ? (actualHours * 100) / totalEstimatedHours : 0;
+        int hoursUsedPercentage = subProjectService.calculateHoursUsedPercentage(subProjectId);
 
         model.addAttribute("tasks", tasks);
         model.addAttribute("projectId", projectId);
@@ -45,7 +45,6 @@ public class SubProjectController extends BaseController {
         model.addAttribute("totalEstimatedHours", totalEstimatedHours);
         model.addAttribute("actualHours", actualHours);
         model.addAttribute("hoursUsedPercentage", hoursUsedPercentage);
-
 
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
