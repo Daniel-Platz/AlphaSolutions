@@ -2,30 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <title th:text="${archivedView} ? 'Archived Projects' : 'Dashboard'">Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/projects.css}">
 </head>
 <body>
 
-<header class="header">
-    <a th:href="@{/dashboard}">
-        <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
-    </a>
-
-    <div class="header-right">
-        <div class="user-info" th:if="${session.employee != null}">
-            <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-            <span th:text="'(' + ${session.role} + ')'"></span>
-            <form action="/logout" method="post" style="display: inline;">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
-        </div>
-        <a href="/employee-profile">
-            <button class="circle-btn"><i class="fas fa-user"></i></button>
-        </a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main>
     <!-- Password change modal -->

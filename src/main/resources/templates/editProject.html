@@ -5,17 +5,8 @@
     <title>Add Project</title>
 </head>
 <body>
-<header>
-    <div class="logo">ALPHA SOLUTIONS</div>
-    <div class="user-info" th:if="${session.employee != null}">
-        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-        <span th:text="'(' + ${session.role} + ')'"></span>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-danger">Logout</button>
-        </form>
-        <a href="/dashboard" class="btn btn-danger" style="margin-left: 10px;">Back</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
 
 <main>
     <h1>Edit Project</h1>
@@ -34,25 +25,25 @@
                 </select>
             </li>
             <li>
-                <label for="projectName">Name:</label>
+                <label for="projectName">Navn</label>
                 <input type="text" id="projectName" th:field="*{projectName}" />
             </li>
             <li>
-                <label for="projectDescription">Description:</label>
+                <label for="projectDescription">Beskrivelse:</label>
                 <input type="text" id="projectDescription" th:field="*{projectDescription}" />
             </li>
             <li>
-                <label for="projectStartDate">Start Date:</label>
+                <label for="projectStartDate">Startdato:</label>
                 <input type="date" id="projectStartDate" name="projectStartDate"
                        th:value="${project.projectStartDate}" />
             </li>
             <li>
-                <label for="projectEndDate">End Date:</label>
+                <label for="projectEndDate">Slutdato:</label>
                 <input type="date" id="projectEndDate" name="projectEndDate"
                        th:value="${project.projectEndDate}" />
             </li>
             <li>
-                <label for="projectEstimatedHours">Estimated Hours:</label>
+                <label for="projectEstimatedHours">Estimerede Timer:</label>
                 <input type="number" id="projectEstimatedHours" th:field="*{projectEstimatedHours}" />
             </li>
             <li>
@@ -64,7 +55,7 @@
                 </select>
             </li>
             <li>
-                <button type="submit">Save Changes</button>
+                <button type="submit">Gem Ændringer</button>
             </li>
         </ul>
     </form>

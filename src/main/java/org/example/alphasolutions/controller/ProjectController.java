@@ -71,10 +71,16 @@ public class ProjectController extends BaseController {
 
         List<SubProject> subProjects = projectService.findSubProjectsByProjectId(projectId);
         List<Employee> assignedEmployees = projectService.findAssignedEmployeesByProjectId(projectId);
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+
+        List<Employee> availableEmployees = allEmployees.stream()
+                .filter(emp -> assignedEmployees.stream().noneMatch(ae -> ae.getEmployeeId() == emp.getEmployeeId()))
+                .toList();
 
         model.addAttribute("project", project);
         model.addAttribute("subProjects", subProjects);
         model.addAttribute("assignedEmployees", assignedEmployees);
+        model.addAttribute("availableEmployees", availableEmployees);
         model.addAttribute("statuses", ProjectStatus.values());
         model.addAttribute("role", session.getAttribute("role"));
 
@@ -134,5 +140,30 @@ public class ProjectController extends BaseController {
         projectService.updateProject(project, oldManagerId);
 
         return "redirect:/dashboard";
+    }
+
+    @PostMapping("/{projectId}/employees/add")
+    public String addEmployeeToProject(@PathVariable int projectId,
+                                       @RequestParam("employeeId") int employeeId,
+                                       HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        projectService.assignEmployeeToProject(employeeId, projectId);
+
+        return "redirect:/dashboard/" + projectId + "/projectOverview";
+    }
+
+    @PostMapping("/{projectId}/employees/{employeeId}/remove")
+    public String removeEmployeeFromProject(@PathVariable int projectId,
+                                            @PathVariable int employeeId,
+                                            HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        projectService.removeEmployeeFromProject(employeeId, projectId);
+        return "redirect:/dashboard/" + projectId + "/projectOverview";
     }
 }

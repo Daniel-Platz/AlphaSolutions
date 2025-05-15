@@ -5,19 +5,10 @@
     <title>Edit Subproject</title>
 </head>
 <body>
-<header>
-    <div>ALPHA SOLUTIONS</div>
-    <div th:if="${session.employee != null}">
-        <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-        <span th:text="'(' + ${session.role} + ')'"></span>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit">Logout</button>
-        </form>
-        <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}">Back to Project Overview</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
 <main>
-    <h1>Edit Subproject</h1>
+    <h1>Rediger Subproject</h1>
     <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
           method="post"
           th:object="${subProject}">
@@ -28,25 +19,25 @@
 
         <ul>
             <li>
-                <label for="subProjectName">Name:</label>
+                <label for="subProjectName">Navn:</label>
                 <input type="text" id="subProjectName" th:field="*{subProjectName}" required/>
             </li>
             <li>
-                <label for="subProjectDescription">Description:</label>
+                <label for="subProjectDescription">Beskrivelse:</label>
                 <input type="text" id="subProjectDescription" th:field="*{subProjectDescription}" required/>
             </li>
             <li>
-                <label for="subProjectStartDate">Start Date:</label>
+                <label for="subProjectStartDate">Startdato:</label>
                 <input type="date" id="subProjectStartDate" name="subProjectStartDate"
                        th:value="${subProject.subProjectStartDate}" required/>
             </li>
             <li>
-                <label for="subProjectEndDate">End Date:</label>
+                <label for="subProjectEndDate">Slutdato:</label>
                 <input type="date" id="subProjectEndDate" name="subProjectEndDate"
                        th:value="${subProject.subProjectEndDate}" required/>
             </li>
             <li>
-                <label for="subProjectEstimatedHours">Estimated Hours:</label>
+                <label for="subProjectEstimatedHours">Estimerede Timer:</label>
                 <input type="number" id="subProjectEstimatedHours" th:field="*{subProjectEstimatedHours}" required/>
             </li>
             <li>
@@ -58,7 +49,7 @@
                 </select>
             </li>
             <li>
-                <button type="submit">Save Changes</button>
+                <button type="submit">Gem Ændringer</button>
             </li>
         </ul>
     </form>

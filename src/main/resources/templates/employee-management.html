@@ -4,26 +4,9 @@
   <meta charset="UTF-8">
   <title>Medarbejderoversigt</title>
   <link rel="stylesheet" th:href="@{/css/employee-management.css}">
-  <link rel="stylesheet" th:href="@{/css/header.css}">
 </head>
 <body>
-<header class="header">
-  <a th:href="@{/dashboard}">
-    <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
-  </a>
-
-  <div class="header-right">
-    <div class="user-info" th:if="${session.employee != null}">
-      <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
-      <span th:text="'(' + ${session.role} + ')'"></span>
-      <form action="/logout" method="post" style="display: inline;">
-        <button type="submit" class="logout-btn">Logout</button>
-      </form>
-    </div>
-    <button class="circle-btn"></button>
-  </div>
-</header>
-
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <div th:if="${session.role == 'ADMIN'}">
 
