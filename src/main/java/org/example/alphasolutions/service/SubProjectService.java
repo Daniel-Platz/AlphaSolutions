@@ -25,9 +25,6 @@ public class SubProjectService {
         return subProjectRepository.findSubProjectById(subProjectId);
     }
 
-    public int calculateSubProjectTotalHours (int subProjectId) {
-        return subProjectRepository.calculateSubProjectTotalHours(subProjectId);
-    }
 
     public int addNewSubProject (SubProject subProject, int projectEstimatedHours) {
         validateSubProjectHours(subProject, projectEstimatedHours);

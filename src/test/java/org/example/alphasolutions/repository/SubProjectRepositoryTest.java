@@ -44,24 +44,6 @@ class SubProjectRepositoryTest {
     }
 
     @Test
-    void testCalculateSubProjectTotalHours() {
-        int subProjectId = 1;
-
-        int totalHours = subProjectRepository.calculateSubProjectTotalHours(subProjectId);
-
-        assertEquals(300, totalHours);
-    }
-
-    @Test
-    void testCalculateSubProjectTotalHoursNoHours() {
-        int subProjectId = 999;
-
-        int totalHours = subProjectRepository.calculateSubProjectTotalHours(subProjectId);
-
-        assertEquals(0, totalHours);
-    }
-
-    @Test
     void testCalculateTotalSubProjectEstimatedHours() {
         int projectId = 1;
 

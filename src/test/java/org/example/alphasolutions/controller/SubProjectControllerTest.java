@@ -126,7 +126,6 @@ class SubProjectControllerTest {
         session.setAttribute("role", adminEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
-        when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
@@ -134,7 +133,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
     }
 
@@ -150,7 +148,6 @@ class SubProjectControllerTest {
         session.setAttribute("role", managerEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
-        when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
@@ -158,7 +155,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", managerEmployee.getRole().toString()));
     }
 
@@ -174,7 +170,6 @@ class SubProjectControllerTest {
         session.setAttribute("role", regularEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
-        when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
@@ -182,7 +177,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
     }
 

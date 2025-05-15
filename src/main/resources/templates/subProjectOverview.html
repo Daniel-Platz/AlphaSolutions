@@ -11,14 +11,6 @@
 <main>
   <h1>Tasks for Sub-Projekt</h1>
 
-  <!-- Subproject Summary Information -->
-  <div class="subproject-summary">
-    <div class="summary-item">
-      <strong>Total Estimerede Timer:</strong>
-      <span th:text="${totalHours}">0</span> timer
-    </div>
-  </div>
-
   <!-- Add Task Button (only for certain roles) -->
   <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
     <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask(projectId=${projectId},subProjectId=${subProjectId})}">Add New Task</a>
