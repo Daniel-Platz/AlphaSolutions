@@ -18,8 +18,8 @@ public class TaskService {
         return taskRepository.addNewTask(task);
     }
 
-    public void deleteTask(Task taskToDelete){
-        taskRepository.deleteTask(taskToDelete);
+    public void deleteTask(int taskId){
+        taskRepository.deleteTask(taskId);
     }
 
     public List<Task> findTaskBySubProjectId(int subProjectId){

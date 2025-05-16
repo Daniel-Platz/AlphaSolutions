@@ -70,18 +70,20 @@ public class TaskController extends BaseController {
 
 
 
-/*
+
+
     //TODO Rigtig path skal sættes
-    @PostMapping("/{subProjectId}/delete")
-    public String deleteTask(@PathVariable int subProjectId,
-                             @PathVariable int taskId) {
+    @PostMapping("/{taskId}/deleteTask")
+    public String deleteTask(@PathVariable("projectId") int projectId, @PathVariable ("subProjectId") int subProjectId,
+                             @PathVariable ("taskId") int taskId) {
 
-        taskService.deleteTask(taskService.findTaskByTaskId(taskId));
-
-        return "redirect:/project/subproject/task/" + subProjectId;
+        taskService.deleteTask(taskId);
+        return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview";
 
     }
+    // return "redirect:/dashboard/" + projectId + "/projectOverview";
 
+/*
     //TODO Rigtig path skal sættes
     @GetMapping("/{subProjectId}/edit")
     public String editTask(@PathVariable int taskId,

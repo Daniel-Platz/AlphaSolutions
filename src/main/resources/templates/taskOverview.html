@@ -42,15 +42,22 @@
             </tr>
         </table>
 
-        <!-- Actions -->
-        <div class="actions">
-            <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}">Edit</a>
-                <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/deleteTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}"
-                   onclick="return confirm('Are you sure you want to delete this task?')">Delete</a>
-            </span>
+
+        <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
+                           class="button">Edit</a>
+                        <div style="display: inline;">
+                            <form style="display: inline;" method="post"
+                                  th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
+                                  onsubmit="return confirm('Are you sure you want to delete this sub project?')">
+                                <button type="submit" class="button">Delete</button>
+                            </form>
+                        </div>
+                    </span>
+
         </div>
     </div>
+
 
     <!-- Message if no task found -->
     <div th:if="${task == null}">
@@ -59,7 +66,7 @@
 
     <!-- Back button -->
     <div>
-        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Back to Project Overview</a>
+        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Back to Sub-Project Overview</a>
     </div>
 </main>
 </body>

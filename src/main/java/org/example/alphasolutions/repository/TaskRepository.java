@@ -61,12 +61,9 @@ public class TaskRepository {
 
     }
 
-
-    public void deleteTask(Task taskToDelete) {
+    public void deleteTask(int taskId) {
         String sql = "DELETE FROM task WHERE task_id = ?";
-
-
-        jdbcTemplate.update(sql, taskToDelete.getTaskId());
+        jdbcTemplate.update(sql, taskId);
     }
 
     public List<Task> findTasksBySubProjectId(int subProjectId) {
