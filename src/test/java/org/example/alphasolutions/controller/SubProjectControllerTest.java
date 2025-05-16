@@ -98,10 +98,11 @@ class SubProjectControllerTest {
         subProject.setSubProjectDescription("Test Description");
         subProject.setProjectId(1);
         subProject.setSubProjectStatus(ProjectStatus.ACTIVE);
+        subProject.setSubProjectEstimatedHours(300);
 
         project = new Project();
         project.setProjectId(1);
-        project.setProjectEstimatedHours(1000); // Set estimated hours for tests
+        project.setProjectEstimatedHours(1000);
     }
 
     @Test
@@ -126,13 +127,20 @@ class SubProjectControllerTest {
         session.setAttribute("role", adminEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
+        when(subProjectService.findSubProjectById(subProjectId)).thenReturn(subProject);
+        when(subProjectService.calculateActualHours(subProjectId)).thenReturn(200);
+        when(subProjectService.calculateHoursUsedPercentage(subProjectId)).thenReturn(67);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
+                .andExpect(model().attribute("projectId", projectId))
                 .andExpect(model().attribute("subProjectId", subProjectId))
+                .andExpect(model().attribute("totalEstimatedHours", 300))
+                .andExpect(model().attribute("actualHours", 200))
+                .andExpect(model().attribute("hoursUsedPercentage", 67))
                 .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
     }
 
@@ -148,13 +156,20 @@ class SubProjectControllerTest {
         session.setAttribute("role", managerEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
+        when(subProjectService.findSubProjectById(subProjectId)).thenReturn(subProject);
+        when(subProjectService.calculateActualHours(subProjectId)).thenReturn(200);
+        when(subProjectService.calculateHoursUsedPercentage(subProjectId)).thenReturn(67);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
+                .andExpect(model().attribute("projectId", projectId))
                 .andExpect(model().attribute("subProjectId", subProjectId))
+                .andExpect(model().attribute("totalEstimatedHours", 300))
+                .andExpect(model().attribute("actualHours", 200))
+                .andExpect(model().attribute("hoursUsedPercentage", 67))
                 .andExpect(model().attribute("role", managerEmployee.getRole().toString()));
     }
 
@@ -170,13 +185,20 @@ class SubProjectControllerTest {
         session.setAttribute("role", regularEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
+        when(subProjectService.findSubProjectById(subProjectId)).thenReturn(subProject);
+        when(subProjectService.calculateActualHours(subProjectId)).thenReturn(200);
+        when(subProjectService.calculateHoursUsedPercentage(subProjectId)).thenReturn(67);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
+                .andExpect(model().attribute("projectId", projectId))
                 .andExpect(model().attribute("subProjectId", subProjectId))
+                .andExpect(model().attribute("totalEstimatedHours", 300))
+                .andExpect(model().attribute("actualHours", 200))
+                .andExpect(model().attribute("hoursUsedPercentage", 67))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
     }
 
