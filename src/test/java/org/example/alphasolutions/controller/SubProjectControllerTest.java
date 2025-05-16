@@ -3,9 +3,12 @@ package org.example.alphasolutions.controller;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.enums.TaskStatus;
+import org.example.alphasolutions.exception.InsufficientHoursException;
 import org.example.alphasolutions.model.Employee;
+import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
+import org.example.alphasolutions.service.ProjectService;
 import org.example.alphasolutions.service.SubProjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +23,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +38,9 @@ class SubProjectControllerTest {
     @MockitoBean
     private SubProjectService subProjectService;
 
+    @MockitoBean
+    private ProjectService projectService; // Add ProjectService mock
+
     private Task task1;
     private Task task2;
     private List<Task> subProjectTasks;
@@ -41,10 +48,10 @@ class SubProjectControllerTest {
     private Employee managerEmployee;
     private Employee regularEmployee;
     private SubProject subProject;
+    private Project project;
 
     @BeforeEach
     void setUp() {
-
         task1 = new Task();
         task1.setTaskId(1);
         task1.setTaskName("Test Task 1");
@@ -91,6 +98,10 @@ class SubProjectControllerTest {
         subProject.setSubProjectDescription("Test Description");
         subProject.setProjectId(1);
         subProject.setSubProjectStatus(ProjectStatus.ACTIVE);
+
+        project = new Project();
+        project.setProjectId(1);
+        project.setProjectEstimatedHours(1000); // Set estimated hours for tests
     }
 
     @Test
@@ -115,7 +126,6 @@ class SubProjectControllerTest {
         session.setAttribute("role", adminEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
-        when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
@@ -123,7 +133,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", adminEmployee.getRole().toString()));
     }
 
@@ -139,7 +148,6 @@ class SubProjectControllerTest {
         session.setAttribute("role", managerEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
-        when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
@@ -147,7 +155,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", managerEmployee.getRole().toString()));
     }
 
@@ -163,7 +170,6 @@ class SubProjectControllerTest {
         session.setAttribute("role", regularEmployee.getRole().toString());
 
         when(subProjectService.findTasksBySubProjectId(subProjectId)).thenReturn(subProjectTasks);
-        when(subProjectService.calculateSubProjectTotalHours(subProjectId)).thenReturn(totalHours);
 
         mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview", projectId, subProjectId)
                         .session(session))
@@ -171,7 +177,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("subProjectOverview"))
                 .andExpect(model().attribute("tasks", subProjectTasks))
                 .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attribute("totalHours", totalHours))
                 .andExpect(model().attribute("role", regularEmployee.getRole().toString()));
     }
 
@@ -212,8 +217,6 @@ class SubProjectControllerTest {
                 .andExpect(view().name("editSubProject"))
                 .andExpect(model().attribute("subProject", subProject))
                 .andExpect(model().attributeExists("statuses"));
-
-
     }
 
     @Test
@@ -237,10 +240,16 @@ class SubProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
+        when(projectService.findProjectById(projectId)).thenReturn(project);
+
         mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
                         .session(session)
+                        .param("subProjectId", String.valueOf(subProjectId))
                         .param("subProjectName", "Updated SubProject")
                         .param("subProjectDescription", "Updated Description")
+                        .param("subProjectEstimatedHours", "100")
+                        .param("subProjectStartDate", "2025-01-15")
+                        .param("subProjectEndDate", "2025-01-30")
                         .param("subProjectStatus", "COMPLETED"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
@@ -255,15 +264,48 @@ class SubProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        when(subProjectService.addNewSubProject(any(SubProject.class))).thenReturn(1);
+        when(projectService.findProjectById(projectId)).thenReturn(project);
+        when(subProjectService.addNewSubProject(any(SubProject.class), anyInt())).thenReturn(1);
 
         mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
                         .session(session)
                         .param("subProjectName", "New SubProject")
                         .param("subProjectDescription", "New Description")
+                        .param("subProjectEstimatedHours", "100") // Add required param
+                        .param("subProjectStartDate", "2025-01-15") // Add required param
+                        .param("subProjectEndDate", "2025-01-30") // Add required param
                         .param("subProjectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
+
+    }
+
+    @Test
+    void saveSubProjectWithInsufficientHours() throws Exception {
+        int projectId = 1;
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("employee", adminEmployee);
+        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
+        session.setAttribute("role", adminEmployee.getRole().toString());
+
+        when(projectService.findProjectById(projectId)).thenReturn(project);
+        when(subProjectService.addNewSubProject(any(SubProject.class), anyInt()))
+                .thenThrow(new InsufficientHoursException());
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
+                        .session(session)
+                        .param("subProjectName", "New SubProject")
+                        .param("subProjectDescription", "New Description")
+                        .param("subProjectEstimatedHours", "100")
+                        .param("subProjectStartDate", "2025-01-15")
+                        .param("subProjectEndDate", "2025-01-30")
+                        .param("subProjectStatus", "ACTIVE"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addSubProject"))
+                .andExpect(model().attributeExists("errorMessage"))
+                .andExpect(model().attributeExists("newSubProject"))
+                .andExpect(model().attributeExists("statuses"));
     }
 
     @Test
@@ -275,5 +317,4 @@ class SubProjectControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
     }
-
 }

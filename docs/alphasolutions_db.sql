@@ -1,8 +1,6 @@
 -- Create database
-CREATE
-DATABASE IF NOT EXISTS alphaSolutions_db;
-USE
-alphaSolutions_db;
+CREATE DATABASE IF NOT EXISTS alphaSolutions_db;
+USE alphaSolutions_db;
 
 -- Create Skill table
 CREATE TABLE Skill
@@ -60,6 +58,7 @@ CREATE TABLE Task
     task_start_date      DATE         NOT NULL,
     task_end_date        DATE,
     task_estimated_hours INT(10),
+    task_actual_hours    INT(10) DEFAULT 0,
     task_status          VARCHAR(255) NOT NULL,
     FOREIGN KEY (sub_project_id) REFERENCES Sub_project (sub_project_id) ON DELETE CASCADE
 );

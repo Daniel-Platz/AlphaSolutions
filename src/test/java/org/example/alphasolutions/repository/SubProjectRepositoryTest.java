@@ -44,24 +44,55 @@ class SubProjectRepositoryTest {
     }
 
     @Test
-    void testCalculateSubProjectTotalHours() {
-        int subProjectId = 1;
+    void testCalculateTotalSubProjectEstimatedHours() {
+        int projectId = 1;
 
-        int totalHours = subProjectRepository.calculateSubProjectTotalHours(subProjectId);
+        int totalHours = subProjectRepository.calculateTotalSubProjectEstimatedHours(projectId);
 
-        assertEquals(300, totalHours);
+        assertTrue(totalHours>=0);
     }
 
     @Test
-    void testCalculateSubProjectTotalHoursNoHours() {
-        int subProjectId = 999;
+    void testCalculateTotalSubProjectEstimatedHoursNoSubProjects() {
+        int projectId = 999;
 
-        int totalHours = subProjectRepository.calculateSubProjectTotalHours(subProjectId);
+        int totalHours = subProjectRepository.calculateTotalSubProjectEstimatedHours(projectId);
 
         assertEquals(0, totalHours);
     }
 
     @Test
+    void testGetTotalSubProjectEstimatedHoursMultipleSubProjects() {
+        int projectId = 1;
+        SubProject subProject1 = new SubProject();
+        subProject1.setProjectId(projectId);
+        subProject1.setSubProjectName("Test SubProject 1");
+        subProject1.setSubProjectDescription("Description 1");
+        subProject1.setSubProjectStartDate(LocalDate.now());
+        subProject1.setSubProjectEndDate(LocalDate.now().plusDays(10));
+        subProject1.setSubProjectEstimatedHours(100);
+        subProject1.setSubProjectStatus(ProjectStatus.ACTIVE);
+
+        SubProject subProject2 = new SubProject();
+        subProject2.setProjectId(projectId);
+        subProject2.setSubProjectName("Test SubProject 2");
+        subProject2.setSubProjectDescription("Description 2");
+        subProject2.setSubProjectStartDate(LocalDate.now());
+        subProject2.setSubProjectEndDate(LocalDate.now().plusDays(15));
+        subProject2.setSubProjectEstimatedHours(200);
+        subProject2.setSubProjectStatus(ProjectStatus.ACTIVE);
+
+        int initialTotal = subProjectRepository.calculateTotalSubProjectEstimatedHours(projectId);
+
+        subProjectRepository.addNewSubProject(subProject1);
+        subProjectRepository.addNewSubProject(subProject2);
+
+        int newTotal = subProjectRepository.calculateTotalSubProjectEstimatedHours(projectId);
+
+        assertEquals(initialTotal + 300, newTotal, "Total should include hours from both new subprojects");
+    }
+
+        @Test
     public void testAddNewSubProject() {
         SubProject subProjectToAdd = new SubProject();
         subProjectToAdd.setProjectId(1);
