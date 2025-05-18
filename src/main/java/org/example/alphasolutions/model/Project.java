@@ -18,6 +18,7 @@ public class Project {
     private List<Employee> projectAssignedEmployees;
     private Integer projectManagerId;
     private Employee projectManager;
+    private int projectActualHours;
 
     public Project(int projectId, String projectName, String projectDescription, LocalDate projectStartDate, LocalDate projectEndDate, int projectEstimatedHours, ProjectStatus projectStatus, List<SubProject> subProjects, List<Employee> projectAssignedEmployees) {
         this.projectId = projectId;
@@ -123,5 +124,13 @@ public class Project {
 
     public Employee getProjectManager(){
         return projectManager;
+    }
+
+    public void setProjectActualHours(int projectActualHours) {
+        this.projectActualHours = projectActualHours;
+    }
+
+    public int getProjectActualHours() {
+        return projectActualHours;
     }
 }

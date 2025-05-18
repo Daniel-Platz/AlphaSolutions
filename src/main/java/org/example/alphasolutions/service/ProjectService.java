@@ -13,9 +13,11 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final SubProjectService subProjectService;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, SubProjectService subProjectService) {
         this.projectRepository = projectRepository;
+        this.subProjectService = subProjectService;
     }
 
     public List<Project> findAllProjects(ProjectStatus projectStatus) {
@@ -56,5 +58,14 @@ public class ProjectService {
 
     public void removeEmployeeFromProject(int employeeId, int projectId) {
         projectRepository.removeEmployeeFromProject(employeeId, projectId);
+    }
+
+    public int calculateProjectActualHours(int projectId) {
+        List<SubProject> subProjects = findSubProjectsByProjectId(projectId);
+        int totalActualHours = 0;
+        for (SubProject subProject : subProjects) {
+            totalActualHours += subProjectService.calculateActualHours(subProject.getSubProjectId());
+        }
+        return totalActualHours;
     }
 }

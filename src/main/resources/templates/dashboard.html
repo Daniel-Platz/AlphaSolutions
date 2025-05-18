@@ -62,6 +62,7 @@
                 <th>Projekt Navn</th>
                 <th>Start Dato</th>
                 <th>Slut Date</th>
+                <th>Faktiske Timer Brugt</th>
                 <th>Handlinger</th>
             </tr>
             </thead>
@@ -70,6 +71,7 @@
                 <td th:text="${project.projectName}"></td>
                 <td th:text="${project.projectStartDate != null ? #temporals.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
                 <td th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
+                <td th:text="${project.getProjectActualHours()}"></td>
                 <td>
                     <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}"
                        class="button">View</a>
