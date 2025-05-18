@@ -79,7 +79,7 @@
                     <div th:if="${archivedView != true and role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
                         <a th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}"
                            class="button">Edit</a>
-                        <form th:action="@{/dashboard/{projectId}/delete(projectId=${project.projectId})}" method="post"
+                        <form th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}" method="post"
                               onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
                               style="display: inline;">
                             <button type="submit" class="button">Delete</button>
