@@ -25,6 +25,42 @@ class SubProjectRepositoryTest {
     private SubProjectRepository subProjectRepository;
 
     @Test
+    void testFindAllSubProjects() {
+        List<SubProject> subProjects = subProjectRepository.findAllSubProjects();
+
+        assertNotNull(subProjects);
+        assertFalse(subProjects.isEmpty());
+    }
+
+    @Test
+    void testFindSubProjectById() {
+        int subProjectId = 1;
+
+        SubProject subProject = subProjectRepository.findSubProjectById(subProjectId);
+
+        assertNotNull(subProject);
+        assertEquals(subProjectId, subProject.getSubProjectId());
+    }
+
+    @Test
+    void testCalculateActualHours() {
+        int subProjectId = 1;
+
+        int actualHours = subProjectRepository.calculateActualHours(subProjectId);
+
+        assertEquals(135, actualHours, "Actual hours should be 135");
+    }
+
+    @Test
+    void testCalculateActualHoursNoTasks() {
+        int subProjectIdWithNoTasks = 999;
+
+        int actualHours = subProjectRepository.calculateActualHours(subProjectIdWithNoTasks);
+
+        assertEquals(0, actualHours, "Should return 0 when no tasks exist");
+    }
+
+    @Test
     void testGetTaskBySubProjectId() {
         int subProjectId = 1;
 
