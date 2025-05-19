@@ -25,6 +25,14 @@ class SubProjectRepositoryTest {
     private SubProjectRepository subProjectRepository;
 
     @Test
+    void testFindAllSubProjects() {
+        List<SubProject> subProjects = subProjectRepository.findAllSubProjects();
+
+        assertNotNull(subProjects);
+        assertFalse(subProjects.isEmpty());
+    }
+
+    @Test
     void testGetTaskBySubProjectId() {
         int subProjectId = 1;
 
