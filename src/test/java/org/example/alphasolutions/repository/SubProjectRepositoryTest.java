@@ -43,6 +43,15 @@ class SubProjectRepositoryTest {
     }
 
     @Test
+    void testCalculateActualHours() {
+        int subProjectId = 1;
+
+        int actualHours = subProjectRepository.calculateActualHours(subProjectId);
+
+        assertEquals(135, actualHours, "Actual hours should be 135");
+    }
+
+    @Test
     void testGetTaskBySubProjectId() {
         int subProjectId = 1;
 
