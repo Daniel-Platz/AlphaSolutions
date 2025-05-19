@@ -33,6 +33,16 @@ class SubProjectRepositoryTest {
     }
 
     @Test
+    void testFindSubProjectById() {
+        int subProjectId = 1;
+
+        SubProject subProject = subProjectRepository.findSubProjectById(subProjectId);
+
+        assertNotNull(subProject);
+        assertEquals(subProjectId, subProject.getSubProjectId());
+    }
+
+    @Test
     void testGetTaskBySubProjectId() {
         int subProjectId = 1;
 
