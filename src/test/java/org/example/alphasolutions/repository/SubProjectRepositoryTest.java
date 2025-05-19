@@ -52,6 +52,15 @@ class SubProjectRepositoryTest {
     }
 
     @Test
+    void testCalculateActualHoursNoTasks() {
+        int subProjectIdWithNoTasks = 999;
+
+        int actualHours = subProjectRepository.calculateActualHours(subProjectIdWithNoTasks);
+
+        assertEquals(0, actualHours, "Should return 0 when no tasks exist");
+    }
+
+    @Test
     void testGetTaskBySubProjectId() {
         int subProjectId = 1;
 
