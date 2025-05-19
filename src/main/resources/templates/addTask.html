@@ -10,7 +10,8 @@
 
 <div class="container">
     <h1>Tilføj Ny Opgave</h1>
-    <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/saveTask(projectId=${projectId}, subProjectId=${subProjectId})}" th:object="${newTask}" method="post">
+    <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/saveTask(projectId=${projectId},subProjectId=${subProjectId})}"
+          th:object="${newTask}" method="post">
         <div class="form-group">
             <label for="taskName">Opgavenavn<span class="required">*</span></label>
             <input type="text" id="taskName" th:field="*{taskName}" required>
@@ -37,14 +38,18 @@
                 <option value="">Vælg status</option>
                 <option value="NOT_STARTED">Ikke Påbegyndt</option>
                 <option value="IN_PROGRESS">I Gang</option>
-                <option value="ON_HOLD">På Pause</option>
+                <option value="DELAYED">Forsinket</option>
                 <option value="COMPLETED">Afsluttet</option>
+                <option value="CANCELLED">Afbrudt</option>
             </select>
         </div> <br>
-        <div class="form-actions">
-            <button type="button" class="cancel-btn" onclick="window.location.href='projects.html'">Annuller</button>
+
+        <!-- Save and Back button -->
+        <div>
             <button type="submit">Gem Opgave</button>
+            <button th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Annuller</button>
         </div>
+
     </form>
 </div>
 </body>

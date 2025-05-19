@@ -228,17 +228,18 @@ class SubProjectControllerTest {
     }
 
     @Test
-    void saveEditedSubProject() throws Exception {
+    void updateExistingSubProject() throws Exception {
         int projectId = 1;
-        int subProjectId = 5;
-
+        int subProjectId = 1;
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employee", adminEmployee);
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
-        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject", projectId, subProjectId)
                         .session(session)
+                        .param("subProjectId", String.valueOf(subProjectId))
+                        .param("projectId", String.valueOf(projectId))
                         .param("subProjectName", "Updated SubProject")
                         .param("subProjectDescription", "Updated Description")
                         .param("subProjectStatus", "COMPLETED"))

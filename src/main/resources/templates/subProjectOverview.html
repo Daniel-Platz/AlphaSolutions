@@ -49,8 +49,8 @@
 
           <!-- Edit/Delete buttons (only for ADMIN and PROJECT_MANAGER) -->
           <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${task.taskId})}"
-                           class="button">Edit</a>
+                          <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${task.taskId})}"
+                             class="button">Edit</a>
                         <div style="display: inline;">
                             <form style="display: inline;" method="post"
                                   th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${task.taskId})}"
@@ -65,7 +65,7 @@
 
         </td>
       </tr>
-      <tr th:if="${tasks.empty}">
+      <tr th:if="${tasks.isEmpty()}">
         <td colspan="6">No tasks found</td>
       </tr>
       </tbody>

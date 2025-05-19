@@ -71,14 +71,17 @@ public class SubProjectController extends BaseController {
     }
 
     @PostMapping("/saveSubProject")
-    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject) {
+    public String createSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject) {
         subProject.setProjectId(projectId);
+        subProjectService.addNewSubProject(subProject);
+        return "redirect:/dashboard/" + projectId + "/projectOverview";
+    }
 
-        if (subProject.getSubProjectId() > 0) {
-            subProjectService.editSubProject(subProject);
-        } else {
-            subProjectService.addNewSubProject(subProject);
-        }
+    @PostMapping("/{subProjectId}/updateSubProject")
+    public String updateSubProject(@PathVariable int projectId, @PathVariable int subProjectId, @ModelAttribute SubProject subProject) {
+        subProject.setProjectId(projectId);
+        subProject.setSubProjectId(subProjectId);
+        subProjectService.editSubProject(subProject);
         return "redirect:/dashboard/" + projectId + "/projectOverview";
     }
 

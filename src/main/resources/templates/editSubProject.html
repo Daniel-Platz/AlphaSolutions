@@ -9,7 +9,7 @@
 
 <main>
     <h1>Rediger Subproject</h1>
-    <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
+    <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject(projectId=${projectId},subProjectId=${subProject.subProjectId})}"
           method="post"
           th:object="${subProject}">
 
@@ -50,6 +50,7 @@
             </li>
             <li>
                 <button type="submit">Gem Ændringer</button>
+                <button th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Annuller</button>
             </li>
         </ul>
     </form>
