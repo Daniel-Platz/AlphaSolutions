@@ -39,6 +39,8 @@ public class SubProjectController extends BaseController {
         int actualHours = subProjectService.calculateActualHours(subProjectId);
         int hoursUsedPercentage = subProjectService.calculateHoursUsedPercentage(subProjectId);
 
+        model.addAttribute("subProject", subProject);
+
         model.addAttribute("tasks", tasks);
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
