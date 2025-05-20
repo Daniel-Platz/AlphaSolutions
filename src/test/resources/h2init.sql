@@ -1,9 +1,11 @@
+-- Create Skill table
 CREATE TABLE Skill
 (
     skill_id   INT PRIMARY KEY AUTO_INCREMENT,
     skill_name VARCHAR(255) NOT NULL
 );
 
+-- Create Employee table
 CREATE TABLE Employee
 (
     employee_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -14,6 +16,7 @@ CREATE TABLE Employee
     role        VARCHAR(255) NOT NULL
 );
 
+-- Create Project table
 CREATE TABLE Project
 (
     project_id              INT PRIMARY KEY AUTO_INCREMENT,
@@ -23,10 +26,11 @@ CREATE TABLE Project
     project_end_date        DATE,
     project_estimated_hours INT,
     project_status          VARCHAR(255) NOT NULL,
-    manager_id              int,
-    FOREIGN KEY (manager_id) REFERENCES employee (employee_id)
+    manager_id              INT,
+    FOREIGN KEY (manager_id) REFERENCES Employee (employee_id)
 );
 
+-- Create Sub_project table
 CREATE TABLE Sub_project
 (
     sub_project_id              INT PRIMARY KEY AUTO_INCREMENT,
@@ -40,6 +44,7 @@ CREATE TABLE Sub_project
     FOREIGN KEY (project_id) REFERENCES Project (project_id) ON DELETE CASCADE
 );
 
+-- Create Task table (with task_actual_hours column)
 CREATE TABLE Task
 (
     task_id              INT PRIMARY KEY AUTO_INCREMENT,
@@ -49,10 +54,12 @@ CREATE TABLE Task
     task_start_date      DATE         NOT NULL,
     task_end_date        DATE,
     task_estimated_hours INT,
+    task_actual_hours    INT DEFAULT 0,
     task_status          VARCHAR(255) NOT NULL,
     FOREIGN KEY (sub_project_id) REFERENCES Sub_project (sub_project_id) ON DELETE CASCADE
 );
 
+-- Create junction table Employee_Skill
 CREATE TABLE Employee_Skill
 (
     employee_id INT NOT NULL,
@@ -62,6 +69,7 @@ CREATE TABLE Employee_Skill
     FOREIGN KEY (skill_id) REFERENCES Skill (skill_id) ON DELETE CASCADE
 );
 
+-- Create junction table Project_Employee
 CREATE TABLE Project_Employee
 (
     employee_id INT NOT NULL,
@@ -71,6 +79,7 @@ CREATE TABLE Project_Employee
     FOREIGN KEY (project_id) REFERENCES Project (project_id) ON DELETE CASCADE
 );
 
+-- Create junction table Employee_Task
 CREATE TABLE Employee_Task
 (
     employee_id INT NOT NULL,
@@ -80,6 +89,7 @@ CREATE TABLE Employee_Task
     FOREIGN KEY (task_id) REFERENCES Task (task_id) ON DELETE CASCADE
 );
 
+-- Insert test data
 INSERT INTO Skill (skill_id, skill_name)
 VALUES (1, 'Java Development'),
        (2, 'Project Management'),
@@ -141,21 +151,31 @@ VALUES (1, 'Database Design', 'Database schema design and implementation', '2025
        (3, 'Implementation', 'Front-end development', '2024-12-01', '2025-01-15', 600, 'COMPLETED');
 
 INSERT INTO Task (sub_project_id, task_name, task_description, task_start_date, task_end_date,
-                  task_estimated_hours, task_status)
-VALUES (1, 'ER Diagram', 'Create entity-relationship diagrams', '2025-01-15', '2025-01-31', 80, 'COMPLETED'),
-       (1, 'Schema Creation', 'Define database schema', '2025-02-01', '2025-02-15', 100, 'IN_PROGRESS'),
-       (1, 'Data Migration Plan', 'Plan for migrating existing data', '2025-02-16', '2025-03-15', 120, 'NOT_STARTED'),
-       (2, 'API Design', 'Design RESTful API endpoints', '2025-02-15', '2025-03-15', 200, 'NOT_STARTED'),
-       (2, 'Business Logic', 'Implement core business logic', '2025-03-16', '2025-05-15', 400, 'NOT_STARTED'),
-       (2, 'Integration', 'Integrate with external systems', '2025-05-16', '2025-06-30', 200, 'NOT_STARTED'),
-       (3, 'Component Design', 'Design reusable UI components', '2025-04-01', '2025-05-15', 200, 'NOT_STARTED'),
-       (3, 'UI Implementation', 'Implement user interfaces', '2025-05-16', '2025-07-15', 300, 'NOT_STARTED'),
-       (3, 'Responsive Design', 'Ensure responsive design for all devices', '2025-07-16', '2025-07-31', 100, 'NOT_STARTED'),
-       (8, 'Wireframes', 'Create wireframes for new website', '2024-11-01', '2024-11-15', 80, 'COMPLETED'),
-       (8, 'Visual Design', 'Create visual design elements', '2024-11-16', '2024-11-30', 120, 'COMPLETED'),
-       (9, 'HTML/CSS', 'Convert design to HTML/CSS', '2024-12-01', '2024-12-15', 200, 'COMPLETED'),
-       (9, 'JavaScript', 'Implement interactive features', '2024-12-16', '2025-01-05', 250, 'COMPLETED'),
-       (9, 'Testing', 'Cross-browser testing', '2025-01-06', '2025-01-15', 150, 'COMPLETED');
+                  task_estimated_hours, task_actual_hours, task_status)
+VALUES
+    -- SubProject 1 tasks (Database Design)
+    (1, 'ER Diagram', 'Create entity-relationship diagrams', '2025-01-15', '2025-01-31', 80, 75, 'COMPLETED'),
+    (1, 'Schema Creation', 'Define database schema', '2025-02-01', '2025-02-15', 100, 60, 'IN_PROGRESS'),
+    (1, 'Data Migration Plan', 'Plan for migrating existing data', '2025-02-16', '2025-03-15', 120, 0, 'NOT_STARTED'),
+
+    -- SubProject 2 tasks (Backend Development)
+    (2, 'API Design', 'Design RESTful API endpoints', '2025-02-15', '2025-03-15', 200, 0, 'NOT_STARTED'),
+    (2, 'Business Logic', 'Implement core business logic', '2025-03-16', '2025-05-15', 400, 0, 'NOT_STARTED'),
+    (2, 'Integration', 'Integrate with external systems', '2025-05-16', '2025-06-30', 200, 0, 'NOT_STARTED'),
+
+    -- SubProject 3 tasks (Frontend Development)
+    (3, 'Component Design', 'Design reusable UI components', '2025-04-01', '2025-05-15', 200, 0, 'NOT_STARTED'),
+    (3, 'UI Implementation', 'Implement user interfaces', '2025-05-16', '2025-07-15', 300, 0, 'NOT_STARTED'),
+    (3, 'Responsive Design', 'Ensure responsive design for all devices', '2025-07-16', '2025-07-31', 100, 0, 'NOT_STARTED'),
+
+    -- SubProject 8 tasks (Design)
+    (8, 'Wireframes', 'Create wireframes for new website', '2024-11-01', '2024-11-15', 80, 85, 'COMPLETED'),
+    (8, 'Visual Design', 'Create visual design elements', '2024-11-16', '2024-11-30', 120, 130, 'COMPLETED'),
+
+    -- SubProject 9 tasks (Implementation)
+    (9, 'HTML/CSS', 'Convert design to HTML/CSS', '2024-12-01', '2024-12-15', 200, 180, 'COMPLETED'),
+    (9, 'JavaScript', 'Implement interactive features', '2024-12-16', '2025-01-05', 250, 270, 'COMPLETED'),
+    (9, 'Testing', 'Cross-browser testing', '2025-01-06', '2025-01-15', 150, 140, 'COMPLETED');
 
 INSERT INTO Employee_Task (employee_id, task_id)
 VALUES (1, 1),

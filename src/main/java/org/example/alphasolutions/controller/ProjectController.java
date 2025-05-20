@@ -51,6 +51,11 @@ public class ProjectController extends BaseController {
             projects = projectService.findProjectsByEmployeeId(employeeId);
         }
 
+        for (Project project : projects)
+        {
+            project.setProjectActualHours(projectService.calculateProjectActualHours(project.getProjectId()));
+        }
+
         model.addAttribute("projects", projects);
         model.addAttribute("role", role);
         model.addAttribute("archivedView", archivedView);

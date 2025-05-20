@@ -9,6 +9,12 @@
 
 <main>
   <h1>Tilføj Subproject</h1>
+
+  <!-- Error message display -->
+  <div th:if="${errorMessage}">
+    <strong>Fejl:</strong> <span th:text="${errorMessage}"></span>
+  </div>
+
   <!-- The form action now uses the project ID from the URL path -->
   <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
         method="post"

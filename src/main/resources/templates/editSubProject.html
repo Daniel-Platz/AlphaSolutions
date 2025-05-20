@@ -10,6 +10,13 @@
 <main>
     <h1>Rediger Subproject</h1>
     <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject(projectId=${projectId},subProjectId=${subProject.subProjectId})}"
+
+    <!-- Error message display -->
+    <div th:if="${errorMessage}">
+        <strong>Fejl:</strong> <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
           method="post"
           th:object="${subProject}">
 

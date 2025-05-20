@@ -2,8 +2,11 @@ package org.example.alphasolutions.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.alphasolutions.enums.ProjectStatus;
+import org.example.alphasolutions.exception.InsufficientHoursException;
+import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
+import org.example.alphasolutions.service.ProjectService;
 import org.example.alphasolutions.service.SubProjectService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +19,11 @@ import java.util.List;
 public class SubProjectController extends BaseController {
 
     private final SubProjectService subProjectService;
+    private final ProjectService projectService;
 
-    public SubProjectController(SubProjectService subProjectService) {
+    public SubProjectController(SubProjectService subProjectService, ProjectService projectService) {
         this.subProjectService = subProjectService;
+        this.projectService = projectService;
     }
 
     @GetMapping("/{subProjectId}/subProjectOverview")
@@ -27,13 +32,21 @@ public class SubProjectController extends BaseController {
             return "redirect:/login";
         }
 
-        int totalHours = subProjectService.calculateSubProjectTotalHours(subProjectId);
-
         List<Task> tasks = subProjectService.findTasksBySubProjectId(subProjectId);
+        SubProject subProject = subProjectService.findSubProjectById(subProjectId);
+
+        int totalEstimatedHours = subProject.getSubProjectEstimatedHours();
+        int actualHours = subProjectService.calculateActualHours(subProjectId);
+        int hoursUsedPercentage = subProjectService.calculateHoursUsedPercentage(subProjectId);
+
+        model.addAttribute("subProject", subProject);
+
         model.addAttribute("tasks", tasks);
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
-        model.addAttribute("totalHours", totalHours);
+        model.addAttribute("totalEstimatedHours", totalEstimatedHours);
+        model.addAttribute("actualHours", actualHours);
+        model.addAttribute("hoursUsedPercentage", hoursUsedPercentage);
 
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
