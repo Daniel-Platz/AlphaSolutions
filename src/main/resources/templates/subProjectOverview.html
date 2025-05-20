@@ -65,11 +65,19 @@
           <a class="btn-view" th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview(projectId=${projectId},subProjectId=${subProjectId}, taskId=${task.taskId})}">Vis</a>
 
           <!-- Rediger/Slet knapper (kun for ADMIN og PROJECT_MANAGER) -->
-          <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="admin-actions">
-            <a class="btn-edit" th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/editTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}">Rediger</a>
-            <a class="btn-delete" th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/deleteTask(projectId=${projectId}, subProjectId=${subProjectId}, taskId=${task.taskId})}"
-               onclick="return confirm('Er du sikker på at du vil slette denne opgave?')">Slet</a>
-          </span>
+          <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${task.taskId})}"
+                               class="button">Rediger</a>
+                            <div style="display: inline;">
+                                <form style="display: inline;" method="post"
+                                      th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${task.taskId})}"
+                                      onsubmit="return confirm('Er du sikker på du vil slette denne del-opgave?')">
+                                    <button type="submit" class="button">Slet</button>
+                                </form>
+                            </div>
+                        </span>
+
+
         </td>
       </tr>
       <tr th:if="${tasks.isEmpty()}">

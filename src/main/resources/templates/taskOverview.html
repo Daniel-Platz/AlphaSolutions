@@ -62,12 +62,12 @@
 
             <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
                             <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                               class="button">Edit</a>
+                               class="button">Rediger</a>
                             <div style="display: inline;">
                                 <form style="display: inline;" method="post"
                                       th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                                      onsubmit="return confirm('Are you sure you want to delete this sub project?')">
-                                    <button type="submit" class="button">Delete</button>
+                                      onsubmit="return confirm('Er du sikker på at du vil slette denne del-opgave?')">
+                                    <button type="submit" class="button">Slet</button>
                                 </form>
                             </div>
                         </span>
