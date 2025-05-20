@@ -261,6 +261,8 @@ class SubProjectControllerTest {
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
 
+        when(projectService.findProjectById(projectId)).thenReturn(project);
+
         mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject", projectId, subProjectId)
                         .session(session)
                         .param("subProjectId", String.valueOf(subProjectId))
@@ -291,9 +293,9 @@ class SubProjectControllerTest {
                         .session(session)
                         .param("subProjectName", "New SubProject")
                         .param("subProjectDescription", "New Description")
-                        .param("subProjectEstimatedHours", "100") // Add required param
-                        .param("subProjectStartDate", "2025-01-15") // Add required param
-                        .param("subProjectEndDate", "2025-01-30") // Add required param
+                        .param("subProjectEstimatedHours", "100")
+                        .param("subProjectStartDate", "2025-01-15")
+                        .param("subProjectEndDate", "2025-01-30")
                         .param("subProjectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));
