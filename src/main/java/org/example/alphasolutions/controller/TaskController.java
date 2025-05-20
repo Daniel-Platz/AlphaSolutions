@@ -13,16 +13,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview")
 public class TaskController extends BaseController {
     private final TaskService taskService;
+    private final ProjectService projectService;
 
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, ProjectService projectService) {
         this.taskService = taskService;
+        this.projectService = projectService;
     }
 
     @GetMapping("/addTask")
@@ -51,10 +54,34 @@ public class TaskController extends BaseController {
 
         Task task = taskService.findTaskByTaskId(taskId);
 
+        List<Employee> projectEmployees = projectService.findAssignedEmployeesByProjectId(projectId);
+
+        List<Employee> taskEmployees = taskService.findAssignedEmployeesByTaskId(taskId);
+
+        List<Employee> availableEmployees = new ArrayList<>();
+        for (Employee projectEmp : projectEmployees) {
+            boolean isAvailable = true;
+            for (Employee taskEmp : taskEmployees) {
+                if (projectEmp.getEmployeeId()==taskEmp.getEmployeeId()) {
+                    isAvailable = false;
+                    break;
+                }
+            }
+            if (isAvailable) {
+                availableEmployees.add(projectEmp);
+            }
+        }
+
+
+
         model.addAttribute("task", task);
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
         model.addAttribute("taskId", taskId);
+        model.addAttribute("taskEmployees", taskEmployees);
+        model.addAttribute("projectEmployees", projectEmployees);
+        model.addAttribute("availableEmployees", availableEmployees);
+
 
         String role = (String) session.getAttribute("role");
         model.addAttribute("role", role);
@@ -119,60 +146,17 @@ public class TaskController extends BaseController {
         return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/taskOverview";
     }
 
-
-//    @GetMapping("/tasks")
-//    public String showTasks(Model model, HttpSession session) {
-//        if (session.getAttribute("employee") == null) {
-//            return "redirect:/login";
-//        }
-//
-//        List<Task> tasks = taskService.findAllTasks();
-//        model.addAttribute("tasks", tasks);
-//
-//        return "sub-projects";
-//    }
-
-/*
-    @GetMapping("/{taskId}/taskOverview")
-    public String showTaskOverview(@PathVariable int projectId, @PathVariable int subProjectId,
-                                   @PathVariable int taskId, Model model, HttpSession session) {
+    @PostMapping("/{taskId}/employees/{employeeId}/remove")
+    public String removeEmployeeFromTask(@PathVariable int projectId,
+                                         @PathVariable int subProjectId,
+                                         @PathVariable int taskId,
+                                         @PathVariable int employeeId,
+                                         HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
 
-        Task task = taskService.findTaskByTaskId(taskId);
-
-        // Hent medarbejdere tilknyttet opgaven
-        List<Employee> taskEmployees = taskService.findAssignedEmployeesByTaskId(taskId);
-
-        // Forsøg at hente projekt-medarbejdere fra modellen
-        @SuppressWarnings("unchecked")
-        List<Employee> projectEmployees = (List<Employee>) model.getAttribute("projectEmployees");
-
-        // Hvis der ikke findes projektmedarbejdere i modellen, redirect
-        if (projectEmployees == null) {
-            return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview";
-        }
-
-        // Simplere måde at finde tilgængelige medarbejdere
-        List<Employee> availableEmployees = new ArrayList<>(projectEmployees);
-        availableEmployees.removeAll(taskEmployees); // Fjern alle task-medarbejdere fra listen
-
-        // Tilføj til modellen
-        model.addAttribute("task", task);
-        model.addAttribute("projectId", projectId);
-        model.addAttribute("subProjectId", subProjectId);
-        model.addAttribute("taskId", taskId);
-        model.addAttribute("taskEmployees", taskEmployees);
-        model.addAttribute("availableEmployees", availableEmployees);
-
-        String role = (String) session.getAttribute("role");
-        model.addAttribute("role", role);
-
-        return "taskOverview";
+        taskService.removeEmployeeFromTask(employeeId, taskId);
+        return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/taskOverview";
     }
-
- */
-
-
 }

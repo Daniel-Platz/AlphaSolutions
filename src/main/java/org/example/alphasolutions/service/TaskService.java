@@ -1,5 +1,6 @@
 package org.example.alphasolutions.service;
 
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.repository.TaskRepository;
@@ -41,6 +42,14 @@ public class TaskService {
 
     public void assignEmployeeToTask(int employeeId, int taskId){
         taskRepository.assignEmployeeToTask(employeeId, taskId);
+    }
+
+    public List<Employee> findAssignedEmployeesByTaskId(int taskId) {
+        return taskRepository.findAssignedEmployeesByTaskId(taskId);
+    }
+
+    public void removeEmployeeFromTask(int employeeId, int taskId){
+        taskRepository.removeEmployeeFromTask(employeeId, taskId);
     }
 
 }
