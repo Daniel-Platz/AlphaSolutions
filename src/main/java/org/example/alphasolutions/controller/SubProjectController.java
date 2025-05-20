@@ -84,39 +84,50 @@ public class SubProjectController extends BaseController {
     }
 
     @PostMapping("/saveSubProject")
-    public String saveSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject, Model model, HttpSession session) {
+    public String createSubProject(@PathVariable int projectId, @ModelAttribute SubProject subProject, Model model, HttpSession session) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        subProject.setProjectId(projectId);
+
+        try{
+            Project project = projectService.findProjectById(projectId);
+            int projectEstimatedHours = project.getProjectEstimatedHours();
+            subProjectService.addNewSubProject(subProject, projectEstimatedHours);
+            return "redirect:/dashboard/" + projectId + "/projectOverview";
+        } catch (InsufficientHoursException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("statuses", ProjectStatus.values());
+            model.addAttribute("newSubProject", subProject);
+            return "addSubProject";
+        }
+
+    }
+
+    @PostMapping("/{subProjectId}/updateSubProject")
+    public String updateSubProject(@PathVariable int projectId, @PathVariable int subProjectId, @ModelAttribute SubProject subProject, Model model, HttpSession session) {
         if (!isLoggedIn(session)) {
             return "redirect:/login";
         }
         subProject.setProjectId(projectId);
+        subProject.setSubProjectId(subProjectId);
 
-        try {
+        try{
             Project project = projectService.findProjectById(projectId);
             int projectEstimatedHours = project.getProjectEstimatedHours();
-
-            if (subProject.getSubProjectId() > 0) {
-                subProjectService.editSubProject(subProject, projectEstimatedHours);
-            } else {
-                subProjectService.addNewSubProject(subProject, projectEstimatedHours);
-            }
+            subProjectService.editSubProject(subProject, projectEstimatedHours);
             return "redirect:/dashboard/" + projectId + "/projectOverview";
-
         } catch (InsufficientHoursException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("statuses", ProjectStatus.values());
-
-            if (subProject.getSubProjectId() > 0) {
-                model.addAttribute("subProject", subProject);
-                return "editSubProject";
-            } else {
-                model.addAttribute("newSubProject", subProject);
-                return "addSubProject";
-            }
+            model.addAttribute("subProject", subProject);
+            return "addSubProject";
         }
     }
 
     @PostMapping("/{subProjectId}/deleteSubProject")
-    public String deleteSubProject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId) {
+    public String deleteSubProject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId){
         subProjectService.deleteSubProject(subProjectId);
         return "redirect:/dashboard/" + projectId + "/projectOverview";
     }

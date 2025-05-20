@@ -1,6 +1,8 @@
 package org.example.alphasolutions.repository;
 
+import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,38 +55,34 @@ public class TaskRepositoryTest {
         assertEquals(TaskStatus.IN_PROGRESS, createdTask.getTaskStatus(),
                 "Status should match");
     }
-/*
-    @Test
-    //TODO Skal resten af task-felterne (beskrivelse etc.) med i testen, ligesom i WISHLIST PROJECT?
-    public void getTasksBySubProjectId() throws SQLException {
 
-        //Arrange
+    //TODO, virker ikke
+    @Test
+    void testDeleteTask() {
+        int taskId = 1;
         int subProjectId = 1;
 
-        //Act
-        List<Task> tasks = taskRepository.getTasksBySubProjectId(subProjectId);
+        List<Task> tasksBeforeDelete = taskRepository.findTasksBySubProjectId(subProjectId);
+        assertEquals(3,tasksBeforeDelete.size());
 
-        //Assert
-        assertNotNull(tasks, "getTasksBySubProjectId retunerede null");
-        assertNotNull(tasks.isEmpty(), "Ingen opgaver blev fundet");
+        taskRepository.deleteTask(taskId);
 
-        //Verificerer at alle ønsker i map'et har korrekte værdier
-        for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
-            Integer taskId = entry.getKey();
-            Task task = entry.getValue();
-
-            assertNotNull(taskId, "Opgave ID er null");
-            assertNotNull(task, "Opgave objekt er null");
-            assertEquals(taskId, task.getTaskId(), "Opgave ID er map-nøgle og opgave objekt stemmer ikke overens");
-
-            //Tjek at nødvendige felter ikke er null eller tomme
-            assertNotNull(task.getTaskName(), "Opgave titel er null");
-        }
+        List<Task> tasksAfterDelete = taskRepository.findTasksBySubProjectId(subProjectId);
+        assertEquals(2,tasksAfterDelete.size());
     }
 
     @Test
-    //TODO Er denne test korrekt?? Virker alt for simpel
-    public void getTaskById() throws SQLException {
+    void testFindTaskBySubProjectId() {
+        int subProjectId = 1;
+
+        List<Task> tasks = taskRepository.findTasksBySubProjectId(subProjectId);
+
+        assertEquals(3, tasks.size());
+    }
+
+
+    @Test
+    void testFindTaskByTaskId() {
 
         //Arrange
         int taskId = 1;
@@ -95,44 +93,45 @@ public class TaskRepositoryTest {
         //Assert
         assertEquals(taskId, actualTask.getTaskId());
 
-
     }
 
+    //TODO testEditTask
     @Test
-    public void deleteTask() throws SQLException {
+    void testEditTask() {
+        Task createdTask = new Task();
+        createdTask.setTaskId(1);
+        createdTask.setSubProjectId(1);
+        createdTask.setTaskName("test Task");
+        createdTask.setTaskDescription("This is a test description");
+        createdTask.setTaskStartDate(LocalDate.now());
+        createdTask.setTaskEndDate(LocalDate.now().plusDays(10));
+        createdTask.setTaskEstimatedHours(25);
+        createdTask.setTaskStatus(TaskStatus.IN_PROGRESS);
 
-        //Arrange
-        int subProjectId = 1;
+        int taskId = taskRepository.addNewTask(createdTask);
 
-        //Henter alle tasks fra sub-projektet
-        Map<Integer, Task> tasks = taskRepository.getTasksBySubProjectId(subProjectId);
-        assertFalse(tasks.isEmpty(), "Ingen opgaver fundet til test af sletning");
+        Task taskToEdit = new Task();
+        taskToEdit.setTaskId(taskId);
+        taskToEdit.setSubProjectId(1);
+        taskToEdit.setTaskName("Edited Task");
+        taskToEdit.setTaskDescription("Edited description");
+        taskToEdit.setTaskStartDate(LocalDate.now().plusDays(1));
+        taskToEdit.setTaskEndDate(LocalDate.now().plusDays(15));
+        taskToEdit.setTaskEstimatedHours(50);
+        taskToEdit.setTaskStatus(TaskStatus.DELAYED);
 
-        //Vælg den første opgave til at slette
-        Integer taskIdToDelete = tasks.keySet().iterator().next();
-        Task taskToDelete = tasks.get(taskIdToDelete);
-        assertNotNull(taskToDelete, "Kunne ikke finde en opgave at seltte");
+        taskRepository.editTask(taskToEdit);
 
-        //Act
-        taskRepository.deleteTask(taskToDelete);
+        Task editedTask = taskRepository.findTaskByTaskId(taskId);
+        assertNotNull(editedTask);
+        assertEquals("Edited Task", editedTask.getTaskName());
+        assertEquals("Edited description", editedTask.getTaskDescription());
+        assertEquals(LocalDate.now().plusDays(1), editedTask.getTaskStartDate());
+        assertEquals(LocalDate.now().plusDays(15), editedTask.getTaskEndDate());
+        assertEquals(50, editedTask.getTaskEstimatedHours());
+        assertEquals(TaskStatus.DELAYED, editedTask.getTaskStatus());
 
-        //Assert
-        Map<Integer, Task> updatedTasks = taskRepository.getTasksBySubProjectId(subProjectId);
-        assertFalse(updatedTasks.containsKey(taskIdToDelete), "Opgaven blev ikke slettet fra sub-projektet");
     }
-
-
-
-
-
-
-
-
-
- */
-
-
-
 
 
 }

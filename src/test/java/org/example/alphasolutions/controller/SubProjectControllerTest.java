@@ -253,10 +253,9 @@ class SubProjectControllerTest {
     }
 
     @Test
-    void saveEditedSubProject() throws Exception {
+    void updateExistingSubProject() throws Exception {
         int projectId = 1;
-        int subProjectId = 5;
-
+        int subProjectId = 1;
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("employee", adminEmployee);
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
@@ -264,9 +263,10 @@ class SubProjectControllerTest {
 
         when(projectService.findProjectById(projectId)).thenReturn(project);
 
-        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/saveSubProject", projectId)
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject", projectId, subProjectId)
                         .session(session)
                         .param("subProjectId", String.valueOf(subProjectId))
+                        .param("projectId", String.valueOf(projectId))
                         .param("subProjectName", "Updated SubProject")
                         .param("subProjectDescription", "Updated Description")
                         .param("subProjectEstimatedHours", "100")
@@ -293,9 +293,9 @@ class SubProjectControllerTest {
                         .session(session)
                         .param("subProjectName", "New SubProject")
                         .param("subProjectDescription", "New Description")
-                        .param("subProjectEstimatedHours", "100") // Add required param
-                        .param("subProjectStartDate", "2025-01-15") // Add required param
-                        .param("subProjectEndDate", "2025-01-30") // Add required param
+                        .param("subProjectEstimatedHours", "100")
+                        .param("subProjectStartDate", "2025-01-15")
+                        .param("subProjectEndDate", "2025-01-30")
                         .param("subProjectStatus", "ACTIVE"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview"));

@@ -72,8 +72,8 @@
           </span>
         </td>
       </tr>
-      <tr th:if="${tasks.empty}">
-        <td colspan="6">Ingen opgaver fundet</td>
+      <tr th:if="${tasks.isEmpty()}">
+        <td colspan="6">No tasks found</td>
       </tr>
       </tbody>
     </table>
