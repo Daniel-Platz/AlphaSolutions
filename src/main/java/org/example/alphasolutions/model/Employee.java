@@ -72,22 +72,4 @@ public class Employee {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    //Methods
-    //TODO
-    public void assignToProject(Project project) {
-
-    }
-    //TODO
-    public void assignToTask(Task task) {
-
-    }
-    //TODO
-    public void assignSkill(Skill skill) {
-
-    }
-    //TODO
-    public void assignRole(Role role) {
-
-    }
 }
