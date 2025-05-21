@@ -1,11 +1,12 @@
-
 package org.example.alphasolutions.controller;
 
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.model.Employee;
+import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.service.ProjectService;
+import org.example.alphasolutions.service.SubProjectService;
 import org.example.alphasolutions.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-
-
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,10 +36,14 @@ class TaskControllerTest {
     private TaskService taskService;
 
     @MockitoBean
+    private SubProjectService subProjectService;
+
+    @MockitoBean
     private ProjectService projectService;
 
     private Task task1;
     private Task task2;
+    private SubProject subProject;
     private List<Task> subProjectTasks;
     private Employee adminEmployee;
     private Employee managerEmployee;
@@ -88,6 +92,10 @@ class TaskControllerTest {
         task2.setTaskStatus(TaskStatus.IN_PROGRESS);
         task2.setSubProjectId(1);
 
+        subProject = new SubProject();
+        subProject.setSubProjectId(1);
+        subProject.setSubProjectEstimatedHours(200);
+
         subProjectTasks = Arrays.asList(task1, task2);
 
         projectEmployees = Arrays.asList(adminEmployee, managerEmployee, regularEmployee);
@@ -97,10 +105,8 @@ class TaskControllerTest {
         session.setAttribute("employee", adminEmployee);
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
+
     }
-
-
-
 
     @Test
     void addNewTaskTest() throws Exception {
@@ -179,9 +185,28 @@ class TaskControllerTest {
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
     }
 
-
     @Test
     void createTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+
+        when(subProjectService.findSubProjectById(anyInt())).thenReturn(subProject);
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/saveTask",
+                        projectId, subProjectId)
+                        .session(session)
+                        .param("taskName", "New Task")
+                        .param("taskDescription", "New Task Description")
+                        .param("taskEstimatedHours", "40")
+                        .param("taskStatus", "NOT_STARTED")
+                        .param("taskStartDate", "2025-06-01")
+                        .param("taskEndDate", "2025-06-15"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+    }
+
+    @Test
+    void createTaskWithoutSessionRedirectsToLogin() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
 
@@ -194,11 +219,32 @@ class TaskControllerTest {
                         .param("taskStartDate", "2025-06-01")
                         .param("taskEndDate", "2025-06-15"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
     void updateTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+
+        when(subProjectService.findSubProjectById(anyInt())).thenReturn(subProject);
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/updateTask",
+                        projectId, subProjectId, taskId)
+                        .session(session)
+                        .param("taskName", "Updated Task Name")
+                        .param("taskDescription", "Updated Task Description")
+                        .param("taskEstimatedHours", "50")
+                        .param("taskStatus", "IN_PROGRESS")
+                        .param("taskStartDate", "2025-07-01")
+                        .param("taskEndDate", "2025-07-15"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+    }
+
+    @Test
+    void updateTaskWithoutSessionRedirectsToLogin() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
         int taskId = 1;
@@ -212,9 +258,8 @@ class TaskControllerTest {
                         .param("taskStartDate", "2025-07-01")
                         .param("taskEndDate", "2025-07-15"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+                .andExpect(redirectedUrl("/login"));
     }
-
 
     @Test
     void editTaskWithoutSessionRedirectsToLogin() throws Exception {
@@ -245,7 +290,6 @@ class TaskControllerTest {
                 .andExpect(model().attributeExists("statuses"))
                 .andExpect(model().attributeExists("task"));
     }
-
 
     @Test
     void addEmployeeToTaskWithoutSessionRedirectsToLogin() throws Exception {
@@ -335,7 +379,6 @@ class TaskControllerTest {
                         "/subProjectOverview/" + taskId + "/taskOverview"));
     }
 
-
     @Test
     void registerHoursWithInvalidValueRedirectsWithError() throws Exception {
         int projectId = 1;
@@ -367,7 +410,4 @@ class TaskControllerTest {
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId +
                         "/subProjectOverview/" + taskId + "/registerHours?error=invalidHours"));
     }
-
-
-
 }

@@ -172,7 +172,6 @@ public class EmployeeController extends BaseController {
         if (password != null && !password.trim().isEmpty()) {
             employee.setPassword(password);
         } else {
-            // Hent eksisterende kode fra databsen og behold den
             List<Employee> all = employeeService.getAllEmployees();
             Employee current = all.stream().filter(e -> e.getEmployeeId() == employeeId).findFirst().orElse(null);
             if (current != null) {

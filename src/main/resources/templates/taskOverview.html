@@ -42,54 +42,6 @@
                 <td th:text="${task.taskActualHours}"></td>
             </tr>
         </table>
-        <!-- Add Team Member Form (only for ADMIN and PROJECT_MANAGER)
-        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-member-section">
-            <h3>Add Team Member</h3>
-            <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee(projectId=${project.projectId},subProjectId=${subproject.subProjectId},taskId=${task.taskId})}" method="post">
-                <select name="employeeId" required>
-                    <option value="">Vælg en medarbejder</option>
-                    <option th:each="employee : ${availableEmployees}"
-                            th:value="${employee.employeeId}"
-                            th:text="${employee.firstname + ' ' + employee.lastname}"></option>
-                </select>
-                <button type="submit" class="button">Tilføj Medarbejder</button>
-            </form>
-        </div> -->
-
-
-
-        <!-- Task Information -->
-        <div th:if="${task != null}">
-            <table>
-                <tr>
-                    <th>Task Name</th>
-                    <td th:text="${task.taskName}"></td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td th:text="${task.taskDescription}"></td>
-                </tr>
-                <tr>
-                    <th>Status</th>
-                    <td th:text="${task.taskStatus}"></td>
-                </tr>
-                <tr>
-                    <th>Start Date</th>
-                    <td th:text="${task.taskStartDate != null ? #temporals.format(task.taskStartDate, 'yyyy-MM-dd') : ''}"></td>
-                </tr>
-                <tr>
-                    <th>Deadline</th>
-                    <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
-                </tr>
-                <tr>
-                    <th>Estimated Hours</th>
-                    <td th:text="${task.taskEstimatedHours}"></td>
-                </tr>
-                <tr>
-                    <th>Assigned To</th>
-                    <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
-                </tr>
-            </table>
 
         <!-- Register Hours Form -->
         <div class="quick-register-hours">
@@ -105,7 +57,6 @@
             <p th:if="${param.error == 'invalidHours'}" class="error-message">Timeantal skal være større end 0</p>
         </div>
 
-
         <!-- Task Edit/Delete Buttons -->
         <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
             <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
@@ -118,18 +69,6 @@
                 </form>
             </div>
         </span>
-
-            <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                               class="button">Rediger</a>
-                            <div style="display: inline;">
-                                <form style="display: inline;" method="post"
-                                      th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                                      onsubmit="return confirm('Er du sikker på at du vil slette denne del-opgave?')">
-                                    <button type="submit" class="button">Slet</button>
-                                </form>
-                            </div>
-                        </span>
 
         <!-- Assigned Employees Section -->
         <div class="assigned-employees">

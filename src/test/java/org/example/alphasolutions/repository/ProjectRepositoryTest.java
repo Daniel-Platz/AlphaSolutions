@@ -56,7 +56,7 @@ class ProjectRepositoryTest {
     @Test
     public void testFindProjectsByEmployeeId() {
 
-        int employeeId = 2; // Employee 2 is assigned to projects 1 and 3
+        int employeeId = 2;
 
 
         List<Project> projects = projectRepository.findProjectsByEmployeeId(employeeId);

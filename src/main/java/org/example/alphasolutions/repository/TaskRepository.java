@@ -2,9 +2,7 @@ package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.exception.CreationException;
 import org.example.alphasolutions.model.Employee;
-import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +32,6 @@ public class TaskRepository {
                 "task_end_date, task_estimated_hours, task_status)" +
                 " VALUES (?,?,?,?,?,?,?)";
 
-        // Anvend et KeyHolder til at få det auto-genererede ID
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -50,7 +47,6 @@ public class TaskRepository {
             return ps;
         }, keyHolder);
 
-        // Sæt det genererede ID på task-objektet
         Number key = keyHolder.getKey();
         if (key == null) {
             throw new CreationException();
@@ -132,6 +128,12 @@ public class TaskRepository {
             String updateSql = "UPDATE task SET task_actual_hours = ? WHERE task_id = ?";
             jdbcTemplate.update(updateSql, hoursToAdd, taskId);
         }
+    }
+
+    public int calculateTotalTaskEstimatedHours(int subProjectId) {
+        String sql = "SELECT IFNULL(SUM(task_estimated_hours), 0) FROM task WHERE sub_project_id = ?";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, subProjectId);
+        return result != null ? result : 0;
     }
 
 }

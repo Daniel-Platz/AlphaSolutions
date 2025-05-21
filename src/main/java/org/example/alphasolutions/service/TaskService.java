@@ -1,5 +1,6 @@
 package org.example.alphasolutions.service;
 
+import org.example.alphasolutions.exception.InsufficientHoursException;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
@@ -16,7 +17,8 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public int addNewTask(Task task) {
+    public int addNewTask(Task task, int subProjectEstimatedHours) {
+        validateTaskHours(task, subProjectEstimatedHours);
         return taskRepository.addNewTask(task);
     }
 
@@ -32,7 +34,8 @@ public class TaskService {
         return taskRepository.findTaskByTaskId(taskId);
     }
 
-    public void editTask (Task taskToEdit){
+    public void editTask (Task taskToEdit, int subProjectEstimatedHours){
+        validateTaskHours(taskToEdit, subProjectEstimatedHours);
         taskRepository.editTask(taskToEdit);
     }
 
@@ -54,6 +57,21 @@ public class TaskService {
 
     public void registerHours(int taskId, int hoursToAdd) {
         taskRepository.registerHours(taskId, hoursToAdd);
+    }
+
+    private void validateTaskHours(Task task, int subProjectEstimatedHours) {
+        int totalTaskHours = taskRepository.calculateTotalTaskEstimatedHours(task.getSubProjectId());
+
+        if (task.getTaskId() > 0) {
+            Task existingTask = taskRepository.findTaskByTaskId(task.getTaskId());
+            totalTaskHours -= existingTask.getTaskEstimatedHours();
+        }
+
+        int newTotal = totalTaskHours + task.getTaskEstimatedHours();
+
+        if (newTotal > subProjectEstimatedHours) {
+            throw new InsufficientHoursException();
+        }
     }
 
 }
