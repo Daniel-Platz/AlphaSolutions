@@ -16,6 +16,7 @@ public class Task {
     private LocalDate taskEndDate;
     private TaskStatus taskStatus;
     private int taskEstimatedHours;
+    private int taskActualHours;
     private List<Employee> taskAssignedEmployees;
 
 
@@ -23,7 +24,7 @@ public class Task {
 
     }
 
-    public Task(int taskId, int subProjectId, String taskName, String taskDescription, LocalDate taskStartDate, LocalDate taskEndDate, TaskStatus taskStatus, int taskEstimatedHours, List<Employee> taskAssignedEmployees) {
+    public Task(int taskId, int subProjectId, String taskName, String taskDescription, LocalDate taskStartDate, LocalDate taskEndDate, TaskStatus taskStatus, int taskEstimatedHours, int taskActualHours, List<Employee> taskAssignedEmployees) {
         this.taskId = taskId;
         this.subProjectId = subProjectId;
         this.taskName = taskName;
@@ -32,6 +33,7 @@ public class Task {
         this.taskEndDate = taskEndDate;
         this.taskStatus = taskStatus;
         this.taskEstimatedHours = taskEstimatedHours;
+        this.taskActualHours = taskActualHours;
         this.taskAssignedEmployees = taskAssignedEmployees;
     }
 
@@ -100,6 +102,13 @@ public class Task {
 
     public void setTaskEstimatedHours(int taskEstimatedHours) {
         this.taskEstimatedHours = taskEstimatedHours;
+    }
+    public int getTaskActualHours() {
+        return taskActualHours;
+    }
+
+    public void setTaskActualHours(int taskActualHours) {
+        this.taskActualHours = taskActualHours;
     }
 
     public List<Employee> getTaskAssignedEmployees() {

@@ -48,7 +48,7 @@
       <tr>
         <th>Opgave Navn</th>
         <th>Estimeret Tid</th>
-        <th>Tid Brugt</th>
+        <th>Timer Brugt</th>
         <th>Deadline</th>
         <th>Status</th>
         <th>Handlinger</th>
@@ -58,7 +58,7 @@
       <tr th:each="task : ${tasks}">
         <td th:text="${task.taskName}"></td>
         <td th:text="${task.taskEstimatedHours != null ? task.taskEstimatedHours : '0'}"></td>
-        <td>-</td> <!-- Placeholder for task actual hours -->
+        <td th:text="${task.taskActualHours != null ? task.taskActualHours : '0'}"></td>
         <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
         <td th:text="${task.taskStatus}"></td>
         <td class="actions-cell">

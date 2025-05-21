@@ -159,4 +159,24 @@ public class TaskController extends BaseController {
         taskService.removeEmployeeFromTask(employeeId, taskId);
         return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/taskOverview";
     }
+
+    @PostMapping("/{taskId}/registerHours")
+    public String registerHours(@PathVariable int projectId,
+                             @PathVariable int subProjectId,
+                             @PathVariable int taskId,
+                             @RequestParam("hoursToAdd") int hoursToAdd,
+                             HttpSession session) {
+
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        if (hoursToAdd <= 0) {
+            return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/registerHours?error=invalidHours";
+        }
+
+        taskService.registerHours(taskId,hoursToAdd);
+
+        return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/taskOverview";
+    }
 }

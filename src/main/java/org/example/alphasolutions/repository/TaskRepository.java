@@ -5,6 +5,7 @@ import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -73,6 +74,7 @@ public class TaskRepository {
         return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Task.class), taskId);
     }
 
+
     public void editTask(Task taskToEdit) {
         String sql = "UPDATE task SET " +
                 "task_name = ?, " +
@@ -116,4 +118,20 @@ public class TaskRepository {
         String sql = "DELETE FROM Employee_Task WHERE employee_id = ? AND task_id = ?";
         jdbcTemplate.update(sql, employeeId, taskId);
     }
+
+    public void registerHours(int taskId, int hoursToAdd) {
+        try {
+            String selectSql = "SELECT task_actual_hours FROM task WHERE task_id = ?";
+            Integer currentHours = jdbcTemplate.queryForObject(selectSql, Integer.class, taskId);
+
+            int updatedHours = (currentHours != null ? currentHours : 0) + hoursToAdd;
+            String updateSql = "UPDATE task SET task_actual_hours = ? WHERE task_id = ?";
+            jdbcTemplate.update(updateSql, updatedHours, taskId);
+
+        } catch (EmptyResultDataAccessException e) {
+            String updateSql = "UPDATE task SET task_actual_hours = ? WHERE task_id = ?";
+            jdbcTemplate.update(updateSql, hoursToAdd, taskId);
+        }
+    }
+
 }

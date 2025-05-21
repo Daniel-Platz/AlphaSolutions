@@ -52,4 +52,8 @@ public class TaskService {
         taskRepository.removeEmployeeFromTask(employeeId, taskId);
     }
 
+    public void registerHours(int taskId, int hoursToAdd) {
+        taskRepository.registerHours(taskId, hoursToAdd);
+    }
+
 }
