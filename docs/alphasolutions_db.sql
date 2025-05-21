@@ -2,13 +2,6 @@
 CREATE DATABASE IF NOT EXISTS alphaSolutions_db;
 USE alphaSolutions_db;
 
--- Create Skill table
-CREATE TABLE Skill
-(
-    skill_id   INT(10) PRIMARY KEY AUTO_INCREMENT,
-    skill_name VARCHAR(255) NOT NULL
-);
-
 -- Create Employee table
 CREATE TABLE Employee
 (
@@ -61,16 +54,6 @@ CREATE TABLE Task
     task_actual_hours    INT(10) DEFAULT 0,
     task_status          VARCHAR(255) NOT NULL,
     FOREIGN KEY (sub_project_id) REFERENCES Sub_project (sub_project_id) ON DELETE CASCADE
-);
-
--- Create junction table Employee_Skill (many-to-many)
-CREATE TABLE Employee_Skill
-(
-    employee_id INT(10) NOT NULL,
-    skill_id    INT(10) NOT NULL,
-    PRIMARY KEY (employee_id, skill_id),
-    FOREIGN KEY (employee_id) REFERENCES Employee (employee_id) ON DELETE CASCADE,
-    FOREIGN KEY (skill_id) REFERENCES Skill (skill_id) ON DELETE CASCADE
 );
 
 -- Create junction table Project_Employee (many-to-many)
