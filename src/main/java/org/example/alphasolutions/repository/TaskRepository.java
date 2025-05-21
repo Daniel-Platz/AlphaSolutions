@@ -1,7 +1,7 @@
 package org.example.alphasolutions.repository;
 
-
 import org.example.alphasolutions.exception.CreationException;
+import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.springframework.dao.DataAccessException;
@@ -16,10 +16,7 @@ import java.sql.Statement;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 import java.util.List;
-
 
 @Repository
 public class TaskRepository {
@@ -59,7 +56,6 @@ public class TaskRepository {
         }
 
         return key.intValue();
-
     }
 
     public void deleteTask(int taskId) {
@@ -72,14 +68,10 @@ public class TaskRepository {
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Task.class), subProjectId);
     }
 
-
-
-    public Task findTaskByTaskId(int taskId){
+    public Task findTaskByTaskId(int taskId) {
         String sql = "SELECT * FROM task WHERE task_id = ?";
-
-        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Task.class),taskId);
+        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Task.class), taskId);
     }
-
 
     public void editTask(Task taskToEdit) {
         String sql = "UPDATE task SET " +
@@ -92,13 +84,13 @@ public class TaskRepository {
                 "WHERE task_id = ?";
 
         jdbcTemplate.update(sql,
-                    taskToEdit.getTaskName(),
-                    taskToEdit.getTaskDescription(),
-                    taskToEdit.getTaskStartDate(),
-                    taskToEdit.getTaskEndDate(),
-                    taskToEdit.getTaskEstimatedHours(),
-                    taskToEdit.getTaskStatus().name(),
-                    taskToEdit.getTaskId());
+                taskToEdit.getTaskName(),
+                taskToEdit.getTaskDescription(),
+                taskToEdit.getTaskStartDate(),
+                taskToEdit.getTaskEndDate(),
+                taskToEdit.getTaskEstimatedHours(),
+                taskToEdit.getTaskStatus().name(),
+                taskToEdit.getTaskId());
     }
 
     public List<Task> findAllTasks() {
@@ -107,9 +99,21 @@ public class TaskRepository {
     }
 
     @Transactional
-    public void assignEmployeeToTask(int employeeId, int taskId){
-        String sql = "INSERT INTO task_employee (employee_id, task_id) VALUES (?, ?)";
+    public void assignEmployeeToTask(int employeeId, int taskId) {
+        String sql = "INSERT INTO Employee_Task (employee_id, task_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, employeeId, taskId);
     }
 
+    public List<Employee> findAssignedEmployeesByTaskId(int taskId) {
+        String sql = "SELECT e.* FROM employee e " +
+                "JOIN Employee_Task te ON e.employee_id = te.employee_id " +
+                "WHERE te.task_id = ?";
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Employee.class), taskId);
+    }
+
+    @Transactional
+    public void removeEmployeeFromTask(int employeeId, int taskId) {
+        String sql = "DELETE FROM Employee_Task WHERE employee_id = ? AND task_id = ?";
+        jdbcTemplate.update(sql, employeeId, taskId);
+    }
 }

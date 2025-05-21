@@ -1,19 +1,87 @@
-    <!DOCTYPE html>
-    <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Task Overview</title>
-    </head>
-    <body>
-    <div th:replace="~{fragments/header :: siteHeader}"></div>
-    <main>
-        <h1>Task Details</h1>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Overview</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+<main>
+    <h1>Task Details</h1>
 
-        <!-- Add Team Member Form (only for ADMIN and PROJECT_MANAGER)
+    <!-- Task Information -->
+    <div th:if="${task != null}">
+        <table>
+            <tr>
+                <th>Task Name</th>
+                <td th:text="${task.taskName}"></td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td th:text="${task.taskDescription}"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${task.taskStatus}"></td>
+            </tr>
+            <tr>
+                <th>Start Date</th>
+                <td th:text="${task.taskStartDate != null ? #temporals.format(task.taskStartDate, 'yyyy-MM-dd') : ''}"></td>
+            </tr>
+            <tr>
+                <th>Deadline</th>
+                <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
+            </tr>
+            <tr>
+                <th>Estimated Hours</th>
+                <td th:text="${task.taskEstimatedHours}"></td>
+            </tr>
+        </table>
+
+        <!-- Task Edit/Delete Buttons -->
+        <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
+               class="button">Rediger</a>
+            <div style="display: inline;">
+                <form style="display: inline;" method="post"
+                      th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
+                      onsubmit="return confirm('Er du sikker på at du vil slette denne del-opgave?')">
+                    <button type="submit" class="button">Slet</button>
+                </form>
+            </div>
+        </span>
+
+        <!-- Assigned Employees Section -->
+        <div class="assigned-employees">
+            <h3>Assigned Employees</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="employee : ${taskEmployees}">
+                    <td th:text="${employee.firstname + ' ' + employee.lastname}"></td>
+                    <td th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                        <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/employees/{employeeId}/remove(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId},employeeId=${employee.employeeId})}" method="post">
+                            <button type="submit" class="button">Fjern</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${taskEmployees.isEmpty()}">
+                    <td colspan="2">Ingen medarbejdere tildelt</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add Team Member Form (only for ADMIN and PROJECT_MANAGER) -->
         <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-member-section">
             <h3>Add Team Member</h3>
-            <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee(projectId=${project.projectId},subProjectId=${subproject.subProjectId},taskId=${task.taskId})}" method="post">
+            <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}" method="post">
                 <select name="employeeId" required>
                     <option value="">Vælg en medarbejder</option>
                     <option th:each="employee : ${availableEmployees}"
@@ -22,68 +90,18 @@
                 </select>
                 <button type="submit" class="button">Tilføj Medarbejder</button>
             </form>
-        </div> -->
-
-
-
-        <!-- Task Information -->
-        <div th:if="${task != null}">
-            <table>
-                <tr>
-                    <th>Task Name</th>
-                    <td th:text="${task.taskName}"></td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td th:text="${task.taskDescription}"></td>
-                </tr>
-                <tr>
-                    <th>Status</th>
-                    <td th:text="${task.taskStatus}"></td>
-                </tr>
-                <tr>
-                    <th>Start Date</th>
-                    <td th:text="${task.taskStartDate != null ? #temporals.format(task.taskStartDate, 'yyyy-MM-dd') : ''}"></td>
-                </tr>
-                <tr>
-                    <th>Deadline</th>
-                    <td th:text="${task.taskEndDate != null ? #temporals.format(task.taskEndDate, 'yyyy-MM-dd') : ''}"></td>
-                </tr>
-                <tr>
-                    <th>Estimated Hours</th>
-                    <td th:text="${task.taskEstimatedHours}"></td>
-                </tr>
-                <tr>
-                    <th>Assigned To</th>
-                    <td th:text="${task.taskAssignedEmployees != null && !task.taskAssignedEmployees.isEmpty() ? task.taskAssignedEmployees[0].firstname + ' ' + task.taskAssignedEmployees[0].lastname : 'Unassigned'}"></td>
-                </tr>
-            </table>
-
-
-            <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                               class="button">Rediger</a>
-                            <div style="display: inline;">
-                                <form style="display: inline;" method="post"
-                                      th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                                      onsubmit="return confirm('Er du sikker på at du vil slette denne del-opgave?')">
-                                    <button type="submit" class="button">Slet</button>
-                                </form>
-                            </div>
-                        </span>
-
-            </div>
-
-
-        <!-- Message if no task found -->
-        <div th:if="${task == null}">
-            <p>No task found</p>
         </div>
+    </div>
 
-        <!-- Back button -->
-        <div>
-            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Back to Sub-Project Overview</a>
-        </div>
-    </main>
-    </body>
-    </html>
+    <!-- Message if no task found -->
+    <div th:if="${task == null}">
+        <p>No task found</p>
+    </div>
+
+    <!-- Back button -->
+    <div>
+        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Back to Sub-Project Overview</a>
+    </div>
+</main>
+</body>
+</html>

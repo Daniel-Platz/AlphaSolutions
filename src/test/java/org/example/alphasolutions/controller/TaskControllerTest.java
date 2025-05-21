@@ -1,12 +1,11 @@
+
 package org.example.alphasolutions.controller;
 
-import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.Role;
 import org.example.alphasolutions.enums.TaskStatus;
 import org.example.alphasolutions.model.Employee;
-import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
-import org.example.alphasolutions.service.SubProjectService;
+import org.example.alphasolutions.service.ProjectService;
 import org.example.alphasolutions.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +19,12 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(TaskController.class)
 class TaskControllerTest {
@@ -35,14 +35,18 @@ class TaskControllerTest {
     @MockitoBean
     private TaskService taskService;
 
+    @MockitoBean
+    private ProjectService projectService;
+
     private Task task1;
     private Task task2;
     private List<Task> subProjectTasks;
-    private SubProject subProject;
     private Employee adminEmployee;
     private Employee managerEmployee;
     private Employee regularEmployee;
-
+    private List<Employee> projectEmployees;
+    private List<Employee> taskEmployees;
+    private MockHttpSession session;
 
     @BeforeEach
     void setUp() {
@@ -63,7 +67,6 @@ class TaskControllerTest {
         regularEmployee.setFirstname("Regular");
         regularEmployee.setLastname("Employee");
         regularEmployee.setRole(Role.EMPLOYEE);
-
 
         task1 = new Task();
         task1.setTaskId(1);
@@ -87,88 +90,143 @@ class TaskControllerTest {
 
         subProjectTasks = Arrays.asList(task1, task2);
 
-        subProject = new SubProject();
-        subProject.setSubProjectId(1);
-        subProject.setSubProjectName("Test SubProject");
-        subProject.setSubProjectDescription("Test Description");
-        subProject.setProjectId(1);
-        subProject.setSubProjectStatus(ProjectStatus.ACTIVE);
+        projectEmployees = Arrays.asList(adminEmployee, managerEmployee, regularEmployee);
+        taskEmployees = Arrays.asList(adminEmployee);
 
-
-    }
-
-    @Test
-    void addNewTaskTest () throws Exception {
-        int projectId = 1;
-        int subProjectId = 1;
-
-        MockHttpSession session = new MockHttpSession();
+        session = new MockHttpSession();
         session.setAttribute("employee", adminEmployee);
         session.setAttribute("employeeId", adminEmployee.getEmployeeId());
         session.setAttribute("role", adminEmployee.getRole().toString());
-
-        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask", projectId, subProjectId)
-                        .session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("addTask"))
-                .andExpect(model().attributeExists("newTask"))
-                .andExpect(model().attribute("projectId", projectId))
-                .andExpect(model().attribute("subProjectId", subProjectId))
-                .andExpect(model().attributeExists("statuses"));
-
-
     }
 
     @Test
-    void deleteTaskTest() throws Exception {
+    void showTaskOverviewTest() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
         int taskId = 1;
 
-        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask"
-                ,projectId, subProjectId, taskId))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+        // Set up mock responses
+        when(taskService.findTaskByTaskId(taskId)).thenReturn(task1);
+        when(projectService.findAssignedEmployeesByProjectId(projectId)).thenReturn(projectEmployees);
+        when(taskService.findAssignedEmployeesByTaskId(taskId)).thenReturn(taskEmployees);
+
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview",
+                        projectId, subProjectId, taskId)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("taskOverview"))
+                .andExpect(model().attributeExists("task"))
+                .andExpect(model().attributeExists("projectId"))
+                .andExpect(model().attributeExists("subProjectId"))
+                .andExpect(model().attributeExists("taskId"))
+                .andExpect(model().attributeExists("taskEmployees"))
+                .andExpect(model().attributeExists("projectEmployees"))
+                .andExpect(model().attributeExists("availableEmployees"))
+                .andExpect(model().attributeExists("role"));
     }
 
-
-
     @Test
-    void editTaskWithoutSessionRedirectsToLogin() throws Exception {
+    void showTaskOverviewWithoutSessionRedirectsToLogin() throws Exception {
         int projectId = 1;
-        int subProjectId = 5;
-        int taskId = 2;
+        int subProjectId = 1;
+        int taskId = 1;
 
-        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask",
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview",
                         projectId, subProjectId, taskId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
 
-
     @Test
-    void UpdateExistingTask() throws Exception {
+    void createTaskTest() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
-        int taskID = 1;
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("employee", adminEmployee);
-        session.setAttribute("employeeId", adminEmployee.getEmployeeId());
-        session.setAttribute("role", adminEmployee.getRole().toString());
-
-        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/updateTask"
-                        ,projectId, subProjectId, taskID)
-                        .session(session)
-                        .param("subProjectId", String.valueOf(subProjectId))
-                        .param("taskId", String.valueOf(taskID))
-                        .param("taskName", "Updated Task")
-                        .param("taskDescription", "Updated Description")
-                        .param("taskStatus", "COMPLETED"))
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/saveTask",
+                        projectId, subProjectId)
+                        .param("taskName", "New Task")
+                        .param("taskDescription", "New Task Description")
+                        .param("taskEstimatedHours", "40")
+                        .param("taskStatus", "NOT_STARTED")
+                        .param("taskStartDate", "2025-06-01")
+                        .param("taskEndDate", "2025-06-15"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
     }
 
+    @Test
+    void editTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
 
+        when(taskService.findTaskByTaskId(taskId)).thenReturn(task1);
 
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask",
+                        projectId, subProjectId, taskId)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editTask"))
+                .andExpect(model().attributeExists("projectId"))
+                .andExpect(model().attributeExists("statuses"))
+                .andExpect(model().attributeExists("task"));
+    }
+
+    @Test
+    void addEmployeeToTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int employeeId = 2;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee",
+                        projectId, subProjectId, taskId)
+                        .session(session)
+                        .param("employeeId", String.valueOf(employeeId)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId +
+                        "/subProjectOverview/" + taskId + "/taskOverview"));
+    }
+
+    @Test
+    void addEmployeeToTaskWithoutSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int employeeId = 2;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee",
+                        projectId, subProjectId, taskId)
+                        .param("employeeId", String.valueOf(employeeId)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+
+    @Test
+    void removeEmployeeFromTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int employeeId = 1;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/employees/{employeeId}/remove",
+                        projectId, subProjectId, taskId, employeeId)
+                        .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId +
+                        "/subProjectOverview/" + taskId + "/taskOverview"));
+    }
+
+    @Test
+    void removeEmployeeFromTaskWithoutSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int employeeId = 1;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/employees/{employeeId}/remove",
+                        projectId, subProjectId, taskId, employeeId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
 }
