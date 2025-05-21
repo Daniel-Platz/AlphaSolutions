@@ -99,6 +99,36 @@ class TaskControllerTest {
         session.setAttribute("role", adminEmployee.getRole().toString());
     }
 
+
+
+
+    @Test
+    void addNewTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask",
+                        projectId, subProjectId)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(view().name("addTask"))
+                .andExpect(model().attributeExists("newTask"))
+                .andExpect(model().attributeExists("projectId"))
+                .andExpect(model().attributeExists("subProjectId"))
+                .andExpect(model().attributeExists("statuses"));
+    }
+
+    @Test
+    void addNewTaskWithoutSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/addTask",
+                        projectId, subProjectId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+
     @Test
     void showTaskOverviewTest() throws Exception {
         int projectId = 1;
@@ -138,6 +168,19 @@ class TaskControllerTest {
     }
 
     @Test
+    void deleteTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask",
+                        projectId, subProjectId, taskId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+    }
+
+
+    @Test
     void createTaskTest() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
@@ -152,6 +195,37 @@ class TaskControllerTest {
                         .param("taskEndDate", "2025-06-15"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+    }
+
+    @Test
+    void updateTaskTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/updateTask",
+                        projectId, subProjectId, taskId)
+                        .param("taskName", "Updated Task Name")
+                        .param("taskDescription", "Updated Task Description")
+                        .param("taskEstimatedHours", "50")
+                        .param("taskStatus", "IN_PROGRESS")
+                        .param("taskStartDate", "2025-07-01")
+                        .param("taskEndDate", "2025-07-15"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview"));
+    }
+
+
+    @Test
+    void editTaskWithoutSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+
+        mockMvc.perform(get("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask",
+                        projectId, subProjectId, taskId))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -172,6 +246,21 @@ class TaskControllerTest {
                 .andExpect(model().attributeExists("task"));
     }
 
+
+    @Test
+    void addEmployeeToTaskWithoutSessionRedirectsToLogin() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int employeeId = 2;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee",
+                        projectId, subProjectId, taskId)
+                        .param("employeeId", String.valueOf(employeeId)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+
     @Test
     void addEmployeeToTaskTest() throws Exception {
         int projectId = 1;
@@ -189,15 +278,14 @@ class TaskControllerTest {
     }
 
     @Test
-    void addEmployeeToTaskWithoutSessionRedirectsToLogin() throws Exception {
+    void removeEmployeeFromTaskWithoutSessionRedirectsToLogin() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
         int taskId = 1;
-        int employeeId = 2;
+        int employeeId = 1;
 
-        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/taskOverview/addEmployee",
-                        projectId, subProjectId, taskId)
-                        .param("employeeId", String.valueOf(employeeId)))
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/employees/{employeeId}/remove",
+                        projectId, subProjectId, taskId, employeeId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
@@ -218,15 +306,68 @@ class TaskControllerTest {
     }
 
     @Test
-    void removeEmployeeFromTaskWithoutSessionRedirectsToLogin() throws Exception {
+    void registerHoursWithoutSessionRedirectsToLogin() throws Exception {
         int projectId = 1;
         int subProjectId = 1;
         int taskId = 1;
-        int employeeId = 1;
+        int hoursToAdd = 8;
 
-        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/employees/{employeeId}/remove",
-                        projectId, subProjectId, taskId, employeeId))
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/registerHours",
+                        projectId, subProjectId, taskId)
+                        .param("hoursToAdd", String.valueOf(hoursToAdd)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
     }
+
+    @Test
+    void registerHoursTest() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int hoursToAdd = 8;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/registerHours",
+                        projectId, subProjectId, taskId)
+                        .session(session)
+                        .param("hoursToAdd", String.valueOf(hoursToAdd)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId +
+                        "/subProjectOverview/" + taskId + "/taskOverview"));
+    }
+
+
+    @Test
+    void registerHoursWithInvalidValueRedirectsWithError() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int invalidHours = 0;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/registerHours",
+                        projectId, subProjectId, taskId)
+                        .session(session)
+                        .param("hoursToAdd", String.valueOf(invalidHours)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId +
+                        "/subProjectOverview/" + taskId + "/registerHours?error=invalidHours"));
+    }
+
+    @Test
+    void registerNegativeHoursShouldRedirectWithError() throws Exception {
+        int projectId = 1;
+        int subProjectId = 1;
+        int taskId = 1;
+        int negativeHours = -5;
+
+        mockMvc.perform(post("/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/registerHours",
+                        projectId, subProjectId, taskId)
+                        .session(session)
+                        .param("hoursToAdd", String.valueOf(negativeHours)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/dashboard/" + projectId + "/projectOverview/" + subProjectId +
+                        "/subProjectOverview/" + taskId + "/registerHours?error=invalidHours"));
+    }
+
+
+
 }
