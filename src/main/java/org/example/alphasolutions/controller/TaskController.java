@@ -3,11 +3,13 @@ package org.example.alphasolutions.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.enums.TaskStatus;
+import org.example.alphasolutions.exception.InsufficientHoursException;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.service.ProjectService;
+import org.example.alphasolutions.service.SubProjectService;
 import org.example.alphasolutions.service.TaskService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,11 +23,14 @@ import java.util.List;
 public class TaskController extends BaseController {
     private final TaskService taskService;
     private final ProjectService projectService;
+    private final SubProjectService subProjectService;
 
 
-    public TaskController(TaskService taskService, ProjectService projectService) {
+    public TaskController(TaskService taskService, ProjectService projectService, SubProjectService subProjectService) {
         this.taskService = taskService;
         this.projectService = projectService;
+        this.subProjectService = subProjectService;
+
     }
 
     @GetMapping("/addTask")
@@ -72,8 +77,6 @@ public class TaskController extends BaseController {
             }
         }
 
-
-
         model.addAttribute("task", task);
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
@@ -100,20 +103,46 @@ public class TaskController extends BaseController {
 
 
     @PostMapping("/saveTask")
-    public String createTask(@PathVariable int projectId, @PathVariable int subProjectId, @ModelAttribute Task task) {
-        task.setSubProjectId(subProjectId);
-        taskService.addNewTask(task);
+    public String createTask(@PathVariable int projectId, @PathVariable int subProjectId, @ModelAttribute Task task,HttpSession session, Model model) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
 
-        return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview";
+        task.setSubProjectId(subProjectId);
+
+        try {
+            SubProject subProject = subProjectService.findSubProjectById(subProjectId);
+            int subProjectEstimatedHours = subProject.getSubProjectEstimatedHours();
+            taskService.addNewTask(task, subProjectEstimatedHours);
+            return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview";
+        } catch (InsufficientHoursException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("statuses", ProjectStatus.values());
+            model.addAttribute("task", task);
+            return "addTask";
+        }
     }
 
     @PostMapping("/{taskId}/updateTask")
-    public String updateTask(@PathVariable int projectId, @PathVariable int subProjectId, @PathVariable int taskId, @ModelAttribute Task task) {
+    public String updateTask(@PathVariable int projectId, @PathVariable int subProjectId, @PathVariable int taskId, @ModelAttribute Task task, HttpSession session, Model model) {
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
         task.setSubProjectId(subProjectId);
         task.setTaskId(taskId);
-        taskService.editTask(task);
 
-        return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview";
+        try {
+            SubProject subProject = subProjectService.findSubProjectById(subProjectId);
+            int subProjectEstimatedHours = subProject.getSubProjectEstimatedHours();
+            taskService.editTask(task, subProjectEstimatedHours);
+            return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview";
+        } catch (InsufficientHoursException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("statuses", ProjectStatus.values());
+            model.addAttribute("task", task);
+            return "editTask";
+        }
     }
 
     @GetMapping("/{taskId}/editTask")
@@ -157,6 +186,26 @@ public class TaskController extends BaseController {
         }
 
         taskService.removeEmployeeFromTask(employeeId, taskId);
+        return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/taskOverview";
+    }
+
+    @PostMapping("/{taskId}/registerHours")
+    public String registerHours(@PathVariable int projectId,
+                             @PathVariable int subProjectId,
+                             @PathVariable int taskId,
+                             @RequestParam("hoursToAdd") int hoursToAdd,
+                             HttpSession session) {
+
+        if (!isLoggedIn(session)) {
+            return "redirect:/login";
+        }
+
+        if (hoursToAdd <= 0) {
+            return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/registerHours?error=invalidHours";
+        }
+
+        taskService.registerHours(taskId,hoursToAdd);
+
         return "redirect:/dashboard/" + projectId + "/projectOverview/" + subProjectId + "/subProjectOverview/" + taskId + "/taskOverview";
     }
 }

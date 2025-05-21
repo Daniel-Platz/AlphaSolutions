@@ -122,7 +122,7 @@ public class SubProjectController extends BaseController {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("statuses", ProjectStatus.values());
             model.addAttribute("subProject", subProject);
-            return "addSubProject";
+            return "editSubProject";
         }
     }
 

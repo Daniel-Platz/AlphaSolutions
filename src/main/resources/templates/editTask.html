@@ -8,9 +8,14 @@
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 <main>
     <h1>Rediger Task</h1>
+    <!-- Error message display -->
+    <div th:if="${errorMessage}">
+        <strong>Fejl:</strong> <span th:text="${errorMessage}"></span>
+    </div>
     <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/updateTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${task.taskId})}"
           method="post"
           th:object="${task}">
+        <!-- Hidden fields for IDs -->
         <input type="hidden" th:field="*{taskId}" />
         <input type="hidden" th:field="*{subProjectId}" />
         <ul>
@@ -25,12 +30,12 @@
             <li>
                 <label for="taskStartDate">Startdato:</label>
                 <input type="date" id="taskStartDate" name="taskStartDate"
-                       th:value="${task.taskStartDate}" required/>
+                       th:attr="value=${task.taskStartDate}" required/>
             </li>
             <li>
                 <label for="taskEndDate">Slutdato:</label>
                 <input type="date" id="taskEndDate" name="taskEndDate"
-                       th:value="${task.taskEndDate}" required/>
+                       th:attr="value=${task.taskEndDate}" required/>
             </li>
             <li>
                 <label for="taskEstimatedHours">Estimerede Timer:</label>
@@ -46,7 +51,7 @@
             </li>
             <li>
                 <button type="submit">Gem Ændringer</button>
-                <button th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Annuller</button>
+                <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${projectId}, subProjectId=${subProjectId})}" class="button">Annuller</a>
             </li>
         </ul>
     </form>

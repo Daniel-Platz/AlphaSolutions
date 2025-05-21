@@ -99,21 +99,7 @@ public class SubProjectRepository {
                 subProjectToEdit.getSubProjectStartDate(),
                 subProjectToEdit.getSubProjectEndDate(),
                 subProjectToEdit.getSubProjectEstimatedHours(),
-                subProjectToEdit.getSubProjectStatus().name(),  // Convert enum to string
+                subProjectToEdit.getSubProjectStatus().name(),
                 subProjectToEdit.getSubProjectId());
     }
-
-    public void calculateSubProjectProgress() {
-
-    }
-
-    public void getSubProjectDeadline() {
-
-    }
-
-    public void updateSubProjectStatus(ProjectStatus subProjectStatus) {
-
-    }
-
-
 }

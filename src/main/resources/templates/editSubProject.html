@@ -6,24 +6,18 @@
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
-
 <main>
     <h1>Rediger Subproject</h1>
-    <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject(projectId=${projectId},subProjectId=${subProject.subProjectId})}"
-
     <!-- Error message display -->
     <div th:if="${errorMessage}">
         <strong>Fejl:</strong> <span th:text="${errorMessage}"></span>
     </div>
-
-    <form th:action="@{/dashboard/{projectId}/projectOverview/saveSubProject(projectId=${projectId})}"
+    <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/updateSubProject(projectId=${projectId},subProjectId=${subProject.subProjectId})}"
           method="post"
           th:object="${subProject}">
-
         <!-- Hidden fields for IDs -->
         <input type="hidden" th:field="*{subProjectId}" />
         <input type="hidden" th:field="*{projectId}" />
-
         <ul>
             <li>
                 <label for="subProjectName">Navn:</label>
@@ -36,12 +30,12 @@
             <li>
                 <label for="subProjectStartDate">Startdato:</label>
                 <input type="date" id="subProjectStartDate" name="subProjectStartDate"
-                       th:value="${subProject.subProjectStartDate}" required/>
+                       th:attr="value=${subProject.subProjectStartDate}" required/>
             </li>
             <li>
                 <label for="subProjectEndDate">Slutdato:</label>
                 <input type="date" id="subProjectEndDate" name="subProjectEndDate"
-                       th:value="${subProject.subProjectEndDate}" required/>
+                       th:attr="value=${subProject.subProjectEndDate}" required/>
             </li>
             <li>
                 <label for="subProjectEstimatedHours">Estimerede Timer:</label>
@@ -57,7 +51,7 @@
             </li>
             <li>
                 <button type="submit">Gem Ændringer</button>
-                <button th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Annuller</button>
+                <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Annuller</a>
             </li>
         </ul>
     </form>

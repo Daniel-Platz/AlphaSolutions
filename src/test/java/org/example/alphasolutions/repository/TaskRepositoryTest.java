@@ -6,6 +6,7 @@ import org.example.alphasolutions.model.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -23,16 +24,152 @@ public class TaskRepositoryTest {
     private TaskRepository taskRepository;
 
     @Test
+    public void testAddNewTask() {
+        // Arrange
+        Task newTask = new Task();
+        newTask.setSubProjectId(1);
+        newTask.setTaskName("New Test Task");
+        newTask.setTaskDescription("This is a test task description");
+        newTask.setTaskStartDate(LocalDate.now());
+        newTask.setTaskEndDate(LocalDate.now().plusDays(7));
+        newTask.setTaskEstimatedHours(15);
+        newTask.setTaskStatus(TaskStatus.NOT_STARTED);
+
+        // Act
+        int taskId = taskRepository.addNewTask(newTask);
+
+        // Assert
+        assertTrue(taskId > 0, "Task ID should be positive");
+
+        Task retrievedTask = taskRepository.findTaskByTaskId(taskId);
+        assertNotNull(retrievedTask);
+        assertEquals("New Test Task", retrievedTask.getTaskName());
+        assertEquals("This is a test task description", retrievedTask.getTaskDescription());
+        assertEquals(15, retrievedTask.getTaskEstimatedHours());
+        assertEquals(TaskStatus.NOT_STARTED, retrievedTask.getTaskStatus());
+    }
+
+    @Test
+    public void testDeleteTask() {
+        // Arrange
+        int taskIdToDelete = 3;
+
+
+        Task taskBeforeDeletion = taskRepository.findTaskByTaskId(taskIdToDelete);
+        assertNotNull(taskBeforeDeletion);
+
+        // Act
+        taskRepository.deleteTask(taskIdToDelete);
+
+        // Assert
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+            taskRepository.findTaskByTaskId(taskIdToDelete);
+        });
+    }
+
+    @Test
+    public void testFindTasksBySubProjectId() {
+        // Arrange
+        int subProjectId = 1;
+
+        // Act
+        List<Task> tasks = taskRepository.findTasksBySubProjectId(subProjectId);
+
+        // Assert
+        assertNotNull(tasks);
+        assertFalse(tasks.isEmpty());
+
+
+        boolean foundErDiagram = false;
+        boolean foundDataDictionary = false;
+
+        for (Task task : tasks) {
+            assertEquals(subProjectId, task.getSubProjectId());
+            if (task.getTaskId() == 1 && "ER Diagram".equals(task.getTaskName())) {
+                foundErDiagram = true;
+            }
+            if (task.getTaskId() == 2 && "Schema Creation".equals(task.getTaskName())) {
+                foundDataDictionary = true;
+            }
+        }
+
+        assertTrue(foundErDiagram, "ER Diagram task should be found");
+        assertTrue(foundDataDictionary, "Schema Creation task should be found");
+    }
+
+    @Test
+    public void testFindTasksBySubProjectId_NonExistentSubProject() {
+        // Arrange
+        int nonExistentSubProjectId = 9999;
+
+        // Act
+        List<Task> tasks = taskRepository.findTasksBySubProjectId(nonExistentSubProjectId);
+
+        // Assert
+        assertNotNull(tasks);
+        assertTrue(tasks.isEmpty(), "No tasks should be found for non-existent subproject");
+    }
+
+    @Test
+    public void testFindTaskByTaskId() {
+        // Arrange
+        int taskId = 1;
+
+        // Act
+        Task foundTask = taskRepository.findTaskByTaskId(taskId);
+
+        // Assert
+        assertNotNull(foundTask);
+        assertEquals(taskId, foundTask.getTaskId());
+        assertEquals("ER Diagram", foundTask.getTaskName());
+        assertEquals(1, foundTask.getSubProjectId());
+    }
+
+    @Test
+    public void testFindTaskByTaskId_NonExistentTask() {
+        // Arrange
+        int nonExistentTaskId = 9999;
+
+        // Act & Assert
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+            taskRepository.findTaskByTaskId(nonExistentTaskId);
+        });
+    }
+
+    @Test
+    public void testEditTask() {
+        // Arrange
+        int taskIdToEdit = 4;
+        Task taskToEdit = taskRepository.findTaskByTaskId(taskIdToEdit);
+
+
+        taskToEdit.setTaskName("Updated Testing Plan");
+        taskToEdit.setTaskDescription("Updated description for testing plan");
+        taskToEdit.setTaskEndDate(taskToEdit.getTaskEndDate().plusDays(5));
+        taskToEdit.setTaskEstimatedHours(25);
+        taskToEdit.setTaskStatus(TaskStatus.IN_PROGRESS);
+
+        // Act
+        taskRepository.editTask(taskToEdit);
+
+        // Assert
+        Task updatedTask = taskRepository.findTaskByTaskId(taskIdToEdit);
+        assertNotNull(updatedTask);
+        assertEquals("Updated Testing Plan", updatedTask.getTaskName());
+        assertEquals("Updated description for testing plan", updatedTask.getTaskDescription());
+        assertEquals(25.0, updatedTask.getTaskEstimatedHours());
+        assertEquals(TaskStatus.IN_PROGRESS, updatedTask.getTaskStatus());
+    }
+
+    @Test
     public void testFindAllTasks() {
         // Act
         List<Task> allTasks = taskRepository.findAllTasks();
 
         // Assert
         assertNotNull(allTasks);
-        // Based on the h2init.sql, there should be 14 tasks in total
         assertEquals(14, allTasks.size());
 
-        // Verify some tasks from the init script exist
         boolean foundTaskOne = false;
         boolean foundTaskTen = false;
 
@@ -52,10 +189,9 @@ public class TaskRepositoryTest {
     @Test
     public void testAssignEmployeeToTask() {
         // Arrange
-        int employeeId = 5; // David Manager
-        int taskId = 3; // Data Migration Plan
+        int employeeId = 5;
+        int taskId = 3;
 
-        // Get initial employee count for task
         List<Employee> initialAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
         int initialCount = initialAssignedEmployees.size();
 
@@ -66,7 +202,6 @@ public class TaskRepositoryTest {
         List<Employee> updatedAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
         assertEquals(initialCount + 1, updatedAssignedEmployees.size());
 
-        // Verify the added employee exists in the list
         boolean foundEmployee = false;
         for (Employee employee : updatedAssignedEmployees) {
             if (employee.getEmployeeId() == employeeId) {
@@ -80,9 +215,28 @@ public class TaskRepositoryTest {
     }
 
     @Test
+    public void testAssigningTheSameEmployeeToTaskTwice() {
+        // Arrange
+        int employeeId = 2; // Sara Manager
+        int taskId = 5; // API Design task
+
+        taskRepository.assignEmployeeToTask(employeeId, taskId);
+        List<Employee> afterFirstAssignment = taskRepository.findAssignedEmployeesByTaskId(taskId);
+
+        // Act
+        assertThrows(Exception.class, () -> {
+            taskRepository.assignEmployeeToTask(employeeId, taskId);
+        });
+
+        // Assert
+        List<Employee> afterSecondAssignment = taskRepository.findAssignedEmployeesByTaskId(taskId);
+        assertEquals(afterFirstAssignment.size(), afterSecondAssignment.size());
+    }
+
+    @Test
     public void testFindAssignedEmployeesByTaskId() {
         // Arrange
-        int taskId = 1; // ER Diagram task which has employee 1 assigned
+        int taskId = 1;
 
         // Act
         List<Employee> assignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
@@ -91,7 +245,6 @@ public class TaskRepositoryTest {
         assertNotNull(assignedEmployees);
         assertFalse(assignedEmployees.isEmpty());
 
-        // Based on init script, employee 1 (John Admin) should be assigned to task 1
         boolean foundJohnAdmin = false;
         for (Employee employee : assignedEmployees) {
             if (employee.getEmployeeId() == 1) {
@@ -103,28 +256,6 @@ public class TaskRepositoryTest {
         }
 
         assertTrue(foundJohnAdmin, "John Admin should be assigned to task 1");
-    }
-
-    @Test
-    public void testRemoveEmployeeFromTask() {
-        // Arrange
-        int employeeId = 1; // John Admin
-        int taskId = 1; // ER Diagram
-
-        // Verify employee is initially assigned
-        List<Employee> initialAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
-        boolean initiallyAssigned = initialAssignedEmployees.stream()
-                .anyMatch(employee -> employee.getEmployeeId() == employeeId);
-        assertTrue(initiallyAssigned, "Employee should be initially assigned to the task");
-
-        // Act
-        taskRepository.removeEmployeeFromTask(employeeId, taskId);
-
-        // Assert
-        List<Employee> updatedAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
-        boolean stillAssigned = updatedAssignedEmployees.stream()
-                .anyMatch(employee -> employee.getEmployeeId() == employeeId);
-        assertFalse(stillAssigned, "Employee should no longer be assigned to the task");
     }
 
     @Test
@@ -150,45 +281,124 @@ public class TaskRepositoryTest {
     }
 
     @Test
+    public void testRemoveEmployeeFromTask() {
+        // Arrange
+        int employeeId = 1;
+        int taskId = 1;
+
+
+        List<Employee> initialAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
+        boolean initiallyAssigned = initialAssignedEmployees.stream()
+                .anyMatch(employee -> employee.getEmployeeId() == employeeId);
+        assertTrue(initiallyAssigned, "Employee should be initially assigned to the task");
+
+        // Act
+        taskRepository.removeEmployeeFromTask(employeeId, taskId);
+
+        // Assert
+        List<Employee> updatedAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
+        boolean stillAssigned = updatedAssignedEmployees.stream()
+                .anyMatch(employee -> employee.getEmployeeId() == employeeId);
+        assertFalse(stillAssigned, "Employee should no longer be assigned to the task");
+    }
+
+    @Test
     public void testEdgeCase_RemoveNonExistentEmployeeTaskAssignment() {
-        // Arrange - assuming employee 6 is not assigned to task 3
+        // Arrange
         int employeeId = 6;
         int taskId = 3;
 
-        // Verify employee is not initially assigned
+
         List<Employee> initialAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
         boolean initiallyAssigned = initialAssignedEmployees.stream()
                 .anyMatch(employee -> employee.getEmployeeId() == employeeId);
         assertFalse(initiallyAssigned, "Employee should not be initially assigned to the task");
 
-        // Act & Assert - this should not throw an exception
+        // Act & Assert
         assertDoesNotThrow(() -> {
             taskRepository.removeEmployeeFromTask(employeeId, taskId);
         });
 
-        // Employees list should remain unchanged
+
         List<Employee> updatedAssignedEmployees = taskRepository.findAssignedEmployeesByTaskId(taskId);
         assertEquals(initialAssignedEmployees.size(), updatedAssignedEmployees.size());
     }
 
+
     @Test
-    public void testAssigningTheSameEmployeeToTaskTwice() {
+    public void testRegisterHours_NewHoursEntry() {
         // Arrange
-        int employeeId = 2; // Sara Manager
-        int taskId = 5; // API Design task
+        int taskId = 5;
+        int hoursToAdd = 8;
 
-        // First assignment
-        taskRepository.assignEmployeeToTask(employeeId, taskId);
-        List<Employee> afterFirstAssignment = taskRepository.findAssignedEmployeesByTaskId(taskId);
 
-        // Act - try to assign the same employee again
-        // This test checks if the database constraint prevents duplicate entries
-        assertThrows(Exception.class, () -> {
-            taskRepository.assignEmployeeToTask(employeeId, taskId);
-        });
+        Task taskBefore = taskRepository.findTaskByTaskId(taskId);
+        Integer initialHours = taskBefore.getTaskActualHours();
+        if (initialHours == null) {
+            initialHours = 0;
+        }
 
-        // Assert - employee count should remain the same
-        List<Employee> afterSecondAssignment = taskRepository.findAssignedEmployeesByTaskId(taskId);
-        assertEquals(afterFirstAssignment.size(), afterSecondAssignment.size());
+        // Act
+        taskRepository.registerHours(taskId, hoursToAdd);
+
+        // Assert
+        Task updatedTask = taskRepository.findTaskByTaskId(taskId);
+        assertNotNull(updatedTask);
+        assertNotNull(updatedTask.getTaskActualHours());
+        assertEquals(initialHours + hoursToAdd, updatedTask.getTaskActualHours());
+    }
+
+    @Test
+    public void testRegisterHours_AddToExistingHours() {
+        // Arrange
+        int taskId = 6;
+
+
+        taskRepository.registerHours(taskId, 5);
+        Task taskAfterInitialHours = taskRepository.findTaskByTaskId(taskId);
+        int initialHours = taskAfterInitialHours.getTaskActualHours();
+
+        // Act
+        int additionalHours = 7;
+        taskRepository.registerHours(taskId, additionalHours);
+
+        // Assert
+        Task updatedTask = taskRepository.findTaskByTaskId(taskId);
+        assertNotNull(updatedTask);
+        assertEquals(initialHours + additionalHours, updatedTask.getTaskActualHours());
+    }
+
+
+    @Test
+    public void testCalculateTotalTaskEstimatedHours() {
+        // Arrange
+        int subProjectId = 2;
+
+        // Act
+        int totalHours = taskRepository.calculateTotalTaskEstimatedHours(subProjectId);
+
+        // Assert
+        assertTrue(totalHours > 0, "Total hours should be greater than zero");
+
+
+        List<Task> tasksInSubproject = taskRepository.findTasksBySubProjectId(subProjectId);
+        double manualSum = 0;
+        for (Task task : tasksInSubproject) {
+            manualSum += task.getTaskEstimatedHours();
+        }
+
+        assertEquals((int)manualSum, totalHours, "Calculated total should match manual calculation");
+    }
+
+    @Test
+    public void testCalculateTotalTaskEstimatedHours_EmptySubProject() {
+        // Arrange
+        int nonExistentSubProjectId = 9999;
+
+        // Act
+        int totalHours = taskRepository.calculateTotalTaskEstimatedHours(nonExistentSubProjectId);
+
+        // Assert
+        assertEquals(0, totalHours, "Total hours should be zero for empty subproject");
     }
 }

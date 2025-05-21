@@ -2,9 +2,8 @@ package org.example.alphasolutions.repository;
 
 import org.example.alphasolutions.exception.CreationException;
 import org.example.alphasolutions.model.Employee;
-import org.example.alphasolutions.model.SubProject;
 import org.example.alphasolutions.model.Task;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -33,7 +32,6 @@ public class TaskRepository {
                 "task_end_date, task_estimated_hours, task_status)" +
                 " VALUES (?,?,?,?,?,?,?)";
 
-        // Anvend et KeyHolder til at få det auto-genererede ID
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -49,7 +47,6 @@ public class TaskRepository {
             return ps;
         }, keyHolder);
 
-        // Sæt det genererede ID på task-objektet
         Number key = keyHolder.getKey();
         if (key == null) {
             throw new CreationException();
@@ -72,6 +69,7 @@ public class TaskRepository {
         String sql = "SELECT * FROM task WHERE task_id = ?";
         return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Task.class), taskId);
     }
+
 
     public void editTask(Task taskToEdit) {
         String sql = "UPDATE task SET " +
@@ -116,4 +114,26 @@ public class TaskRepository {
         String sql = "DELETE FROM Employee_Task WHERE employee_id = ? AND task_id = ?";
         jdbcTemplate.update(sql, employeeId, taskId);
     }
+
+    public void registerHours(int taskId, int hoursToAdd) {
+        try {
+            String selectSql = "SELECT task_actual_hours FROM task WHERE task_id = ?";
+            Integer currentHours = jdbcTemplate.queryForObject(selectSql, Integer.class, taskId);
+
+            int updatedHours = (currentHours != null ? currentHours : 0) + hoursToAdd;
+            String updateSql = "UPDATE task SET task_actual_hours = ? WHERE task_id = ?";
+            jdbcTemplate.update(updateSql, updatedHours, taskId);
+
+        } catch (EmptyResultDataAccessException e) {
+            String updateSql = "UPDATE task SET task_actual_hours = ? WHERE task_id = ?";
+            jdbcTemplate.update(updateSql, hoursToAdd, taskId);
+        }
+    }
+
+    public int calculateTotalTaskEstimatedHours(int subProjectId) {
+        String sql = "SELECT IFNULL(SUM(task_estimated_hours), 0) FROM task WHERE sub_project_id = ?";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, subProjectId);
+        return result != null ? result : 0;
+    }
+
 }
