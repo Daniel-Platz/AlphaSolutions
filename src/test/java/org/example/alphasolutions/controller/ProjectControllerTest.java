@@ -54,10 +54,12 @@ class ProjectControllerTest {
         project1 = new Project();
         project1.setProjectId(1);
         project1.setProjectName("Test Project 1");
+        project1.setProjectStatus(ProjectStatus.ACTIVE);
 
         project2 = new Project();
         project2.setProjectId(2);
         project2.setProjectName("Test Project 2");
+        project2.setProjectStatus(ProjectStatus.ON_HOLD);
 
         allProjects = Arrays.asList(project1, project2);
         employeeProjects = List.of(project1);
