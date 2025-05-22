@@ -33,8 +33,8 @@ h1 {
 }
 
 .dash-btn:hover {
-    background-color: #a22248; /* mørkere rød ved hover */
-    transform: translateY(-2px); /* lille løft-effekt */
+    background-color: #a22248;
+    transform: translateY(-2px);
 }
 
 /* ADMIN version */
