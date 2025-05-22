@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Min Profil</title>
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/user-profile.css}">
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <h1><span th:text="${employee.firstname + ' ' + employee.lastname}"></span></h1>
-
+<a href="/dashboard" class="back-button">Tilbage til projektoversigten</a>
 <div>
   <p><strong>Email:</strong> <span th:text="${employee.email}"></span></p>
   <p><strong>Rolle:</strong> <span th:text="${employee.role}"></span></p>
@@ -30,6 +32,5 @@
 
   <button type="submit">Opdater kodeord</button>
 </form>
-<a href="/dashboard" class="button">Tilbage til projektoversigten</a>
 </body>
 </html>

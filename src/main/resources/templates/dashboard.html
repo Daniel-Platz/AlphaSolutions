@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <title th:text="${archivedView} ? 'Archived Projects' : 'Dashboard'">Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/projects.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -42,16 +43,18 @@
     <h1 th:text="${archivedView} ? 'Archived Projects' : 'Dashboard'">Dashboard</h1>
 
     <div th:if="${archivedView != true}">
-        <div th:if="${role == 'ADMIN'}">
-            <a href="/admin/employees" class="button">Medarbejderadministration</a>
-        </div>
+        <div class="dashboard-buttons">
+            <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                <a href="/dashboard/addProject" class="dash-btn">Tilføj Projekt</a>
+            </div>
 
-        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-            <a href="/dashboard/addProject" class="button">Add New Project</a>
-        </div>
+            <div>
+                <a href="dashboard/archived" class="dash-btn">Arkiverede Projekter</a>
+            </div>
 
-        <div>
-            <a href="dashboard/archived" class="button">View Archived Projects</a>
+            <div th:if="${role == 'ADMIN'}">
+                <a href="/admin/employees" class="dash-btn-ad">Medarbejderadministration</a>
+            </div>
         </div>
     </div>
     <!-- Projects List -->
@@ -59,11 +62,11 @@
         <table>
             <thead>
             <tr>
-                <th>Projekt Navn</th>
+                <th>Projektnavn</th>
                 <th>Estimeret tid</th>
                 <th>Timer brugt</th>
-                <th>Start Dato</th>
-                <th>Slut Date</th>
+                <th>Startdato</th>
+                <th>Slutdato</th>
                 <th>Status</th>
                 <th>Handlinger</th>
             </tr>
@@ -77,17 +80,22 @@
                 <td th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : ''}"></td>
                 <td th:text="${project.getProjectStatus}"></td>
                 <td>
-                    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}"
-                       class="button">View</a>
+                    <div class="actions">
+                        <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}"
+                           class="icon-button" title="Se"><i class="fas fa-eye"></i></a>
 
-                    <div th:if="${archivedView != true and role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-                        <a th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}"
-                           class="button">Edit</a>
-                        <form th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}" method="post"
-                              onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
-                              style="display: inline;">
-                            <button type="submit" class="button">Delete</button>
-                        </form>
+                        <div th:if="${archivedView != true and (role == 'ADMIN' || role == 'PROJECT_MANAGER')}">
+                            <a th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}"
+                               class="icon-button" title="Rediger"><i class="fas fa-pen"></i></a>
+
+                            <form th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}"
+                                  method="post"
+                                  onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
+                                  style="display: inline;">
+                                <button type="submit" class="icon-button" title="Slet"><i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -97,6 +105,75 @@
             </tbody>
         </table>
     </div>
+
+    <div class="fixed-chart">
+        <canvas id="projectStatusChart" width="400" height="400"></canvas>
+    </div>
+
+    <script th:inline="javascript">
+        const statusCounts = /*[[${statusCounts}]]*/ {};
+
+        const allowedStatuses = {
+            "PLANNING": "Planning",
+            "ACTIVE": "Active",
+            "ON_HOLD": "On Hold",
+        };
+
+        const statusColors = {
+            "PLANNING": "#1f82ff",
+            "ACTIVE": "#ca2c5b",
+            "ON_HOLD": "#ff8734"
+        };
+
+        const filteredLabels = [];
+        const filteredData = [];
+        const backgroundColors = [];
+
+        for (const [key, label] of Object.entries(allowedStatuses)) {
+            if (statusCounts[key] !== undefined) {
+                filteredLabels.push(label);
+                filteredData.push(statusCounts[key]);
+                backgroundColors.push(statusColors[key]);
+            }
+        }
+
+        const ctx = document.getElementById('projectStatusChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: filteredLabels,
+                datasets: [{
+                    label: 'Antal',
+                    data: filteredData,
+                    backgroundColor: backgroundColors,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'STATUSOVERSIGT'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const data = context.dataset.data;
+                                const total = data.reduce((sum, val) => sum + val, 0);
+                                const currentValue = context.parsed;
+                                const percentage = ((currentValue / total) * 100).toFixed(1);
+                                return `${context.label}: ${currentValue} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </main>
 </body>
 </html>

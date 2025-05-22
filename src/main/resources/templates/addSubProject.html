@@ -2,13 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Add Subproject</title>
+  <title>Tilføj Delprojekt</title>
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/addSubProject.css}">
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main>
-  <h1>Tilføj Subproject</h1>
+  <h1>Tilføj Delprojekt</h1>
+
+  <a href="/dashboard" class="back-button">Tilbage til projektoversigten</a>
 
   <!-- Error message display -->
   <div th:if="${errorMessage}">
@@ -53,7 +57,6 @@
       </li>
       <li>
         <button type="submit">Tilføj</button>
-        <button th:href="@{/dashboard/{projectId}/projectOverview(projectId=${projectId})}" class="button">Annuller</button>
       </li>
     </ul>
   </form>

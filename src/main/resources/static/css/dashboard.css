@@ -10,6 +10,54 @@ h1 {
     text-transform: uppercase;
 }
 
+.dashboard-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.dash-btn {
+    background-color: #ca2c5b;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dash-btn:hover {
+    background-color: #a22248;
+    transform: translateY(-2px);
+}
+
+/* ADMIN version */
+.dash-btn-ad {
+    background-color: #3a3a3a;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dash-btn-ad:hover {
+    background-color: #1f1f1f; /* mørkere grå ved hover */
+    transform: translateY(-2px); /* samme løft-effekt */
+}
+
 .password-overlay {
     position: fixed;
     top: 0;
@@ -41,4 +89,35 @@ h1 {
     cursor: pointer;
     margin-top: 10px;
     text-transform: uppercase;
+}
+
+.fixed-chart {
+    position: fixed;
+    top: 50%;
+    right: 200px;
+    transform: translateY(-50%);
+    width: 400px;
+    padding: 1.5rem;
+    background: none;
+    z-index: 1000;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    margin: 0 4px;
+    font-size: 16px;
+    color: #333;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.icon-button i {
+    pointer-events: none;
+}
+
+.icon-button:hover {
+    color: #ca2c5b;
+    transform: scale(1.2);
 }

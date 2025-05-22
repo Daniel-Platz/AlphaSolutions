@@ -2,28 +2,23 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Login Page</title>
-  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <title>Login</title>
+  <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
-<header>
-  <a th:href="@{/login}">
-    <img th:src="@{/images/logo.png}" alt="Logo" class="logo">
-  </a>
-</header>
+<div class="login-wrapper">
+  <div class="login-box">
+    <h1>Login</h1>
 
-<main>
-  <div class="login-container">
-    <h2>Login</h2>
-
-    <!-- Display error message if any -->
     <div class="error" th:if="${error}" th:text="${error}"></div>
 
     <form action="/login" method="post">
-      <label for="emailPrefix">Email:</label>
-      <div style="display: inline-flex; align-items: center;">
-        <input type="text" id="emailPrefix" name="emailPrefix" required style="width: 200px;">
-        <span>@alphasolutions.dk</span>
+      <div class="form-group">
+        <label for="emailPrefix">Email:</label>
+        <div class="email-wrapper">
+          <input type="text" id="emailPrefix" name="emailPrefix" required>
+          <span class="email-domain">@alphasolutions.dk</span>
+        </div>
       </div>
 
       <div class="form-group">
@@ -31,9 +26,9 @@
         <input type="password" id="password" name="password" required>
       </div>
 
-      <button type="submit" class="login-button">LOGIN</button>
+      <button type="submit" class="button">LOGIN</button>
     </form>
   </div>
-</main>
+</div>
 </body>
 </html>

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Project</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/addProject.css}">
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
@@ -10,10 +12,12 @@
 <main>
     <h1>Tilføj Projekt</h1>
 
+    <a href="/dashboard" class="back-button">Tilbage til projektoversigten</a>
+
     <form th:action="@{/dashboard/saveProject}" th:object="${newProject}" method="post">
         <ul>
             <li>
-                <label for="projectManagerId">Project Manager</label>
+                <label for="projectManagerId">Projekt Manager</label>
                 <select id="projectManagerId" th:field="*{managerId}">
                     <option value="" disabled selected>Vælg en projekt manager</option>
                     <option th:each="manager : ${managers}"

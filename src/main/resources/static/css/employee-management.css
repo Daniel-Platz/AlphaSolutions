@@ -124,3 +124,31 @@ a:hover {
 input.modal-toggle:checked + .modal {
     display: flex;
 }
+
+.icon-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.icon-button {
+    background-color: #ca2c5b;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.icon-button:hover {
+    background-color: #a22248; /* mørkere rød ved hover */
+    transform: translateY(-2px); /* lille løft-effekt */
+}
