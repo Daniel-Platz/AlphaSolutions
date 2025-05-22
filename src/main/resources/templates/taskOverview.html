@@ -4,11 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Overview</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/taskOverview.css}">
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 <main>
     <h1>Task Details</h1>
+
+    <!-- Task Edit/Delete Buttons -->
+    <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
+               class="button">Rediger</a>
+            <div style="display: inline;">
+                <form style="display: inline;" method="post"
+                      th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
+                      onsubmit="return confirm('Er du sikker på at du vil slette denne opgave?')">
+                    <button type="submit" class="button">Slet</button>
+                </form>
+            </div>
+        </span>
 
     <!-- Task Information -->
     <div th:if="${task != null}">
@@ -56,19 +71,6 @@
             <!-- Error message for invalid hours -->
             <p th:if="${param.error == 'invalidHours'}" class="error-message">Timeantal skal være større end 0</p>
         </div>
-
-        <!-- Task Edit/Delete Buttons -->
-        <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-            <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/editTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-               class="button">Rediger</a>
-            <div style="display: inline;">
-                <form style="display: inline;" method="post"
-                      th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/deleteTask(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                      onsubmit="return confirm('Er du sikker på at du vil slette denne opgave?')">
-                    <button type="submit" class="button">Slet</button>
-                </form>
-            </div>
-        </span>
 
         <!-- Assigned Employees Section -->
         <div class="assigned-employees">

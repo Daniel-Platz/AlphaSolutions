@@ -11,7 +11,9 @@
             <div class="user-info" th:if="${session.employee != null}">
                 <span th:text="${session.employee.firstname + ' ' + session.employee.lastname}"></span>
                 <span th:text="'(' + ${session.role} + ')'"></span>
-                <a href="/logout" class="logout-btn">Logout</a>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
             </div>
             <a href="/employee-profile">
                 <button class="circle-btn"><i class="fas fa-user"></i></button>
