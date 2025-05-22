@@ -146,10 +146,14 @@
         <!-- Edit/Delete Project buttons (only for ADMIN and PROJECT_MANAGER) -->
         <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
             <a th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}" class="button">Rediger Projekt</a>
-            <a th:href="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}"
-               class="button"
-               onclick="return confirm('Er du sikker på du vil slette dette projekt?')">Slet Projekt</a>
         </span>
+        <form th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}"
+              method="post"
+              onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
+              style="display: inline;">
+            <button type="submit" class="button" title="Slet">Slet projekt
+            </button>
+        </form>
     </div>
 </main>
 </body>
