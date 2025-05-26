@@ -14,8 +14,10 @@ Som det første vil du blive mødt af vores login side som beder dig om at logge
 Da du er ny bruger vil du som det første blive bedt om at skifte dit password til et nyt og sikker password.
 Efter dette, hvis du er Admin, kan du tilgå vores medarbejderadministration hvorfra du kan tilføje, fjerne eller redigere
 listen af medarbejdere som er i systemet.
+
 Som projekt manager kan du tilføje, fjerne og redigere i projekter, sub projekter og opgaver. Du kan også tilføje
-medarbejdere i systemet til projekter, subprojekter og opgaver. Admins har de samme rettigheder som en projekt manager. 
+medarbejdere i systemet til projekter, subprojekter og opgaver. Admins har de samme rettigheder som en projekt manager.
+
 Som medarbejder i systemet kan du kun se de projekter du er blevet tilføjet til. Derudover kan du indtaste hvor mange
 timer du har brugt på en opgave.
 
