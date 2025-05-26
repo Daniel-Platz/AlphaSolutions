@@ -53,6 +53,7 @@ Link til deployed version:
 3. Konfigurer dine environment variables så de passer til din database login credenser. Eller indtast dem direkte i
    src/main/resources/application-dev.properties (USIKKER!!!)
 
+<pre> ```
    spring.datasource.url=jdbc:mysql://localhost:3306/alphasolution_db [indsæt evt. deployed database]
    spring.datasource.username=[username]
-   spring.datasource.password=[password]
+   spring.datasource.password=[password]``` </pre>
