@@ -4,7 +4,7 @@
 
 Dette er et projekt lavet af 4 studerende fra KEA til vores 2. semester eksamen. Projektet er blevet produceret udfra
 kriterier stillet af Alpha Solutions, samt vores PO som var en studerende fra 4. semester.
-Projektet er vores forestilling om hvordan et projektkalkulations værktøj specifict lavet til Alpha Solutions kunne se
+Projektet er vores forestilling om hvordan et projektkalkulations værktøj specifikt lavet til Alpha Solutions kunne se
 ud.
 
 Produktet bruger thymeleaf som frontend framework, sprinboot for vores backend logik, MySQL til håndteringen af vores
@@ -26,7 +26,7 @@ Som medarbejder i systemet kan du kun se de projekter du er blevet tilføjet til
 timer du har brugt på en opgave.
 
 Det er muligt i programmet at nedbryde et større projekt i mindre bider som subprojekter og opgaver.
-Link til deployed version:
+Link til deployed version: http://alphasolutions-deaddfgaa7bgarfk.northeurope-01.azurewebsites.net/
 
 ## Teknologier
 
