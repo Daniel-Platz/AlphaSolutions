@@ -57,3 +57,5 @@ Link til deployed version:
    spring.datasource.username=[username]
    spring.datasource.password=[password] 
 </pre>
+4. Byg of kør projektet.
+5. Applikation burde nu kunne køres lokalt på http://localhost:8080/
