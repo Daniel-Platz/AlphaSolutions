@@ -23,3 +23,12 @@ timer du har brugt på en opgave.
 
 Det er muligt i programmet at nedbryde et større projekt i mindre bider som subprojekter og opgaver.
 Link til deployed version: 
+
+## Teknologier
+* Springboot (java)
+* Thymeleaf
+* CSS
+* HTML
+* MySql
+* Gihub Actions
+* Azure Web Apps
