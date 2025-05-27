@@ -74,4 +74,7 @@ public class TaskService {
         }
     }
 
+    public boolean isEmployeeAssignedToTask (int employeeId, int taskId){
+        return taskRepository.isEmployeeAssignedToTask(employeeId,taskId);
+    }
 }
