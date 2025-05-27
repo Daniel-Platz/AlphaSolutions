@@ -49,7 +49,7 @@ Link til deployed version: http://alphasolutions-deaddfgaa7bgarfk.northeurope-01
 ### Installation
 
 1. Klon repo fra https://github.com/Daniel-Platz/AlphaSolutions.git
-2. Opret en MySQL database kaled 'alphasolutions_db'. Kør MySQL scripts fra AlphaSolutions\docs\
+2. Opret en MySQL database kaled 'alphasolutions_db'. Kør MySQL scripts fra src/main/resources/
 3. Konfigurer dine environment variables så de passer til din database login credenser. Eller indtast dem direkte i
    src/main/resources/application-dev.properties (USIKKER!!!)
 
