@@ -100,13 +100,13 @@
     <!-- Rediger/Slet Delprojekt (kun ADMIN/PROJECT_MANAGER) -->
     <div class="actions" th:if="${role == 'ADMIN' or role == 'PROJECT_MANAGER'}">
       <a class="btn-edit" th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/editSubProject(projectId=${projectId},subProjectId=${subProjectId})}">
-        Rediger Del-Projekt
+        Rediger Delprojekt
       </a>
 
       <form method="post" style="display: inline;"
             th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/deleteSubProject(projectId=${projectId},subProjectId=${subProjectId})}"
             onsubmit="return confirm('Er du sikker på du vil slette dette del-projekt?')">
-        <button type="submit" class="btn-delete">Slet Del-Projekt</button>
+        <button type="submit" class="btn-delete">Slet Delprojekt</button>
       </form>
     </div>
   </div>
