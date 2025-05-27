@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class TaskRepository {
@@ -136,4 +137,14 @@ public class TaskRepository {
         return result != null ? result : 0;
     }
 
+    public boolean isEmployeeAssignedToTask(int employeeId, int taskId){
+        String sql = "SELECT 1 FROM employee_Task WHERE employee_id = ? AND task_id = ?";
+
+        try {
+            jdbcTemplate.queryForObject(sql, Integer.class, employeeId, taskId);
+            return true;
+        } catch (EmptyResultDataAccessException e){
+            return false;
+        }
+    }
 }

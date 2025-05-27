@@ -77,6 +77,9 @@ public class TaskController extends BaseController {
             }
         }
 
+        Integer employeeId = (Integer) session.getAttribute("employeeId");
+        Boolean isAssignedToTask = taskService.isEmployeeAssignedToTask(employeeId, taskId);
+
         model.addAttribute("task", task);
         model.addAttribute("projectId", projectId);
         model.addAttribute("subProjectId", subProjectId);
@@ -84,6 +87,7 @@ public class TaskController extends BaseController {
         model.addAttribute("taskEmployees", taskEmployees);
         model.addAttribute("projectEmployees", projectEmployees);
         model.addAttribute("availableEmployees", availableEmployees);
+        model.addAttribute("isAssignedToTask", isAssignedToTask);
 
 
         String role = (String) session.getAttribute("role");
