@@ -10,6 +10,11 @@ h1 {
     text-transform: uppercase;
 }
 
+.actions {
+    display: flex;
+    align-items: center;
+}
+
 .dashboard-buttons {
     display: flex;
     gap: 12px;
@@ -94,7 +99,7 @@ h1 {
 .fixed-chart {
     position: fixed;
     top: 50%;
-    right: 200px;
+    right: 100px;
     transform: translateY(-50%);
     width: 400px;
     padding: 1.5rem;
@@ -121,3 +126,26 @@ h1 {
     color: #ca2c5b;
     transform: scale(1.2);
 }
+
+.icon-dlt-button:hover {
+    color: antiquewhite;
+}
+
+.projects-list td a {
+    color: inherit;
+    text-decoration: none;
+}
+.projects-list td a:hover {
+    text-decoration: underline;
+}
+
+.projects-list table tbody tr:nth-child(odd) {
+    background-color: #f1f1f1;
+}
+
+.projects-list table th,
+.projects-list table td {
+    padding: 12px 16px; /* 12px top/bund, 16px venstre/højre */
+    text-align: left;   /* valgfrit: for bedre læsbarhed */
+}
+

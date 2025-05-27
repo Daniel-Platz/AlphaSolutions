@@ -80,7 +80,10 @@
             </thead>
             <tbody>
             <tr th:each="project : ${projects}">
-                <td th:text="${project.projectName}"></td>
+                <td>
+                    <a th:href="@{/dashboard/{projectId}/projectOverview(projectId=${project.projectId})}"
+                       th:text="${project.projectName}"></a>
+                </td>
                 <td th:text="${project.getProjectEstimatedHours}"></td>
                 <td th:text="${project.getProjectActualHours}"></td>
                 <td th:text="${project.projectStartDate != null ? #temporals.format(project.projectStartDate, 'yyyy-MM-dd') : ''}"></td>
