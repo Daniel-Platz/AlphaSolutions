@@ -55,7 +55,7 @@ public class ProjectController extends BaseController {
 
         for (Project project : projects)
         {
-            project.setProjectActualHours(projectService.calculateProjectActualHours(project.getProjectId()));
+            project.setProjectActualHours(projectService.calculateActualHours(project.getProjectId()));
         }
 
         Map<ProjectStatus, Long> statusCounts = projects.stream()
@@ -83,6 +83,11 @@ public class ProjectController extends BaseController {
         List<SubProject> subProjects = projectService.findSubProjectsByProjectId(projectId);
         List<Employee> assignedEmployees = projectService.findAssignedEmployeesByProjectId(projectId);
         List<Employee> allEmployees = employeeService.getAllEmployees();
+
+        for (SubProject subProject : subProjects)
+        {
+            subProject.setSubProjectActualHours(projectService.calculateActualHours(projectId));
+        }
 
         List<Employee> availableEmployees = allEmployees.stream()
                 .filter(emp -> assignedEmployees.stream().noneMatch(ae -> ae.getEmployeeId() == emp.getEmployeeId()))

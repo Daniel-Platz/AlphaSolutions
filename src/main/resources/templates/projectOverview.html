@@ -45,9 +45,10 @@
             <thead>
             <tr>
                 <th>Delprojekt</th>
+                <th>Estimeret Tid</th>
+                <th>Timer Brugt</th>
                 <th>Startdato</th>
                 <th>Slutdato</th>
-                <th>Estimeret Tid</th>
                 <th>Status</th>
                 <th>Handlinger</th>
             </tr>
@@ -58,9 +59,10 @@
                     <a th:href="@{/dashboard/{pid}/projectOverview/{sid}/subProjectOverview(pid=${pid}, sid=${sid})}"
                        th:text="${subProject.subProjectName}"></a>
                 </td>
+                <td th:text="${subProject.subProjectEstimatedHours}"></td>
+                <td th:text="${subProject.getSubProjectActualHours()}"></td>
                 <td th:text="${subProject.subProjectStartDate != null ? #temporals.format(subProject.subProjectStartDate, 'yyyy-MM-dd') : ''}"></td>
                 <td th:text="${subProject.subProjectEndDate != null ? #temporals.format(subProject.subProjectEndDate, 'yyyy-MM-dd') : ''}"></td>
-                <td th:text="${subProject.subProjectEstimatedHours}"></td>
                 <td th:text="${subProject.subProjectStatus}"></td>
                 <td>
                     <div class="actions">

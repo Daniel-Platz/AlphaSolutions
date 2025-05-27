@@ -60,7 +60,7 @@ public class ProjectService {
         projectRepository.removeEmployeeFromProject(employeeId, projectId);
     }
 
-    public int calculateProjectActualHours(int projectId) {
+    public int calculateActualHours(int projectId) {
         List<SubProject> subProjects = findSubProjectsByProjectId(projectId);
         int totalActualHours = 0;
         for (SubProject subProject : subProjects) {
