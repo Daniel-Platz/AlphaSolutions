@@ -52,7 +52,7 @@ th {
     font-weight: bold;
 }
 
-select, input[type="text"], input[type="date"], input[type="number"] {
+select {
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ccc;
@@ -61,8 +61,7 @@ select, input[type="text"], input[type="date"], input[type="number"] {
     box-sizing: border-box;
 }
 
-.button,
-button {
+.button {
     background-color: #ca2c5b;
     color: white;
     border: none;
@@ -78,25 +77,19 @@ button {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.button:hover,
-button:hover {
-    background-color: #9a1c42;
+.button:hover {
+    background-color: #9f183f;
     transform: translateY(-2px);
 }
 
 .add-member-section,
 .add-subproject-section,
 .navigation-buttons {
-    margin-top: 20px;
+    margin: 20px 0;
 }
 
-form {
+.inline-form {
     display: inline;
-}
-
-form select {
-    width: auto;
-    margin-right: 10px;
 }
 
 .navigation-buttons a {
@@ -109,20 +102,44 @@ td[colspan] {
     font-style: italic;
 }
 
-.icon-button {
-    background-color: transparent;
+.icon-button,
+a {
+    background: none;
     border: none;
-    color: #ca2c5b;
-    font-size: 18px;
-    padding: 8px;
+    padding: 0;
     margin: 0 4px;
-    border-radius: 5px;
+    color: #333;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: color 0.3s ease, transform 0.2s ease;
     text-decoration: none;
 }
 
-.icon-button:hover {
-    color: #9a1c42;
-    transform: translateY(-2px);
+.icon-button:hover,
+a:hover {
+    color: #ca2c5b;
+    transform: scale(1.2);
+    text-decoration: none;
+}
+
+.icon-button:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.projects-list td a {
+    color: inherit;
+}
+
+main .project-section .projects-list tbody tr td:first-child a:hover {
+    text-decoration: underline;
+    transform: none;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }

@@ -4,56 +4,65 @@
     <meta charset="UTF-8">
     <title>Medarbejderoversigt</title>
     <link rel="stylesheet" th:href="@{/css/employee-management.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <div th:if="${session.role == 'ADMIN'}">
-
     <h1>Administrer medarbejdere</h1>
+
     <div th:if="${newPassword}">
         <p class="success-message">
             Ny medarbejder oprettet med kodeordet: <strong th:text="${newPassword}"></strong>
         </p>
     </div>
 
-    <!-- Skjult checkbox til modal -->
-    <input type="checkbox" id="modalToggle" style="display:none;">
+    <a href="/dashboard" class="button">Tilbage til Dashboard</a>
 
-    <!-- Åbn modal -->
+    <h2>Medarbejdere i systemet</h2>
+
+    <!-- Tilføj medarbejder -->
+    <input type="checkbox" id="modalToggle" class="modal-toggle" hidden>
     <label for="modalToggle" class="open-button">Tilføj medarbejder</label>
 
-    <!-- Modal -->
     <div class="modal">
         <div class="modal-content">
-            <!-- Luk modal -->
             <label for="modalToggle" class="close-button">&times;</label>
             <h2>Tilføj medarbejder</h2>
+
             <form th:action="@{/admin/employees/add}" method="post">
-                <label>Fornavn: <input type="text" name="firstname" required></label><br>
-                <label>Efternavn: <input type="text" name="lastname" required></label><br>
+                <label>Fornavn:
+                    <input type="text" name="firstname" required>
+                </label>
+
+                <label>Efternavn:
+                    <input type="text" name="lastname" required>
+                </label>
+
                 <label>Email:
-                    <br>
                     <div class="email-input">
                         <input type="text" name="email" required>
                         <span>@alphasolutions.dk</span>
                     </div>
-                </label><br>
+                </label>
+
                 <label>Position:
                     <select name="role" required>
                         <option value="EMPLOYEE">Medarbejder</option>
                         <option value="PROJECT_MANAGER">Projekt Manager</option>
                         <option value="ADMIN">Admin</option>
                     </select>
-                </label><br><br>
+                </label>
+
                 <button type="submit">Tilføj til systemet</button>
             </form>
         </div>
     </div>
-    <br>
-    <a href="/dashboard" class="button">Tilbage til projektoversigten</a>
-    <h1>Medarbejdere i systemet</h1>
+
+    <!-- Medarbejderliste -->
     <table>
         <thead>
         <tr>
@@ -73,55 +82,50 @@
             <td th:text="${employee.email}"></td>
             <td th:text="${employee.role}"></td>
             <td>
-                <!-- Slet-knap -->
-                <div class="icon-buttons">
-                    <form th:action="@{/admin/employees/delete}" method="post" th:object="${employee}"
-                          onsubmit="return confirm('Er du sikker på, at du vil slette denne medarbejder fra systemet?');"
-                          style="display: inline;">
+                <div class="actions">
+                    <form th:action="@{/admin/employees/delete}" method="post" onsubmit="return confirm('Er du sikker på, at du vil slette denne medarbejder fra systemet?');" style="display:inline;">
                         <input type="hidden" th:name="employeeId" th:value="${employee.employeeId}"/>
                         <button type="submit" class="icon-button" title="Slet medarbejder">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
 
-                    <!-- Rediger-knap -->
-                    <label th:for="'editModalToggle' + ${employee.employeeId}" class="icon-button"
-                           title="Rediger medarbejder">
+                    <label th:for="'editModalToggle' + ${employee.employeeId}" class="icon-button" title="Rediger medarbejder">
                         <i class="fas fa-pen"></i>
                     </label>
                 </div>
 
-                <!-- Skjult checkbox til modal -->
-                <!-- Skjult checkbox -->
-                <input type="checkbox" th:id="'editModalToggle' + ${employee.employeeId}" class="modal-toggle"
-                       style="display:none;">
+                <!-- Rediger modal -->
+                <input type="checkbox" th:id="'editModalToggle' + ${employee.employeeId}" class="modal-toggle" hidden>
 
-                <!-- Modal direkte efter checkboxen -->
-                <div th:classappend="' edit-modal-' + ${employee.employeeId}" class="modal">
+                <div class="modal" th:classappend="' edit-modal-' + ${employee.employeeId}">
                     <div class="modal-content">
                         <label th:for="'editModalToggle' + ${employee.employeeId}" class="close-button">&times;</label>
                         <h2>Rediger medarbejder</h2>
+
                         <form th:action="@{/admin/employees/update}" method="post">
                             <input type="hidden" name="employeeId" th:value="${employee.employeeId}"/>
+
                             <label>Fornavn:
                                 <input type="text" name="firstname" th:value="${employee.firstname}" required>
                             </label>
+
                             <label>Efternavn:
                                 <input type="text" name="lastname" th:value="${employee.lastname}" required>
                             </label>
+
                             <label>Ny adgangskode:
                                 <input type="text" name="password" placeholder="Ny adgangskode">
                             </label>
+
                             <label>Rolle:
                                 <select name="role" required>
-                                    <option value="EMPLOYEE" th:selected="${employee.role == 'EMPLOYEE'}">Medarbejder
-                                    </option>
-                                    <option value="PROJECT_MANAGER" th:selected="${employee.role == 'PROJECT_MANAGER'}">
-                                        Projekt Manager
-                                    </option>
+                                    <option value="EMPLOYEE" th:selected="${employee.role == 'EMPLOYEE'}">Medarbejder</option>
+                                    <option value="PROJECT_MANAGER" th:selected="${employee.role == 'PROJECT_MANAGER'}">Projekt Manager</option>
                                     <option value="ADMIN" th:selected="${employee.role == 'ADMIN'}">Admin</option>
                                 </select>
                             </label>
+
                             <button type="submit">Opdater</button>
                         </form>
                     </div>
@@ -131,5 +135,6 @@
         </tbody>
     </table>
 </div>
+
 </body>
 </html>

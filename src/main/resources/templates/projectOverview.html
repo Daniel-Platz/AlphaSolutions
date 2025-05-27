@@ -12,8 +12,12 @@
 
 <main>
     <h1 th:text="${project.projectName}">Project Detaljer</h1>
+    <a th:href="@{/dashboard}" class="button">Tilbage til Dashboard</a>
 
     <div class="project-details">
+        <div class="detail-item">
+            <p th:text="${project.projectDescription}">Beskrivelse af Projekt.</p>
+        </div>
         <div class="detail-item">
             <span class="label">Project ID:</span>
             <span th:text="${project.projectId}"></span>
@@ -26,15 +30,84 @@
             <span class="label">Slutdato:</span>
             <span th:text="${project.projectEndDate != null ? #temporals.format(project.projectEndDate, 'yyyy-MM-dd') : 'Not set'}"></span>
         </div>
-        <div class="detail-item">
-            <span class="label">Beskrivelse:</span>
-            <p th:text="${project.projectDescription}">Project description will be shown here.</p>
-        </div>
     </div>
 
-    <!-- Project Team Employees -->
     <div class="project-section">
-        <h2>Team Medarbejdere</h2>
+        <h2>Delprojekter</h2>
+
+        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-subproject-section">
+            <a th:href="@{/dashboard/{projectId}/projectOverview/addSubproject(projectId=${project.projectId})}" class="button">
+                Tilføj Delprojekt
+            </a>
+        </div>
+
+        <table class="projects-list">
+            <thead>
+            <tr>
+                <th>Delprojekt</th>
+                <th>Startdato</th>
+                <th>Slutdato</th>
+                <th>Estimeret Tid</th>
+                <th>Status</th>
+                <th>Handlinger</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="subProject : ${subProjects}" th:with="pid=${project.projectId}, sid=${subProject.subProjectId}">
+                <td>
+                    <a th:href="@{/dashboard/{pid}/projectOverview/{sid}/subProjectOverview(pid=${pid}, sid=${sid})}"
+                       th:text="${subProject.subProjectName}"></a>
+                </td>
+                <td th:text="${subProject.subProjectStartDate != null ? #temporals.format(subProject.subProjectStartDate, 'yyyy-MM-dd') : ''}"></td>
+                <td th:text="${subProject.subProjectEndDate != null ? #temporals.format(subProject.subProjectEndDate, 'yyyy-MM-dd') : ''}"></td>
+                <td th:text="${subProject.subProjectEstimatedHours}"></td>
+                <td th:text="${subProject.subProjectStatus}"></td>
+                <td>
+                    <div class="actions">
+                        <a th:href="@{/dashboard/{pid}/projectOverview/{sid}/subProjectOverview(pid=${pid}, sid=${sid})}"
+                           class="icon-button" title="Se">
+                            <i class="fas fa-eye"></i>
+                        </a>
+
+                        <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
+                            <a th:href="@{/dashboard/{pid}/projectOverview/{sid}/editSubProject(pid=${pid}, sid=${sid})}"
+                               class="icon-button" title="Rediger">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            <form method="post"
+                                  th:action="@{/dashboard/{pid}/projectOverview/{sid}/deleteSubProject(pid=${pid}, sid=${sid})}"
+                                  class="inline-form"
+                                  onsubmit="return confirm('Er du sikker på du vil slette dette subprojekt?')">
+                                <button type="submit" class="icon-button" title="Slet">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(subProjects)}">
+                <td colspan="6">Intet Sub Projekt fundet</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="project-section">
+        <h2>Team</h2>
+
+        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-member-section">
+            <form th:action="@{/dashboard/{id}/employees/add(id=${project.projectId})}" method="post">
+                <select name="employeeId" required>
+                    <option value="">Vælg en medarbejder</option>
+                    <option th:each="employee : ${availableEmployees}"
+                            th:value="${employee.employeeId}"
+                            th:text="${employee.firstname + ' ' + employee.lastname}"></option>
+                </select>
+                <button type="submit" class="button">Tilføj Medarbejder</button>
+            </form>
+        </div>
+
         <table>
             <thead>
             <tr>
@@ -48,13 +121,13 @@
                 <td th:text="${employee.firstname + ' ' + employee.lastname}"></td>
                 <td th:text="${employee.role}"></td>
                 <td>
-                    <!-- Remove Employee Button (only for ADMIN and PROJECT_MANAGER) -->
                     <form th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
                           th:action="@{/dashboard/{projectId}/employees/{employeeId}/remove(projectId=${project.projectId}, employeeId=${employee.employeeId})}"
                           method="post"
-                          style="display:inline;">
-                        <button type="submit" class="button"
-                                onclick="return confirm('Er du sikker på du vil fjerne denne team medarbejder?')">Fjern
+                          class="inline-form"
+                          onsubmit="return confirm('Er du sikker på du vil fjerne denne medarbejder?')">
+                        <button type="submit" class="icon-button" title="Fjern">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </form>
                 </td>
@@ -64,95 +137,18 @@
             </tr>
             </tbody>
         </table>
-
-        <!-- Add Team Member Form (only for ADMIN and PROJECT_MANAGER) -->
-        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-member-section">
-            <h3>Add Team Member</h3>
-            <form th:action="@{/dashboard/{id}/employees/add(id=${project.projectId})}" method="post">
-                <select name="employeeId" required>
-                    <option value="">Vælg en medarbejder</option>
-                    <option th:each="employee : ${availableEmployees}"
-                            th:value="${employee.employeeId}"
-                            th:text="${employee.firstname + ' ' + employee.lastname}"></option>
-                </select>
-                <button type="submit" class="button">Tilføj Medarbejder</button>
-            </form>
-        </div>
     </div>
 
-    <!-- Sub Projects -->
-    <div class="project-section">
-        <h2>Sub Projects</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Sub Project Navn</th>
-                <th>Startdato</th>
-                <th>Slutdato</th>
-                <th>Status</th>
-                <th>Handlinger</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="subProject : ${subProjects}">
-                <td th:text="${subProject.subProjectName}"></td>
-                <td th:text="${subProject.subProjectStartDate != null ? #temporals.format(subProject.subProjectStartDate, 'yyyy-MM-dd') : ''}"></td>
-                <td th:text="${subProject.subProjectEndDate != null ? #temporals.format(subProject.subProjectEndDate, 'yyyy-MM-dd') : ''}"></td>
-                <td th:text="${subProject.subProjectStatus}"></td>
-                <td>
-                    <div class="actions">
-                        <!-- View button -->
-                        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview(projectId=${project.projectId},subProjectId=${subProject.subProjectId})}"
-                           class="icon-button" title="Se">
-                            <i class="fas fa-eye"></i>
-                        </a>
-
-                        <!-- Edit + Delete buttons for ADMIN/PROJECT_MANAGER -->
-                        <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-        <a th:href="@{/dashboard/{projectId}/projectOverview/{subProjectId}/editSubProject(projectId=${project.projectId},subProjectId=${subProject.subProjectId})}"
-           class="icon-button" title="Rediger">
-            <i class="fas fa-pen"></i>
-        </a>
-
-        <form method="post"
-              th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/deleteSubProject(projectId=${project.projectId},subProjectId=${subProject.subProjectId})}"
-              onsubmit="return confirm('Er du sikker på du vil slette dette subprojekt?')"
-              style="display: inline;">
-            <button type="submit" class="icon-button" title="Slet">
-                <i class="fas fa-trash"></i>
-            </button>
-        </form>
-    </span>
-                    </div>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(subProjects)}">
-                <td colspan="5">Intet Sub Projekt fundet</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <!-- Add Sub Project Button (only for ADMIN, PROJECT_MANAGER and project employees) -->
-        <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}" class="add-subproject-section">
-            <a th:href="@{/dashboard/{projectId}/projectOverview/addSubproject(projectId=${project.projectId})}"
-               class="button">Add New Sub Project</a>
-        </div>
-    </div>
-
-    <!-- Back to Projects List -->
     <div class="navigation-buttons">
-        <a th:href="@{/dashboard}" class="button">Tilbage til Dashboard</a>
-
-        <!-- Edit/Delete Project buttons (only for ADMIN and PROJECT_MANAGER) -->
-        <span th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
-            <a th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}" class="button">Rediger Projekt</a>
-        </span>
+        <a th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
+           th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}" class="button">
+            Rediger Projekt
+        </a>
         <form th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}"
               method="post"
-              onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')"
-              style="display: inline;">
-            <button type="submit" class="button" title="Slet">Slet projekt
-            </button>
+              class="inline-form"
+              onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')">
+            <button type="submit" class="icon-button" title="Slet">Slet projekt</button>
         </form>
     </div>
 </main>
