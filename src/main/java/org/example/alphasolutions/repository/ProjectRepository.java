@@ -41,7 +41,8 @@ public class ProjectRepository {
     public List<Project> findProjectsByEmployeeId(Integer employeeId) {
         String sql = "SELECT Project.* FROM Project " +
                 "JOIN project_employee ON Project.project_id = project_employee.project_id " +
-                "WHERE project_employee.employee_id = ?";
+                "WHERE project_employee.employee_id = ? " +
+                "AND project_status != 'ARCHIVED'";
         return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Project.class), employeeId);
     }
 
