@@ -4,6 +4,7 @@ import org.example.alphasolutions.enums.ProjectStatus;
 import org.example.alphasolutions.model.Employee;
 import org.example.alphasolutions.model.Project;
 import org.example.alphasolutions.model.SubProject;
+import org.example.alphasolutions.model.Task;
 import org.example.alphasolutions.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 
@@ -60,12 +61,16 @@ public class ProjectService {
         projectRepository.removeEmployeeFromProject(employeeId, projectId);
     }
 
-    public int calculateActualHours(int projectId) {
+    public int calculateProjectActualHours(int projectId) {
         List<SubProject> subProjects = findSubProjectsByProjectId(projectId);
         int totalActualHours = 0;
         for (SubProject subProject : subProjects) {
             totalActualHours += subProjectService.calculateActualHours(subProject.getSubProjectId());
         }
         return totalActualHours;
+    }
+
+    public int calculateSubProjectActualHours (int subProjectId){
+        return subProjectService.calculateActualHours(subProjectId);
     }
 }
