@@ -78,6 +78,7 @@ public class TaskController extends BaseController {
         }
 
         Integer employeeId = (Integer) session.getAttribute("employeeId");
+
         Boolean isAssignedToTask = taskService.isEmployeeAssignedToTask(employeeId, taskId);
 
         model.addAttribute("task", task);

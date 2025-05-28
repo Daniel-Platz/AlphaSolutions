@@ -18,7 +18,7 @@
     </div>
 
     <!-- Register Hours Form -->
-    <div class="quick-register-hours">
+    <div class="quick-register-hours" th:if="${isAssignedToTask}">
         <h3>Timeregistrering</h3>
         <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/registerHours(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
               method="post"
@@ -79,20 +79,6 @@
                     <button type="submit" class="button">Tilføj Medarbejder</button>
                 </form>
             </div>
-
-        <!-- Register Hours Form -->
-        <div class="quick-register-hours" th:if="${isAssignedToTask} == true">
-            <h3>Timeregistrering</h3>
-            <form th:action="@{/dashboard/{projectId}/projectOverview/{subProjectId}/subProjectOverview/{taskId}/registerHours(projectId=${projectId},subProjectId=${subProjectId},taskId=${taskId})}"
-                  method="post"
-                  onsubmit="return confirm('Er du sikker på, at du vil registrere ' + document.getElementById('hoursToAdd').value + ' timer på denne opgave?');">
-                <label for="hoursToAdd">Antal timer:</label>
-                <input type="number" id="hoursToAdd" name="hoursToAdd" min="0.5" step="0.5" required>
-                <button type="submit" class="button">Registrer</button>
-            </form>
-            <!-- Error message for invalid hours -->
-            <p th:if="${param.error == 'invalidHours'}" class="error-message">Timeantal skal være større end 0</p>
-        </div>
 
         <!-- Assigned Employees Section -->
         <div class="assigned-employees">
