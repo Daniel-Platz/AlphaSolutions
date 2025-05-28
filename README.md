@@ -60,5 +60,5 @@ Link til deployed version: http://alphasolutions-deaddfgaa7bgarfk.northeurope-01
    spring.datasource.username=[username]
    spring.datasource.password=[password] 
 </pre>
-4. Byg of kør projektet.
+4. Byg og kør projektet.
 5. Applikation burde nu kunne køres lokalt på http://localhost:8080/
