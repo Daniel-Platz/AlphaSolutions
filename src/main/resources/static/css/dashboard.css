@@ -107,6 +107,12 @@ h1 {
     z-index: 1000;
 }
 
+@media (max-width: 768px) {
+    .fixed-chart {
+        display: none;
+    }
+}
+
 .icon-button {
     background: none;
     border: none;
