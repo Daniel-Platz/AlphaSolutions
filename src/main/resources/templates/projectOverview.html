@@ -146,9 +146,10 @@
            th:href="@{/dashboard/{projectId}/editProject(projectId=${project.projectId})}" class="button">
             Rediger Projekt
         </a>
-        <form th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}"
+        <form th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}"
+              th:action="@{/dashboard/{projectId}/deleteProject(projectId=${project.projectId})}"
               method="post"
-              class="inline-form"
+              class="button"
               onsubmit="return confirm('Er du sikker på du ønsker at slette dette projekt? Du kan ikke ændre denne handling')">
             <button type="submit" class="icon-button" title="Slet">Slet projekt</button>
         </form>
