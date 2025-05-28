@@ -25,7 +25,10 @@ medarbejdere i systemet til projekter, subprojekter og opgaver. Admins har de sa
 Som medarbejder i systemet kan du kun se de projekter du er blevet tilføjet til. Derudover kan du indtaste hvor mange
 timer du har brugt på en opgave.
 
-Det er muligt i programmet at nedbryde et større projekt i mindre bider som subprojekter og opgaver.
+Hvis man har kørt alphasolutions_demo_data_script.sql i src/main/resources/alphasolutions_demo_data_script.sql burde man
+kunne logge ind som Admin vha. brugernavnet "admin" og password "velkommen123"
+
+Det er muligt i programmet at nedbryde et større projekt i mindre bidder som subprojekter og opgaver.
 Link til deployed version: http://alphasolutions-deaddfgaa7bgarfk.northeurope-01.azurewebsites.net/
 
 ## Teknologier

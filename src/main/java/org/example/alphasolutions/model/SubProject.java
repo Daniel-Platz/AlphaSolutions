@@ -16,6 +16,7 @@ public class SubProject {
     private int subProjectEstimatedHours;
     private ProjectStatus subProjectStatus;
     private List<Task> tasks;
+    private int subProjectActualHours;
 
     public SubProject(int subProjectId, int projectId, String subProjectName, String subProjectDescription, LocalDate subProjectStartDate, LocalDate subProjectEndDate, int subProjectEstimatedHours, ProjectStatus subProjectStatus, List<Task> tasks) {
         this.subProjectId = subProjectId;
@@ -105,5 +106,13 @@ public class SubProject {
 
     public void setSubProjectDescription(String subProjectDescription) {
         this.subProjectDescription = subProjectDescription;
+    }
+
+    public void setSubProjectActualHours(int subProjectActualHours) {
+        this.subProjectActualHours = subProjectActualHours;
+    }
+
+    public int getSubProjectActualHours() {
+        return subProjectActualHours;
     }
 }

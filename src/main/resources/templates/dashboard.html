@@ -48,7 +48,7 @@
                 <a href="/dashboard/addProject" class="dash-btn">Tilføj Projekt</a>
             </div>
 
-            <div>
+            <div th:if="${role == 'ADMIN' || role == 'PROJECT_MANAGER'}">
                 <a href="dashboard/archived" class="dash-btn">Arkiverede Projekter</a>
             </div>
 
