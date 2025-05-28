@@ -71,11 +71,6 @@ public class ProjectService {
     }
 
     public int calculateSubProjectActualHours (int subProjectId){
-        List<Task> tasks = subProjectService.findTasksBySubProjectId(subProjectId);
-        int totalActualHours = 0;
-        for (Task task : tasks){
-            totalActualHours += subProjectService.calculateActualHours(task.getSubProjectId());
-        }
-        return totalActualHours;
+        return subProjectService.calculateActualHours(subProjectId);
     }
 }
